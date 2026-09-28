@@ -61,28 +61,6 @@
       color: #0f172a;
     }
 
-    /* Thanh đo sóng âm Micro (VU Meter) */
-    .vu-box {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: #94a3b8;
-    }
-    .vu-bg {
-      width: 100px;
-      height: 10px;
-      background-color: #334155;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-    .vu-fill {
-      height: 100%;
-      width: 0%;
-      background-color: #22c55e;
-      transition: width 0.1s linear;
-    }
-
     /* Header 2 Cột */
     .column-headers {
       display: grid;
@@ -172,14 +150,6 @@
     </div>
 
     <div class="controls">
-      <!-- ĐO TÍN HIỆU ÂM THANH TV -->
-      <div class="vu-box">
-        <span>Sóng Mic:</span>
-        <div class="vu-bg">
-          <div id="vuFill" class="vu-fill"></div>
-        </div>
-      </div>
-
       <select id="langSelect">
         <option value="en-US">🇬🇧 Tiếng Anh (English)</option>
         <option value="ja-JP">🇯🇵 Tiếng Nhật (日本語)</option>
@@ -214,14 +184,10 @@
     const interimBox = document.getElementById('interimBox');
     const interimText = document.getElementById('interimText');
     const debugLog = document.getElementById('debugLog');
-    const vuFill = document.getElementById('vuFill');
 
     let isListening = false;
     let recognition = null;
     let meetingHistory = [];
-    let audioContext = null;
-    let analyser = null;
-    let micStream = null;
 
     function log(msg) {
       const time = new Date().toLocaleTimeString();
@@ -250,7 +216,7 @@
       });
 
       recognition.onstart = () => {
-        log("✅ Đã bật Micro & Đang nhận diện tiếng " + recognition.lang);
+        log("✅ Đang lắng nghe giọng nói (" + recognition.lang + ")...");
       };
 
       recognition.onresult = (event) => {
@@ -279,13 +245,19 @@
       };
 
       recognition.onerror = (event) => {
+        // Lỗi no-speech là bình thường khi im lặng, không ghi log báo lỗi đỏ
+        if (event.error === 'no-speech') {
+          return;
+        }
         log("❌ Lỗi Speech: " + event.error);
       };
 
       recognition.onend = () => {
         interimBox.style.display = 'none';
         if (isListening) {
-          try { recognition.start(); } catch (e) {}
+          try { 
+            recognition.start(); 
+          } catch (e) {}
         } else {
           log("⏹ Đã dừng nghe.");
         }
@@ -294,7 +266,7 @@
 
     // Hiển thị câu gốc & dịch ngầm
     function addSentenceToLog(originalText) {
-      log("🗣️ Nghe được: " + originalText);
+      log("🗣️ Nhận diện: " + originalText);
 
       const row = document.createElement('div');
       row.className = 'log-row';
@@ -340,43 +312,6 @@
       targetElement.innerText = "(Chưa dịch được)";
     }
 
-    // Bộ đo sóng âm Micro (VU Meter)
-    async function startVUMeter() {
-      try {
-        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        const source = audioContext.createMediaStreamSource(micStream);
-        source.connect(analyser);
-        analyser.fftSize = 256;
-
-        const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-        function drawVU() {
-          if (!isListening) {
-            vuFill.style.width = '0%';
-            return;
-          }
-          analyser.getByteFrequencyData(dataArray);
-          let sum = 0;
-          for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-          let avg = sum / dataArray.length;
-          let pct = Math.min(100, Math.round((avg / 128) * 100 * 2)); // Nhân hệ số để nhạy hơn
-          vuFill.style.width = pct + '%';
-          requestAnimationFrame(drawVU);
-        }
-        drawVU();
-      } catch (err) {
-        log("⚠️ Không mở được bộ đo sóng Mic: " + err.message);
-      }
-    }
-
-    function stopVUMeter() {
-      if (micStream) micStream.getTracks().forEach(t => t.stop());
-      if (audioContext) audioContext.close();
-      vuFill.style.width = '0%';
-    }
-
     // Nút Bắt đầu / Dừng
     btnStart.addEventListener('click', () => {
       if (!isListening) {
@@ -385,7 +320,6 @@
         btnStart.classList.add('listening');
         try {
           recognition.start();
-          startVUMeter();
         } catch(e) {
           log("Lỗi khởi chạy: " + e.message);
         }
@@ -394,7 +328,6 @@
         btnStart.innerText = "▶ Bắt đầu nghe";
         btnStart.classList.remove('listening');
         recognition.stop();
-        stopVUMeter();
       }
     });
 
