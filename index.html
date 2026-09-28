@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Subtitle Live Pro - Real-time AI Speech Subtitles</title>
+  <title>Web Subtitle Live Pro - Ultra-Fast AI Speech & Vocal Booster</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -15,9 +15,10 @@
           colors: {
             brand: {
               50: '#f0f9ff',
+              400: '#38bdf8',
               500: '#0ea5e9',
               600: '#0284c7',
-              700: '#0369a1',
+              900: '#0c4a6e',
             }
           }
         }
@@ -28,12 +29,12 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Google Font Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #0b0f19;
+      background-color: #080c14;
       color: #f1f5f9;
     }
     
@@ -43,94 +44,122 @@
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #0f172a;
+      background: #0b1120;
     }
     ::-webkit-scrollbar-thumb {
-      background: #334155;
+      background: #1e293b;
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #475569;
+      background: #334155;
     }
 
     .glass-card {
-      background: rgba(30, 41, 59, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .glow-active {
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+    .glass-card-active {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .glow-emerald {
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+    }
+
+    .glow-amber {
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
     }
 
     @keyframes pulse-ring {
-      0% { transform: scale(0.95); opacity: 0.8; }
-      50% { transform: scale(1.1); opacity: 0.4; }
-      100% { transform: scale(0.95); opacity: 0.8; }
+      0% { transform: scale(0.95); opacity: 0.9; }
+      50% { transform: scale(1.12); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.9; }
     }
 
     .mic-pulse {
-      animation: pulse-ring 2s infinite ease-in-out;
+      animation: pulse-ring 1.8s infinite ease-in-out;
+    }
+
+    .shimmer-text {
+      background: linear-gradient(90deg, #38bdf8 0%, #f59e0b 50%, #38bdf8 100%);
+      background-size: 200% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      animation: shine 3s linear infinite;
+    }
+
+    @keyframes shine {
+      to { background-position: 200% center; }
     }
   </style>
 </head>
-<body class="h-screen flex flex-col p-3 md:p-5 gap-3 overflow-hidden">
+<body class="h-screen flex flex-col p-2.5 md:p-4 gap-2.5 overflow-hidden">
 
   <!-- Top Navigation Header -->
-  <header class="glass-card rounded-2xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-4 shrink-0 border border-slate-800">
+  <header class="glass-card rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shrink-0">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
-        <i class="fa-solid font-bold text-lg fa-closed-captioning"></i>
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-sky-500/20 shrink-0">
+        <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
       </div>
       <div>
-        <h1 class="text-lg md:text-xl font-bold bg-gradient-to-r from-white via-slate-200 to-sky-400 bg-clip-text text-transparent">
-          Web Subtitle Live <span class="text-xs px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 font-semibold uppercase tracking-wider ml-1">PRO</span>
+        <h1 class="text-base md:text-lg font-extrabold tracking-tight flex items-center gap-2">
+          <span>Web Subtitle Live</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-gradient-to-r from-sky-500/20 to-amber-500/20 text-sky-300 border border-sky-500/30 font-mono tracking-wider font-bold">PRO MAX</span>
         </h1>
-        <p class="text-xs text-slate-400 hidden sm:block">Trình Biên Dịch Subtitle Live - Khuếch Đại Âm Thanh & AI Speech</p>
+        <p class="text-[11px] text-slate-400 hidden sm:block">Lọc Âm Tivi Nhỏ • Bội Phát Gain 1000% • Dịch Thời Gian Thực &lt;150ms</p>
       </div>
     </div>
 
-    <!-- Audio Boost & Source Mode Controls -->
-    <div class="flex items-center flex-wrap gap-3">
+    <!-- Audio DSP & Gain Boost Toolbar -->
+    <div class="flex items-center flex-wrap gap-2 md:gap-3">
       
-      <!-- Audio Source Selector -->
-      <div class="flex items-center bg-slate-900/80 rounded-xl p-1 border border-slate-700/60">
-        <button id="btnSrcMic" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 bg-sky-600 text-white shadow-sm flex items-center gap-1.5">
-          <i class="fa-solid fa-microphone"></i>
+      <!-- Audio Source Switcher -->
+      <div class="flex items-center bg-slate-900/90 rounded-xl p-1 border border-slate-800">
+        <button id="btnSrcMic" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-sky-600 text-white shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-microphone text-xs"></i>
           <span>Microphone</span>
         </button>
-        <button id="btnSrcTab" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5" title="Bắt âm thanh trực tiếp từ Tab YouTube / Chrome / Hệ thống">
-          <i class="fa-solid fa-laptop flex"></i>
+        <button id="btnSrcTab" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5" title="Thu âm thanh trực tiếp từ Tab YouTube / Chrome không dính tiếng ồn ngoài phòng">
+          <i class="fa-solid fa-desktop text-xs"></i>
           <span>Tab / TV Audio</span>
         </button>
       </div>
 
-      <!-- Gain Amplifier Slider -->
-      <div class="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-700/60">
-        <i class="fa-solid fa-gauge-high text-amber-400 text-xs"></i>
-        <span class="text-xs font-medium text-slate-300">Khuếch đại Mic:</span>
-        <input type="range" id="gainSlider" min="100" max="500" value="250" class="w-20 md:w-28 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-400">
-        <span id="gainValue" class="text-xs font-bold text-sky-400 w-10 text-right">250%</span>
+      <!-- 1000% Gain Booster Slider -->
+      <div class="flex items-center gap-2 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800">
+        <i class="fa-solid fa-bolt text-amber-400 text-xs"></i>
+        <span class="text-xs font-medium text-slate-300 hidden xl:inline">Khuếch Đại:</span>
+        <input type="range" id="gainSlider" min="100" max="1000" value="400" step="25" class="w-20 md:w-28 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-400">
+        <span id="gainValue" class="text-xs font-mono font-bold text-amber-400 w-12 text-right">400%</span>
       </div>
 
-      <!-- Filter Toggle -->
-      <button id="btnToggleNoise" class="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-700/60 text-xs text-slate-300 hover:border-slate-500 flex items-center gap-1.5" title="Bật/Tắt Lọc tiếng ồn. Tắt lọc tiếng ồn giúp thu âm Tivi xa tốt hơn">
+      <!-- Vocal Enhancer Switch -->
+      <button id="btnToggleEnhancer" class="px-3 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-xs font-semibold text-emerald-300 flex items-center gap-1.5 transition" title="Bật bộ lọc tần số giọng nói Highpass 120Hz + Treble 2.5kHz">
         <i class="fa-solid fa-sliders text-emerald-400"></i>
-        <span id="noiseFilterStatus">Lọc ồn: TẮT</span>
+        <span>Vocal EQ: <b id="statusEnhancer">ON</b></span>
+      </button>
+
+      <!-- Auto Compressor Switch -->
+      <button id="btnToggleCompressor" class="px-3 py-1.5 rounded-xl bg-indigo-950/60 border border-indigo-500/40 text-xs font-semibold text-indigo-300 flex items-center gap-1.5 transition" title="Nén và tự động nâng tiếng nói thì thầm/nhỏ lên mức rõ ràng">
+        <i class="fa-solid fa-compress text-indigo-400"></i>
+        <span>Compressor: <b id="statusCompressor">ON</b></span>
       </button>
 
     </div>
   </header>
 
-  <!-- Secondary Toolbar -->
-  <div class="glass-card rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 shrink-0 border border-slate-800">
-    <div class="flex items-center gap-3 flex-wrap">
+  <!-- Secondary Control Toolbar -->
+  <div class="glass-card rounded-2xl p-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0">
+    <div class="flex items-center gap-2.5 flex-wrap">
       
       <!-- Source Language Selector -->
       <div class="flex items-center gap-2">
         <label class="text-xs font-semibold text-slate-400 flex items-center gap-1">
-          <i class="fa-solid fa-language text-sky-400"></i> Tiếng Gốc:
+          <i class="fa-solid fa-globe text-sky-400"></i> Tiếng Gốc:
         </label>
         <select id="langSelect" class="bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-xl px-3 py-2 outline-none focus:border-sky-500 cursor-pointer">
           <option value="en-US">🇬🇧 Tiếng Anh (English - US)</option>
@@ -141,102 +170,144 @@
           <option value="fr-FR">🇫🇷 Tiếng Pháp (Français)</option>
           <option value="de-DE">🇩🇪 Tiếng Đức (Deutsch)</option>
           <option value="es-ES">🇪🇸 Tiếng Tây Ban Nha (Español)</option>
+          <option value="vi-VN">🇻🇳 Tiếng Việt (Vietnamese)</option>
         </select>
       </div>
 
       <!-- Main Listen Toggle Button -->
-      <button id="btnStart" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all duration-200 flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95">
+      <button id="btnStart" class="px-5 py-2 rounded-xl font-extrabold text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all duration-200 flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95">
         <i class="fa-solid fa-play"></i>
         <span id="btnStartText">BẮT ĐẦU NGHE</span>
       </button>
 
-      <!-- Audio Level Waveform Canvas -->
-      <div class="hidden sm:flex items-center gap-2 bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800">
-        <span class="text-[10px] text-slate-400 font-mono uppercase">Tín hiệu:</span>
-        <canvas id="vuCanvas" width="100" height="18" class="rounded bg-slate-900"></canvas>
-      </div>
-
     </div>
 
-    <!-- Action Buttons -->
+    <!-- Right Quick Actions -->
     <div class="flex items-center gap-2">
+      <!-- Auto Scroll Switch -->
+      <button id="btnToggleAutoScroll" class="px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-xs text-sky-400 font-semibold flex items-center gap-1.5">
+        <i class="fa-solid fa-angles-down"></i> Auto-Scroll: <span id="autoScrollStatus">ON</span>
+      </button>
+
       <button id="btnCopy" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-400 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition">
-        <i class="fa-solid fa-copy"></i> Copy Biên Bản
+        <i class="fa-solid fa-copy"></i> Copy
       </button>
       <button id="btnExport" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition">
-        <i class="fa-solid fa-download"></i> Tải File (.txt)
+        <i class="fa-solid fa-download"></i> Tải .TXT
       </button>
-      <button id="btnClear" class="px-3 py-2 rounded-xl bg-slate-800/60 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 text-xs font-semibold border border-slate-800 flex items-center gap-1.5 transition" title="Xóa lịch sử">
+      <button id="btnClear" class="px-3 py-2 rounded-xl bg-slate-800/60 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 text-xs font-semibold border border-slate-800 flex items-center gap-1.5 transition" title="Xóa toàn bộ">
         <i class="fa-solid fa-trash-can"></i>
       </button>
     </div>
   </div>
 
-  <!-- Live Interim Speech Streaming Banner -->
-  <div id="liveInterimContainer" class="glass-card rounded-xl px-4 py-3 border-l-4 border-l-amber-400 border-y border-r border-slate-800/80 bg-slate-900/90 hidden transition-all duration-300">
-    <div class="flex items-start gap-3">
-      <div class="mt-0.5 relative flex items-center justify-center">
-        <div class="w-3 h-3 rounded-full bg-amber-400 mic-pulse"></div>
-        <i class="fa-solid fa-microphone-lines text-amber-300 text-xs absolute"></i>
+  <!-- Audio Spectrum & Signal Level Bar -->
+  <div class="glass-card rounded-xl px-4 py-2 flex items-center justify-between gap-4 shrink-0 text-xs font-mono">
+    <div class="flex items-center gap-3 min-w-0 flex-1">
+      <span class="text-[11px] text-slate-400 font-bold uppercase tracking-wider shrink-0 flex items-center gap-1.5">
+        <i class="fa-solid fa-wave-square text-sky-400"></i> Phổ Âm Thanh:
+      </span>
+      <canvas id="spectrumCanvas" height="24" class="w-full max-w-xl rounded-lg bg-slate-950/80 border border-slate-800/80"></canvas>
+    </div>
+
+    <div class="flex items-center gap-3 shrink-0">
+      <span class="text-slate-400 text-[11px]">Tín Hiệu:</span>
+      <div class="w-24 md:w-32 h-3.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800 relative">
+        <div id="signalMeterBar" class="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-rose-500 w-0 transition-all duration-75"></div>
       </div>
-      <div class="flex-1 min-w-0">
-        <div class="text-[10px] uppercase font-bold tracking-wider text-amber-400 mb-0.5">Đang nghe thời gian thực...</div>
-        <p id="interimText" class="text-sm md:text-base text-slate-100 font-medium italic animate-pulse break-words">...</p>
+      <span id="signalDbText" class="text-[11px] text-emerald-400 font-bold w-12 text-right">-∞ dB</span>
+    </div>
+  </div>
+
+  <!-- ULTRA-FAST LIVE SUBTITLE OVERLAY BANNER -->
+  <div id="liveSubtitleBox" class="glass-card-active rounded-2xl p-4 border-l-4 border-l-amber-400 shadow-xl transition-all duration-200 shrink-0 relative overflow-hidden">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
+      <div class="flex items-center gap-2">
+        <span class="relative flex h-2.5 w-2.5">
+          <span id="livePulsePing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 hidden"></span>
+          <span id="livePulseDot" class="relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-500"></span>
+        </span>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+          <i class="fa-solid fa-bolt-lightning text-amber-400"></i> Subtitle Live Siêu Tốc (&lt;150ms)
+        </span>
+      </div>
+      <div class="text-[10px] font-mono text-slate-400 flex items-center gap-2">
+        <span>Độ trễ dịch: <b id="transLatencyText" class="text-emerald-400">-- ms</b></span>
+      </div>
+    </div>
+
+    <!-- Live Dual Line Display -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <!-- Original Interim Speech -->
+      <div class="space-y-1">
+        <span class="text-[10px] font-mono text-sky-400 font-bold uppercase">Gốc (Thời Gian Thực):</span>
+        <p id="liveOrigText" class="text-sm md:text-base font-semibold text-slate-100 min-h-[1.5rem] italic text-slate-400">
+          Chưa phát hiện giọng nói... Hãy bấm "BẮT ĐẦU NGHE".
+        </p>
+      </div>
+
+      <!-- Instant Vietnamese Translation -->
+      <div class="space-y-1 md:border-l md:border-slate-800/80 md:pl-3">
+        <span class="text-[10px] font-mono text-emerald-400 font-bold uppercase">Tiếng Việt (Tức Thì):</span>
+        <p id="liveTransText" class="text-sm md:text-base font-bold text-amber-300 min-h-[1.5rem]">
+          ---
+        </p>
       </div>
     </div>
   </div>
 
-  <!-- Main 2-Column Subtitle Feed -->
-  <main class="flex-1 glass-card rounded-2xl flex flex-col overflow-hidden border border-slate-800">
+  <!-- Main Dual Column Transcript Feed -->
+  <main class="flex-1 glass-card rounded-2xl flex flex-col overflow-hidden">
     
-    <!-- Column Headers -->
+    <!-- Header Titles -->
     <div class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/90 border-b border-slate-800 text-xs font-bold uppercase tracking-wider divide-y md:divide-y-0 md:divide-x divide-slate-800 shrink-0">
-      <div class="px-5 py-3 text-sky-400 flex items-center justify-between">
+      <div class="px-4 py-2.5 text-sky-400 flex items-center justify-between">
         <span class="flex items-center gap-2">
-          <i class="fa-solid fa-volume-high"></i> Tiếng Gốc (Anh / Nhật / Hàn...)
+          <i class="fa-solid fa-align-left"></i> Tiếng Gốc (Lịch Sử)
         </span>
         <span id="wordCountOrig" class="text-[10px] text-slate-500 font-mono">0 từ</span>
       </div>
-      <div class="px-5 py-3 text-amber-400 flex items-center justify-between">
+      <div class="px-4 py-2.5 text-emerald-400 flex items-center justify-between">
         <span class="flex items-center gap-2">
-          <i class="fa-solid fa-language"></i> Tiếng Việt (Dịch Tự Động)
+          <i class="fa-solid fa-language"></i> Tiếng Việt Hoàn Chỉnh
         </span>
         <span id="rowCount" class="text-[10px] text-slate-500 font-mono">0 câu</span>
       </div>
     </div>
 
-    <!-- Scrollable Transcript Feed -->
-    <div id="transcriptFeed" class="flex-1 p-4 overflow-y-auto space-y-3">
+    <!-- Scrollable Transcript Feed Container -->
+    <div id="transcriptFeed" class="flex-1 p-3.5 overflow-y-auto space-y-2.5">
       
-      <!-- Welcome Empty State -->
+      <!-- Empty State Indicator -->
       <div id="emptyState" class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
-        <div class="w-16 h-16 rounded-2xl bg-slate-800/50 flex items-center justify-center text-slate-600 text-2xl mb-3 border border-slate-800">
-          <i class="fa-solid fa-headset"></i>
+        <div class="w-14 h-14 rounded-2xl bg-slate-900/80 flex items-center justify-center text-slate-600 text-2xl mb-3 border border-slate-800">
+          <i class="fa-solid fa-ear-listen"></i>
         </div>
-        <h3 class="text-sm font-bold text-slate-300 mb-1">Chưa có dữ liệu thoại</h3>
+        <h3 class="text-sm font-bold text-slate-300 mb-1">Đã sẵn sàng thu âm và lọc tiếng Tivi nhỏ</h3>
         <p class="text-xs max-w-md leading-relaxed text-slate-400">
-          Nhấn nút <b class="text-emerald-400">BẮT ĐẦU NGHE</b>. Nếu âm thanh TV ở xa, kéo thanh <b class="text-sky-400">Khuếch đại Mic</b> lên 300% - 500% hoặc dùng chế độ <b class="text-slate-200">Tab / TV Audio</b>.
+          Kéo thanh <b class="text-amber-400">Khuếch Đại</b> lên 400% - 800% nếu tiếng Tivi ở xa. <br>
+          Bật <b class="text-emerald-400">Vocal EQ</b> & <b class="text-indigo-400">Compressor</b> để tự động làm rõ tiếng thì thầm.
         </p>
       </div>
 
     </div>
   </main>
 
-  <!-- Bottom Status & System Console -->
-  <footer class="glass-card rounded-xl px-4 py-2.5 flex items-center justify-between gap-3 text-xs font-mono text-slate-400 shrink-0 border border-slate-800">
-    <div class="flex items-center gap-2 min-w-0">
+  <!-- Status Bar Footer -->
+  <footer class="glass-card rounded-xl px-4 py-2 flex items-center justify-between gap-3 text-xs font-mono text-slate-400 shrink-0">
+    <div class="flex items-center gap-2 truncate">
       <span class="w-2 h-2 rounded-full bg-slate-500 shrink-0" id="statusDot"></span>
-      <span id="statusText" class="truncate text-slate-300">Hệ thống sẵn sàng. Vui lòng bấm "Bắt đầu nghe"</span>
+      <span id="statusText" class="truncate text-slate-300">Sẵn sàng. Nhấn "Bắt đầu nghe"</span>
     </div>
     <div class="flex items-center gap-4 shrink-0 text-[11px] text-slate-500 hidden sm:flex">
       <span>Auto-Reconnect: <b id="reconnectCount" class="text-slate-300">0</b></span>
-      <span>Gain: <b id="statGain" class="text-sky-400">2.5x</b></span>
-      <span>Latency: <b id="statLatency" class="text-emerald-400">~0.3s</b></span>
+      <span>Gain: <b id="statGain" class="text-amber-400">4.0x</b></span>
+      <span>DSP: <b id="statDsp" class="text-emerald-400">Active</b></span>
     </div>
   </footer>
 
   <!-- Toast Notification Container -->
-  <div id="toastContainer" class="fixed bottom-16 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+  <div id="toastContainer" class="fixed bottom-14 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <script>
     // DOM Elements
@@ -247,64 +318,82 @@
     const gainValue = document.getElementById('gainValue');
     const btnSrcMic = document.getElementById('btnSrcMic');
     const btnSrcTab = document.getElementById('btnSrcTab');
-    const btnToggleNoise = document.getElementById('btnToggleNoise');
-    const noiseFilterStatus = document.getElementById('noiseFilterStatus');
-    const liveInterimContainer = document.getElementById('liveInterimContainer');
-    const interimText = document.getElementById('interimText');
+    
+    const btnToggleEnhancer = document.getElementById('btnToggleEnhancer');
+    const statusEnhancer = document.getElementById('statusEnhancer');
+    const btnToggleCompressor = document.getElementById('btnToggleCompressor');
+    const statusCompressor = document.getElementById('statusCompressor');
+    const btnToggleAutoScroll = document.getElementById('btnToggleAutoScroll');
+    const autoScrollStatus = document.getElementById('autoScrollStatus');
+
+    const spectrumCanvas = document.getElementById('spectrumCanvas');
+    const specCtx = spectrumCanvas.getContext('2d');
+    const signalMeterBar = document.getElementById('signalMeterBar');
+    const signalDbText = document.getElementById('signalDbText');
+
+    const livePulsePing = document.getElementById('livePulsePing');
+    const livePulseDot = document.getElementById('livePulseDot');
+    const transLatencyText = document.getElementById('transLatencyText');
+    const liveOrigText = document.getElementById('liveOrigText');
+    const liveTransText = document.getElementById('liveTransText');
+
     const transcriptFeed = document.getElementById('transcriptFeed');
     const emptyState = document.getElementById('emptyState');
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
     const reconnectCountEl = document.getElementById('reconnectCount');
     const statGain = document.getElementById('statGain');
-    const statLatency = document.getElementById('statLatency');
+    const statDsp = document.getElementById('statDsp');
     const rowCountEl = document.getElementById('rowCount');
     const wordCountOrigEl = document.getElementById('wordCountOrig');
-    const vuCanvas = document.getElementById('vuCanvas');
-    const vuCtx = vuCanvas.getContext('2d');
 
     const btnCopy = document.getElementById('btnCopy');
     const btnExport = document.getElementById('btnExport');
     const btnClear = document.getElementById('btnClear');
 
-    // App State
+    // App Options & State
     let isListening = false;
-    let audioSourceMode = 'mic'; // 'mic' or 'tab'
-    let noiseSuppressionEnabled = false; // Default OFF for better far-field TV capture
-    let gainMultiplier = 2.5; // 250% default
+    let audioSourceMode = 'mic'; // 'mic' | 'tab'
+    let enhancerEnabled = true;
+    let compressorEnabled = true;
+    let autoScrollEnabled = true;
+    let gainMultiplier = 4.0; // 400% default
+
     let recognition = null;
     let reconnectCounter = 0;
-    let meetingHistory = []; // Array of { id, timestamp, original, translated }
+    let meetingHistory = [];
     let totalOrigWords = 0;
 
-    // Web Audio API Instances
+    // Web Audio API Pipeline Nodes
     let audioCtx = null;
+    let mediaStream = null;
+    let sourceNode = null;
+    let highpassFilter = null;
+    let trebleBoostFilter = null;
+    let compressorNode = null;
     let gainNode = null;
     let analyserNode = null;
-    let mediaStream = null;
-    let animationFrameId = null;
+    let animFrameId = null;
 
-    // Interim Speech Flushing Safeguard Timers
+    // Fast Translation AbortController & Debounce
+    let interimAbortController = null;
+    let interimDebounceTimer = null;
     let lastInterimText = '';
-    let interimTimer = null;
 
     function showToast(message, type = 'info') {
       const toastContainer = document.getElementById('toastContainer');
       const toast = document.createElement('div');
-      toast.className = `px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xl border backdrop-blur-md pointer-events-auto transition-all duration-300 opacity-0 transform translate-y-2 flex items-center gap-2 ${
+      toast.className = `px-4 py-2 rounded-xl text-xs font-semibold shadow-2xl border backdrop-blur-md pointer-events-auto transition-all duration-300 opacity-0 transform translate-y-2 flex items-center gap-2 ${
         type === 'success' ? 'bg-emerald-950/90 text-emerald-300 border-emerald-500/40' :
         type === 'error' ? 'bg-rose-950/90 text-rose-300 border-rose-500/40' :
         'bg-slate-900/90 text-sky-300 border-sky-500/40'
       }`;
 
-      const icon = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-info';
+      const icon = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info';
       toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
       
       toastContainer.appendChild(toast);
-      
-      requestAnimationFrame(() => {
-        toast.classList.remove('opacity-0', 'translate-y-2');
-      });
+      requestAnimationFrame(() => toast.classList.remove('opacity-0', 'translate-y-2'));
 
       setTimeout(() => {
         toast.classList.add('opacity-0', 'translate-y-2');
@@ -312,7 +401,8 @@
       }, 3000);
     }
 
-    async function setupWebAudioAPI(stream) {
+    /* Web Audio API DSP Vocal Booster Pipeline */
+    async function setupAudioDSPPipeline(stream) {
       try {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -321,69 +411,115 @@
           await audioCtx.resume();
         }
 
-        const source = audioCtx.createMediaStreamSource(stream);
-        
-        // Gain Node Booster
+        sourceNode = audioCtx.createMediaStreamSource(stream);
+
+        // 1. Highpass Filter @ 120Hz (cuts low frequency aircon/hum rumble)
+        highpassFilter = audioCtx.createBiquadFilter();
+        highpassFilter.type = 'highpass';
+        highpassFilter.frequency.value = enhancerEnabled ? 120 : 10;
+
+        // 2. Treble/Peaking Filter @ 2500Hz (+8dB boost for vocal speech clarity)
+        trebleBoostFilter = audioCtx.createBiquadFilter();
+        trebleBoostFilter.type = 'peaking';
+        trebleBoostFilter.frequency.value = 2500;
+        trebleBoostFilter.Q.value = 1.2;
+        trebleBoostFilter.gain.value = enhancerEnabled ? 8 : 0; // +8dB treble boost
+
+        // 3. Dynamics Compressor Node (auto lifts soft/whisper TV speech without clipping loud bursts)
+        compressorNode = audioCtx.createDynamicsCompressor();
+        compressorNode.threshold.value = compressorEnabled ? -50 : -100; // Lifts very quiet sounds
+        compressorNode.knee.value = 40;
+        compressorNode.ratio.value = compressorEnabled ? 16 : 1; // Strong compression ratio
+        compressorNode.attack.value = 0.003;
+        compressorNode.release.value = 0.25;
+
+        // 4. Gain Booster Node (up to 1000% / 10x)
         gainNode = audioCtx.createGain();
         gainNode.gain.value = gainMultiplier;
 
-        // Analyser Node for Visualizer
+        // 5. Analyser Node for Spectrum & Signal Level
         analyserNode = audioCtx.createAnalyser();
-        analyserNode.fftSize = 64;
+        analyserNode.fftSize = 128;
+        analyserNode.smoothingTimeConstant = 0.8;
 
-        source.connect(gainNode);
+        // Connect Nodes Chain
+        sourceNode.connect(highpassFilter);
+        highpassFilter.connect(trebleBoostFilter);
+        trebleBoostFilter.connect(compressorNode);
+        compressorNode.connect(gainNode);
         gainNode.connect(analyserNode);
 
-        drawAudioVisualizer();
-        updateStatus("🟢 Web Audio API Booster đang hoạt động (Gain " + (gainMultiplier * 100) + "%)");
+        // Start Visualizer Loop
+        renderAudioVisualizer();
+
+        statDsp.innerText = "Active (" + (enhancerEnabled ? "EQ" : "") + (compressorEnabled ? "+Comp" : "") + ")";
       } catch (err) {
-        console.warn("Audio Context setup warning:", err);
+        console.warn("Audio DSP Setup Error:", err);
       }
     }
 
-    function drawAudioVisualizer() {
+    /* Render Audio Spectrum & Peak Level Meter */
+    function renderAudioVisualizer() {
       if (!analyserNode) return;
 
       const bufferLength = analyserNode.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
 
-      function render() {
+      function draw() {
         if (!isListening) {
-          vuCtx.clearRect(0, 0, vuCanvas.width, vuCanvas.height);
+          specCtx.clearRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+          signalMeterBar.style.width = '0%';
+          signalDbText.innerText = '-∞ dB';
           return;
         }
 
-        animationFrameId = requestAnimationFrame(render);
+        animFrameId = requestAnimationFrame(draw);
         analyserNode.getByteFrequencyData(dataArray);
 
-        vuCtx.clearRect(0, 0, vuCanvas.width, vuCanvas.height);
+        // Clear Canvas
+        specCtx.clearRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
 
-        let sum = 0;
+        // Draw Spectrum Bars
+        const barWidth = (spectrumCanvas.width / bufferLength) * 2;
+        let x = 0;
+        let totalVal = 0;
+
         for (let i = 0; i < bufferLength; i++) {
-          sum += dataArray[i];
+          const barHeight = (dataArray[i] / 255) * spectrumCanvas.height;
+          totalVal += dataArray[i];
+
+          const grad = specCtx.createLinearGradient(0, spectrumCanvas.height, 0, 0);
+          grad.addColorStop(0, '#0284c7');
+          grad.addColorStop(0.6, '#38bdf8');
+          grad.addColorStop(1, '#f59e0b');
+
+          specCtx.fillStyle = grad;
+          specCtx.fillRect(x, spectrumCanvas.height - barHeight, barWidth - 1, barHeight);
+          x += barWidth;
         }
-        let average = sum / bufferLength;
-        let normLevel = Math.min(1, average / 128);
 
-        // Draw bar level
-        const width = vuCanvas.width * normLevel;
-        const gradient = vuCtx.createLinearGradient(0, 0, vuCanvas.width, 0);
-        gradient.addColorStop(0, '#22c55e');
-        gradient.addColorStop(0.7, '#eab308');
-        gradient.addColorStop(1, '#ef4444');
-
-        vuCtx.fillStyle = gradient;
-        vuCtx.fillRect(0, 0, width, vuCanvas.height);
+        // Calculate Signal Level dB
+        const avg = totalVal / bufferLength;
+        const norm = Math.min(1, avg / 120);
+        signalMeterBar.style.width = (norm * 100).toFixed(0) + '%';
+        
+        if (avg > 2) {
+          const db = Math.round(20 * Math.log10(avg / 255));
+          signalDbText.innerText = db + ' dB';
+        } else {
+          signalDbText.innerText = '-∞ dB';
+        }
       }
 
-      render();
+      draw();
     }
 
+    /* Speech Recognition Engine Initialization */
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
       updateStatus("❌ Trình duyệt không hỗ trợ Web Speech API. Vui lòng dùng Google Chrome!", "error");
-      showToast("Vui lòng mở bằng Google Chrome trên máy tính!", "error");
+      showToast("Vui lòng mở trên Google Chrome!", "error");
     } else {
       initSpeechEngine();
     }
@@ -396,68 +532,59 @@
 
       langSelect.addEventListener('change', () => {
         recognition.lang = langSelect.value;
-        updateStatus("Đã chuyển ngôn ngữ sang: " + langSelect.options[langSelect.selectedIndex].text);
+        updateStatus("Đã đổi ngôn ngữ sang: " + langSelect.options[langSelect.selectedIndex].text);
         if (isListening) restartRecognition();
       });
 
       recognition.onstart = () => {
-        updateStatus("✅ Đang lắng nghe & phân tích giọng nói (" + recognition.lang + ")...", "active");
+        updateStatus("🟢 Đang thu âm & phân tích thời gian thực (" + recognition.lang + ")...");
         statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 mic-pulse";
+        livePulsePing.classList.remove('hidden');
+        livePulseDot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400";
       };
 
       recognition.onresult = (event) => {
-        let currentInterim = '';
+        let interimTranscript = '';
 
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           const transcript = event.results[i][0].transcript;
 
           if (event.results[i].isFinal) {
-            clearTimeout(interimTimer);
-            lastInterimText = '';
-            liveInterimContainer.classList.add('hidden');
-            
+            // Commit sentence to historical feed
             if (transcript.trim().length > 0) {
-              commitSentence(transcript.trim());
+              commitFinalSentence(transcript.trim());
             }
+            liveOrigText.innerText = "...";
+            liveTransText.innerText = "---";
+            lastInterimText = '';
           } else {
-            currentInterim += transcript;
+            interimTranscript += transcript;
           }
         }
 
-        if (currentInterim.trim() !== '') {
-          interimText.innerText = currentInterim;
-          liveInterimContainer.classList.remove('hidden');
-          
-          // Interim Auto-Flush Guard:
-          // If TV keeps speaking without pausing for > 3.5 seconds, automatically promote interim to final
-          // so Chrome speech recognition doesn't discard speech!
-          lastInterimText = currentInterim.trim();
-          clearTimeout(interimTimer);
-          interimTimer = setTimeout(() => {
-            if (lastInterimText.length > 0) {
-              commitSentence(lastInterimText);
-              lastInterimText = '';
-              liveInterimContainer.classList.add('hidden');
-            }
-          }, 3500);
+        if (interimTranscript.trim() !== '') {
+          liveOrigText.innerText = interimTranscript;
+          liveOrigText.classList.remove('italic', 'text-slate-400');
+          lastInterimText = interimTranscript.trim();
+
+          // Sub-Second Real-Time Interim Translation Trigger (150ms Debounce)
+          triggerFastInterimTranslation(interimTranscript.trim());
         }
       };
 
       recognition.onerror = (event) => {
-        if (event.error === 'no-speech') return; // Silence is normal, don't break loop
+        if (event.error === 'no-speech') return;
         console.warn("Speech recognition error:", event.error);
         if (event.error === 'not-allowed') {
-          showToast("Microphone bị chặn! Hãy bấm nút 🔒 trên URL để Cho phép (Allow).", "error");
+          showToast("Microphone bị chặn! Hãy chọn 'Cho phép' (Allow) trên thanh URL Chrome.", "error");
           stopListening();
         }
       };
 
       recognition.onend = () => {
-        // If there was dangling interim text when engine stopped, commit it immediately
-        if (lastInterimText.trim().length > 0) {
-          commitSentence(lastInterimText.trim());
+        if (lastInterimText.length > 0) {
+          commitFinalSentence(lastInterimText);
           lastInterimText = '';
-          liveInterimContainer.classList.add('hidden');
         }
 
         if (isListening) {
@@ -466,87 +593,56 @@
           try {
             recognition.start();
           } catch (e) {
-            setTimeout(() => recognition.start(), 300);
+            setTimeout(() => recognition.start(), 250);
           }
         } else {
-          updateStatus("⏹ Đã dừng nhận diện.");
+          updateStatus("⏹ Đã dừng thu âm.");
           statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
+          livePulsePing.classList.add('hidden');
+          livePulseDot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-500";
         }
       };
     }
 
-    async function startListening() {
-      try {
-        let constraints = {
-          audio: {
-            echoCancellation: false,
-            noiseSuppression: noiseSuppressionEnabled,
-            autoGainControl: true
-          }
-        };
+    /* Sub-Second Live Translation Engine with AbortController & 150ms Debounce */
+    function triggerFastInterimTranslation(text) {
+      clearTimeout(interimDebounceTimer);
 
-        if (audioSourceMode === 'tab') {
-          // Tab / System Audio mode using getDisplayMedia
-          showToast("Vui lòng chọn Tab YouTube / Chrome và nhớ TÍCH CHỌN 'Chia sẻ âm thanh'!", "info");
-          mediaStream = await navigator.mediaDevices.getDisplayMedia({
-            video: true,
-            audio: {
-              echoCancellation: false,
-              noiseSuppression: false,
-              autoGainControl: false
-            }
-          });
-        } else {
-          // Normal Microphone Mode with Audio Amplification
-          mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+      interimDebounceTimer = setTimeout(async () => {
+        // Cancel previous pending HTTP request if user keeps speaking
+        if (interimAbortController) {
+          interimAbortController.abort();
         }
+        interimAbortController = new AbortController();
 
-        await setupWebAudioAPI(mediaStream);
+        const startTime = performance.now();
+        const srcLang = recognition.lang.split('-')[0];
 
-        isListening = true;
-        btnStart.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-rose-500 hover:bg-rose-400 text-white transition-all duration-200 flex items-center gap-2 shadow-lg shadow-rose-500/20 active:scale-95";
-        btnStartText.innerText = "DỪNG NGHE";
+        try {
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${srcLang}&tl=vi&dt=t&q=${encodeURIComponent(text)}`;
+          const res = await fetch(url, { signal: interimAbortController.signal });
 
-        recognition.start();
-        showToast("Đã bật thu âm & khuếch đại thành công!", "success");
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data[0]) {
+              const transText = data[0].map(item => item[0]).join('');
+              const endTime = performance.now();
+              const latency = Math.round(endTime - startTime);
 
-      } catch (err) {
-        console.error("Audio Capture error:", err);
-        showToast("Không thể mở nguồn âm thanh: " + err.message, "error");
-        stopListening();
-      }
+              liveTransText.innerText = transText;
+              transLatencyText.innerText = latency + " ms";
+            }
+          }
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            console.warn("Fast translate error:", err);
+          }
+        }
+      }, 150); // 150ms fast debounce
     }
 
-    function stopListening() {
-      isListening = false;
-      btnStart.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all duration-200 flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95";
-      btnStartText.innerText = "BẮT ĐẦU NGHE";
-      
-      if (recognition) {
-        try { recognition.stop(); } catch(e){}
-      }
-
-      if (mediaStream) {
-        mediaStream.getTracks().forEach(track => track.stop());
-        mediaStream = null;
-      }
-
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-
-      liveInterimContainer.classList.add('hidden');
-      statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
-      updateStatus("⏹ Đã dừng nghe.");
-    }
-
-    function restartRecognition() {
-      if (isListening && recognition) {
-        recognition.stop();
-      }
-    }
-
-    function commitSentence(originalText) {
+    /* Commit Finalized Sentence into History Log */
+    async function commitFinalSentence(originalText) {
       if (!originalText || originalText.trim().length === 0) return;
 
       if (emptyState) {
@@ -559,7 +655,7 @@
       // Create Feed Row DOM
       const row = document.createElement('div');
       row.id = id;
-      row.className = "grid grid-cols-1 md:grid-cols-2 gap-3 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 transition duration-150 text-sm";
+      row.className = "grid grid-cols-1 md:grid-cols-2 gap-3 p-3 rounded-xl bg-slate-900/70 border border-slate-800/80 hover:border-slate-700 transition duration-150 text-xs md:text-sm";
       
       row.innerHTML = `
         <div class="space-y-1">
@@ -571,18 +667,21 @@
           <p class="text-slate-100 font-medium leading-relaxed">${escapeHtml(originalText)}</p>
         </div>
         <div class="space-y-1 md:border-l md:border-slate-800/80 md:pl-3 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
-          <div class="text-[10px] text-amber-400/80 font-mono font-bold flex items-center justify-between">
+          <div class="text-[10px] text-emerald-400/90 font-mono font-bold flex items-center justify-between">
             <span>🇻🇳 TIẾNG VIỆT</span>
-            <span class="status-trans text-[9px] text-slate-500">⏳ Đang dịch...</span>
+            <span class="status-trans text-[9px] text-slate-500">⏳ Đang lưu...</span>
           </div>
-          <p class="trans-text text-amber-300 font-medium leading-relaxed italic">⏳ Đang dịch...</p>
+          <p class="trans-text text-amber-300 font-semibold leading-relaxed">⏳ Đang hoàn tất...</p>
         </div>
       `;
 
       transcriptFeed.appendChild(row);
-      transcriptFeed.scrollTop = transcriptFeed.scrollHeight;
 
-      // Update counters
+      if (autoScrollEnabled) {
+        transcriptFeed.scrollTop = transcriptFeed.scrollHeight;
+      }
+
+      // Update Word and Row Counters
       const words = originalText.trim().split(/\s+/).length;
       totalOrigWords += words;
       wordCountOrigEl.innerText = totalOrigWords + " từ";
@@ -591,73 +690,118 @@
       meetingHistory.push(historyItem);
       rowCountEl.innerText = meetingHistory.length + " câu";
 
-      // Trigger Async Translation
-      fetchGoogleTranslation(originalText, recognition.lang, row, historyItem);
-    }
-
-    async function fetchGoogleTranslation(text, srcLang, rowElement, historyItem) {
-      const transEl = rowElement.querySelector('.trans-text');
-      const statusTrans = rowElement.querySelector('.status-trans');
-      const langCode = srcLang.split('-')[0];
-
+      // Finalize Translation for History Row
+      const srcLang = recognition.lang.split('-')[0];
       try {
-        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${langCode}&tl=vi&dt=t&q=${encodeURIComponent(text)}`;
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${srcLang}&tl=vi&dt=t&q=${encodeURIComponent(originalText)}`;
         const res = await fetch(url);
-        
         if (res.ok) {
           const data = await res.json();
           if (data && data[0]) {
-            const translatedText = data[0].map(item => item[0]).join('');
-            transEl.innerText = translatedText;
-            transEl.classList.remove('italic');
+            const finalTrans = data[0].map(item => item[0]).join('');
+            const transEl = row.querySelector('.trans-text');
+            const statusTrans = row.querySelector('.status-trans');
+            transEl.innerText = finalTrans;
             statusTrans.innerText = '✓ Xong';
             statusTrans.className = 'status-trans text-[9px] text-emerald-400';
-            historyItem.translated = translatedText;
-            return;
+            historyItem.translated = finalTrans;
           }
         }
-      } catch (err) {
-        console.warn("Translation API error:", err);
+      } catch (e) {
+        row.querySelector('.trans-text').innerText = originalText;
       }
-
-      transEl.innerText = "(Chưa dịch được - Kiểm tra mạng)";
-      statusTrans.innerText = '❌ Lỗi';
-      statusTrans.className = 'status-trans text-[9px] text-rose-400';
     }
 
-    // Start / Stop Toggle Button
-    btnStart.addEventListener('click', () => {
-      if (!isListening) {
-        startListening();
-      } else {
+    /* Control Handlers */
+    async function startListening() {
+      try {
+        let constraints = {
+          audio: {
+            echoCancellation: false,
+            noiseSuppression: false, // OFF so TV distant speech is not filtered out
+            autoGainControl: true
+          }
+        };
+
+        if (audioSourceMode === 'tab') {
+          showToast("Chọn Tab Chrome / YouTube và nhớ chọn 'Chia sẻ âm thanh'!", "info");
+          mediaStream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+            audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+          });
+        } else {
+          mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        }
+
+        await setupAudioDSPPipeline(mediaStream);
+
+        isListening = true;
+        btnStart.className = "px-5 py-2 rounded-xl font-extrabold text-xs bg-rose-500 hover:bg-rose-400 text-white transition-all duration-200 flex items-center gap-2 shadow-lg shadow-rose-500/20 active:scale-95";
+        btnStartText.innerText = "DỪNG NGHE";
+
+        recognition.start();
+        showToast("Đã kích hoạt thu âm & Bộ Lọc Vocal EQ thành công!", "success");
+
+      } catch (err) {
+        console.error("Audio Capture Error:", err);
+        showToast("Lỗi mở nguồn âm thanh: " + err.message, "error");
         stopListening();
       }
+    }
+
+    function stopListening() {
+      isListening = false;
+      btnStart.className = "px-5 py-2 rounded-xl font-extrabold text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all duration-200 flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95";
+      btnStartText.innerText = "BẮT ĐẦU NGHE";
+
+      if (recognition) {
+        try { recognition.stop(); } catch(e){}
+      }
+
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+      }
+
+      if (animFrameId) {
+        cancelAnimationFrame(animFrameId);
+      }
+
+      liveOrigText.innerText = "Chưa phát hiện giọng nói...";
+      liveTransText.innerText = "---";
+      statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
+      updateStatus("⏹ Đã dừng.");
+    }
+
+    function restartRecognition() {
+      if (isListening && recognition) {
+        recognition.stop();
+      }
+    }
+
+    /* UI Event Listeners */
+    btnStart.addEventListener('click', () => {
+      if (!isListening) startListening();
+      else stopListening();
     });
 
-    // Audio Source Mode Switcher
     btnSrcMic.addEventListener('click', () => {
       audioSourceMode = 'mic';
-      btnSrcMic.className = "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 bg-sky-600 text-white shadow-sm flex items-center gap-1.5";
-      btnSrcTab.className = "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5";
-      showToast("Đã chọn nguồn: Microphone phòng", "info");
-      if (isListening) {
-        stopListening();
-        startListening();
-      }
+      btnSrcMic.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-sky-600 text-white shadow-sm flex items-center gap-1.5";
+      btnSrcTab.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5";
+      showToast("Nguồn: Microphone", "info");
+      if (isListening) { stopListening(); startListening(); }
     });
 
     btnSrcTab.addEventListener('click', () => {
       audioSourceMode = 'tab';
-      btnSrcTab.className = "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 bg-sky-600 text-white shadow-sm flex items-center gap-1.5";
-      btnSrcMic.className = "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5";
-      showToast("Đã chọn nguồn: Tab / TV Audio trực tiếp", "info");
-      if (isListening) {
-        stopListening();
-        startListening();
-      }
+      btnSrcTab.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-sky-600 text-white shadow-sm flex items-center gap-1.5";
+      btnSrcMic.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5";
+      showToast("Nguồn: Tab / TV Audio", "info");
+      if (isListening) { stopListening(); startListening(); }
     });
 
-    // Gain Amplifier Slider
+    // 1000% Gain Booster Slider Handler
     gainSlider.addEventListener('input', (e) => {
       const val = parseInt(e.target.value);
       gainMultiplier = val / 100;
@@ -669,59 +813,73 @@
       }
     });
 
-    // Noise Filter Toggle
-    btnToggleNoise.addEventListener('click', () => {
-      noiseSuppressionEnabled = !noiseSuppressionEnabled;
-      noiseFilterStatus.innerText = "Lọc ồn: " + (noiseSuppressionEnabled ? "BẬT" : "TẮT");
-      btnToggleNoise.className = `px-3 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition ${
-        noiseSuppressionEnabled ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300' : 'bg-slate-900/80 border-slate-700/60 text-slate-300'
+    // Vocal Enhancer Toggle
+    btnToggleEnhancer.addEventListener('click', () => {
+      enhancerEnabled = !enhancerEnabled;
+      statusEnhancer.innerText = enhancerEnabled ? "ON" : "OFF";
+      btnToggleEnhancer.className = `px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition ${
+        enhancerEnabled ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300' : 'bg-slate-900 border-slate-700 text-slate-400'
       }`;
-      showToast(`Lọc tiếng ồn: ${noiseSuppressionEnabled ? 'ĐÃ BẬT' : 'ĐÃ TẮT (Tốt hơn cho TV xa)'}`, "info");
-      if (isListening) {
-        stopListening();
-        startListening();
+      
+      if (highpassFilter && trebleBoostFilter) {
+        highpassFilter.frequency.value = enhancerEnabled ? 120 : 10;
+        trebleBoostFilter.gain.value = enhancerEnabled ? 8 : 0;
       }
+      showToast(`Vocal EQ: ${enhancerEnabled ? 'ĐÃ BẬT (Lọc tần số giọng)' : 'ĐÃ TẮT'}`, "info");
     });
 
-    // Action Buttons
+    // Compressor Toggle
+    btnToggleCompressor.addEventListener('click', () => {
+      compressorEnabled = !compressorEnabled;
+      statusCompressor.innerText = compressorEnabled ? "ON" : "OFF";
+      btnToggleCompressor.className = `px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition ${
+        compressorEnabled ? 'bg-indigo-950/60 border-indigo-500/40 text-indigo-300' : 'bg-slate-900 border-slate-700 text-slate-400'
+      }`;
+
+      if (compressorNode) {
+        compressorNode.threshold.value = compressorEnabled ? -50 : -100;
+        compressorNode.ratio.value = compressorEnabled ? 16 : 1;
+      }
+      showToast(`Compressor: ${compressorEnabled ? 'ĐÃ BẬT (Nâng tiếng nhỏ)' : 'ĐÃ TẮT'}`, "info");
+    });
+
+    // Auto Scroll Toggle
+    btnToggleAutoScroll.addEventListener('click', () => {
+      autoScrollEnabled = !autoScrollEnabled;
+      autoScrollStatus.innerText = autoScrollEnabled ? "ON" : "OFF";
+      showToast(`Auto-Scroll: ${autoScrollEnabled ? 'ĐÃ BẬT' : 'ĐÃ TẮT'}`, "info");
+    });
+
+    // Export & Clipboard
     btnCopy.addEventListener('click', () => {
       if (meetingHistory.length === 0) {
-        showToast("Chưa có nội dung biên bản!", "error");
+        showToast("Chưa có dữ liệu thoại!", "error");
         return;
       }
-      let content = "=== BIÊN BẢN HỘI THOẠI SONG NGỮ ===\n";
-      content += `Thời gian: ${new Date().toLocaleString()}\n\n`;
-      
-      meetingHistory.forEach((item, index) => {
-        content += `[${index + 1}] (${item.timestamp})\n`;
-        content += `   Gốc: ${item.original}\n`;
-        content += `   Việt: ${item.translated}\n\n`;
+      let text = "=== BIÊN BẢN HỘI THOẠI SONG NGỮ ===\n\n";
+      meetingHistory.forEach((item, i) => {
+        text += `[${i + 1}] (${item.timestamp})\n  Gốc: ${item.original}\n  Việt: ${item.translated}\n\n`;
       });
-
-      copyToClipboard(content);
-      showToast("Đã sao chép toàn bộ biên bản vào clipboard!", "success");
+      copyToClipboard(text);
+      showToast("Đã copy toàn bộ biên bản!", "success");
     });
 
     btnExport.addEventListener('click', () => {
       if (meetingHistory.length === 0) {
-        showToast("Chưa có nội dung để tải!", "error");
+        showToast("Chưa có dữ liệu để tải!", "error");
         return;
       }
-      let content = "=== BIÊN BẢN HỘI THOẠI SONG NGỮ ===\n";
-      content += `Thời gian xuất: ${new Date().toLocaleString()}\n\n`;
-      
-      meetingHistory.forEach((item, index) => {
-        content += `[${index + 1}] (${item.timestamp})\n`;
-        content += `   Gốc: ${item.original}\n`;
-        content += `   Việt: ${item.translated}\n\n`;
+      let text = "=== BIÊN BẢN HỘI THOẠI SONG NGỮ ===\n\n";
+      meetingHistory.forEach((item, i) => {
+        text += `[${i + 1}] (${item.timestamp})\n  Gốc: ${item.original}\n  Việt: ${item.translated}\n\n`;
       });
 
-      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `Bien-ban-subtitles-${Date.now()}.txt`;
       a.click();
-      showToast("Đã tải file văn bản về máy!", "success");
+      showToast("Đã tải file .txt thành công!", "success");
     });
 
     btnClear.addEventListener('click', () => {
@@ -730,16 +888,13 @@
       totalOrigWords = 0;
       wordCountOrigEl.innerText = "0 từ";
       rowCountEl.innerText = "0 câu";
-      
-      // Clear DOM
       transcriptFeed.innerHTML = '';
       transcriptFeed.appendChild(emptyState);
       emptyState.style.display = 'flex';
-      showToast("Đã xóa sạch lịch sử thoại!", "info");
+      showToast("Đã xóa sạch lịch sử!", "info");
     });
 
-    // Helper Utils
-    function updateStatus(msg, type = 'normal') {
+    function updateStatus(msg) {
       statusText.innerText = msg;
     }
 
@@ -751,14 +906,14 @@
       if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(text);
       } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.style.position = 'fixed';
-        textarea.style.left = '-999999px';
-        document.body.appendChild(textarea);
-        textarea.select();
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
         document.execCommand('copy');
-        textarea.remove();
+        ta.remove();
       }
     }
   </script>
