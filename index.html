@@ -1,209 +1,394 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Subtitle Live</title>
+  <title>Web Subtitle Live Pro - Real-time AI Speech Subtitles</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Font Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
     body {
-      background-color: #0f172a;
-      color: #f8fafc;
-      font-family: system-ui, -apple-system, sans-serif;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding: 16px;
-    }
-
-    /* Thanh điều khiển */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #1e293b;
-      padding: 12px 20px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      border: 1px solid #334155;
-    }
-    .controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    select, button {
-      padding: 10px 14px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    select {
-      background-color: #334155;
-      color: #fff;
-    }
-    #btnStart {
-      background-color: #22c55e;
-      color: #000;
-    }
-    #btnStart.listening {
-      background-color: #ef4444;
-      color: #fff;
-    }
-    .btn-copy {
-      background-color: #38bdf8;
-      color: #0f172a;
-    }
-
-    /* Header 2 Cột */
-    .column-headers {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      padding: 12px 20px;
-      background-color: #1e293b;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      border: 1px solid #334155;
-      border-bottom: none;
-      font-weight: bold;
-      font-size: 18px;
-    }
-    .col-title-left { color: #38bdf8; }
-    .col-title-right { color: #facc15; }
-
-    /* Khung danh sách lưu toàn bộ hội thoại */
-    .meeting-log {
-      flex: 1;
-      background-color: #020617;
-      border-bottom-left-radius: 12px;
-      border-bottom-right-radius: 12px;
-      padding: 16px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      border: 1px solid #334155;
-    }
-
-    /* Mỗi dòng hội thoại */
-    .log-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      padding: 14px 18px;
-      background-color: #1e293b;
-      border-radius: 10px;
-      border-left: 4px solid #38bdf8;
-    }
-    .col-orig {
-      font-size: 20px;
-      line-height: 1.5;
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0f19;
       color: #f1f5f9;
-      word-break: break-word;
     }
-    .col-trans {
-      font-size: 20px;
-      line-height: 1.5;
-      color: #facc15;
-      word-break: break-word;
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-
-    /* Dòng phát biểu tạm thời khi đang nói */
-    .interim-box {
-      padding: 12px 18px;
-      background-color: #0f172a;
-      border: 1px dashed #eab308;
-      border-radius: 8px;
-      color: #38bdf8;
-      font-style: italic;
-      font-size: 18px;
-      display: none;
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
     }
 
-    /* Bảng log hệ thống */
-    .debug-box {
-      margin-top: 10px;
-      padding: 10px;
-      background-color: #000;
-      color: #22c55e;
-      font-family: monospace;
-      font-size: 12px;
-      border-radius: 6px;
-      max-height: 80px;
-      overflow-y: auto;
-      border: 1px solid #334155;
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glow-active {
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+
+    .mic-pulse {
+      animation: pulse-ring 2s infinite ease-in-out;
     }
   </style>
 </head>
-<body>
+<body class="h-screen flex flex-col p-3 md:p-5 gap-3 overflow-hidden">
 
-  <div class="header">
-    <div style="font-size: 18px; font-weight: bold; color: #38bdf8;">
-      📺 Web Subtitle Live
+  <!-- Top Navigation Header -->
+  <header class="glass-card rounded-2xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-4 shrink-0 border border-slate-800">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
+        <i class="fa-solid font-bold text-lg fa-closed-captioning"></i>
+      </div>
+      <div>
+        <h1 class="text-lg md:text-xl font-bold bg-gradient-to-r from-white via-slate-200 to-sky-400 bg-clip-text text-transparent">
+          Web Subtitle Live <span class="text-xs px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 font-semibold uppercase tracking-wider ml-1">PRO</span>
+        </h1>
+        <p class="text-xs text-slate-400 hidden sm:block">Trình Biên Dịch Subtitle Live - Khuếch Đại Âm Thanh & AI Speech</p>
+      </div>
     </div>
 
-    <div class="controls">
-      <select id="langSelect">
-        <option value="en-US">🇬🇧 Tiếng Anh (English)</option>
-        <option value="ja-JP">🇯🇵 Tiếng Nhật (日本語)</option>
-      </select>
+    <!-- Audio Boost & Source Mode Controls -->
+    <div class="flex items-center flex-wrap gap-3">
+      
+      <!-- Audio Source Selector -->
+      <div class="flex items-center bg-slate-900/80 rounded-xl p-1 border border-slate-700/60">
+        <button id="btnSrcMic" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 bg-sky-600 text-white shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-microphone"></i>
+          <span>Microphone</span>
+        </button>
+        <button id="btnSrcTab" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5" title="Bắt âm thanh trực tiếp từ Tab YouTube / Chrome / Hệ thống">
+          <i class="fa-solid fa-laptop flex"></i>
+          <span>Tab / TV Audio</span>
+        </button>
+      </div>
 
-      <button id="btnStart">▶ Bắt đầu nghe</button>
-      <button id="btnCopy" class="btn-copy">📋 Copy cho AI</button>
+      <!-- Gain Amplifier Slider -->
+      <div class="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-700/60">
+        <i class="fa-solid fa-gauge-high text-amber-400 text-xs"></i>
+        <span class="text-xs font-medium text-slate-300">Khuếch đại Mic:</span>
+        <input type="range" id="gainSlider" min="100" max="500" value="250" class="w-20 md:w-28 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-400">
+        <span id="gainValue" class="text-xs font-bold text-sky-400 w-10 text-right">250%</span>
+      </div>
+
+      <!-- Filter Toggle -->
+      <button id="btnToggleNoise" class="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-700/60 text-xs text-slate-300 hover:border-slate-500 flex items-center gap-1.5" title="Bật/Tắt Lọc tiếng ồn. Tắt lọc tiếng ồn giúp thu âm Tivi xa tốt hơn">
+        <i class="fa-solid fa-sliders text-emerald-400"></i>
+        <span id="noiseFilterStatus">Lọc ồn: TẮT</span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Secondary Toolbar -->
+  <div class="glass-card rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 shrink-0 border border-slate-800">
+    <div class="flex items-center gap-3 flex-wrap">
+      
+      <!-- Source Language Selector -->
+      <div class="flex items-center gap-2">
+        <label class="text-xs font-semibold text-slate-400 flex items-center gap-1">
+          <i class="fa-solid fa-language text-sky-400"></i> Tiếng Gốc:
+        </label>
+        <select id="langSelect" class="bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-xl px-3 py-2 outline-none focus:border-sky-500 cursor-pointer">
+          <option value="en-US">🇬🇧 Tiếng Anh (English - US)</option>
+          <option value="en-GB">🇬🇧 Tiếng Anh (English - UK)</option>
+          <option value="ja-JP">🇯🇵 Tiếng Nhật (日本語)</option>
+          <option value="ko-KR">🇰🇷 Tiếng Hàn (한국어)</option>
+          <option value="zh-CN">🇨🇳 Tiếng Trung (中文 - 普通话)</option>
+          <option value="fr-FR">🇫🇷 Tiếng Pháp (Français)</option>
+          <option value="de-DE">🇩🇪 Tiếng Đức (Deutsch)</option>
+          <option value="es-ES">🇪🇸 Tiếng Tây Ban Nha (Español)</option>
+        </select>
+      </div>
+
+      <!-- Main Listen Toggle Button -->
+      <button id="btnStart" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all duration-200 flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95">
+        <i class="fa-solid fa-play"></i>
+        <span id="btnStartText">BẮT ĐẦU NGHE</span>
+      </button>
+
+      <!-- Audio Level Waveform Canvas -->
+      <div class="hidden sm:flex items-center gap-2 bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800">
+        <span class="text-[10px] text-slate-400 font-mono uppercase">Tín hiệu:</span>
+        <canvas id="vuCanvas" width="100" height="18" class="rounded bg-slate-900"></canvas>
+      </div>
+
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center gap-2">
+      <button id="btnCopy" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-400 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-copy"></i> Copy Biên Bản
+      </button>
+      <button id="btnExport" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-download"></i> Tải File (.txt)
+      </button>
+      <button id="btnClear" class="px-3 py-2 rounded-xl bg-slate-800/60 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 text-xs font-semibold border border-slate-800 flex items-center gap-1.5 transition" title="Xóa lịch sử">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
     </div>
   </div>
 
-  <!-- Header chia 2 cột -->
-  <div class="column-headers">
-    <div class="col-title-left">🗣️ Tiếng Gốc (Anh / Nhật)</div>
-    <div class="col-title-right">🇻🇳 Tiếng Việt (Dịch tự động)</div>
+  <!-- Live Interim Speech Streaming Banner -->
+  <div id="liveInterimContainer" class="glass-card rounded-xl px-4 py-3 border-l-4 border-l-amber-400 border-y border-r border-slate-800/80 bg-slate-900/90 hidden transition-all duration-300">
+    <div class="flex items-start gap-3">
+      <div class="mt-0.5 relative flex items-center justify-center">
+        <div class="w-3 h-3 rounded-full bg-amber-400 mic-pulse"></div>
+        <i class="fa-solid fa-microphone-lines text-amber-300 text-xs absolute"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[10px] uppercase font-bold tracking-wider text-amber-400 mb-0.5">Đang nghe thời gian thực...</div>
+        <p id="interimText" class="text-sm md:text-base text-slate-100 font-medium italic animate-pulse break-words">...</p>
+      </div>
+    </div>
   </div>
 
-  <!-- Nơi lưu trữ vĩnh viễn toàn bộ danh sách hội thoại -->
-  <div class="meeting-log" id="meetingLog">
-    <div id="interimBox" class="interim-box">🎙️ Đang nghe: <span id="interimText">...</span></div>
-  </div>
+  <!-- Main 2-Column Subtitle Feed -->
+  <main class="flex-1 glass-card rounded-2xl flex flex-col overflow-hidden border border-slate-800">
+    
+    <!-- Column Headers -->
+    <div class="grid grid-cols-1 md:grid-cols-2 bg-slate-900/90 border-b border-slate-800 text-xs font-bold uppercase tracking-wider divide-y md:divide-y-0 md:divide-x divide-slate-800 shrink-0">
+      <div class="px-5 py-3 text-sky-400 flex items-center justify-between">
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-volume-high"></i> Tiếng Gốc (Anh / Nhật / Hàn...)
+        </span>
+        <span id="wordCountOrig" class="text-[10px] text-slate-500 font-mono">0 từ</span>
+      </div>
+      <div class="px-5 py-3 text-amber-400 flex items-center justify-between">
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-language"></i> Tiếng Việt (Dịch Tự Động)
+        </span>
+        <span id="rowCount" class="text-[10px] text-slate-500 font-mono">0 câu</span>
+      </div>
+    </div>
 
-  <!-- Bảng theo dõi trạng thái / Lỗi kỹ thuật -->
-  <div class="debug-box" id="debugLog">
-    [Hệ thống] Sẵn sàng. Nhấn "Bắt đầu nghe" để chạy...
-  </div>
+    <!-- Scrollable Transcript Feed -->
+    <div id="transcriptFeed" class="flex-1 p-4 overflow-y-auto space-y-3">
+      
+      <!-- Welcome Empty State -->
+      <div id="emptyState" class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
+        <div class="w-16 h-16 rounded-2xl bg-slate-800/50 flex items-center justify-center text-slate-600 text-2xl mb-3 border border-slate-800">
+          <i class="fa-solid fa-headset"></i>
+        </div>
+        <h3 class="text-sm font-bold text-slate-300 mb-1">Chưa có dữ liệu thoại</h3>
+        <p class="text-xs max-w-md leading-relaxed text-slate-400">
+          Nhấn nút <b class="text-emerald-400">BẮT ĐẦU NGHE</b>. Nếu âm thanh TV ở xa, kéo thanh <b class="text-sky-400">Khuếch đại Mic</b> lên 300% - 500% hoặc dùng chế độ <b class="text-slate-200">Tab / TV Audio</b>.
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Bottom Status & System Console -->
+  <footer class="glass-card rounded-xl px-4 py-2.5 flex items-center justify-between gap-3 text-xs font-mono text-slate-400 shrink-0 border border-slate-800">
+    <div class="flex items-center gap-2 min-w-0">
+      <span class="w-2 h-2 rounded-full bg-slate-500 shrink-0" id="statusDot"></span>
+      <span id="statusText" class="truncate text-slate-300">Hệ thống sẵn sàng. Vui lòng bấm "Bắt đầu nghe"</span>
+    </div>
+    <div class="flex items-center gap-4 shrink-0 text-[11px] text-slate-500 hidden sm:flex">
+      <span>Auto-Reconnect: <b id="reconnectCount" class="text-slate-300">0</b></span>
+      <span>Gain: <b id="statGain" class="text-sky-400">2.5x</b></span>
+      <span>Latency: <b id="statLatency" class="text-emerald-400">~0.3s</b></span>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-16 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <script>
+    // DOM Elements
     const btnStart = document.getElementById('btnStart');
-    const btnCopy = document.getElementById('btnCopy');
+    const btnStartText = document.getElementById('btnStartText');
     const langSelect = document.getElementById('langSelect');
-    const meetingLog = document.getElementById('meetingLog');
-    const interimBox = document.getElementById('interimBox');
+    const gainSlider = document.getElementById('gainSlider');
+    const gainValue = document.getElementById('gainValue');
+    const btnSrcMic = document.getElementById('btnSrcMic');
+    const btnSrcTab = document.getElementById('btnSrcTab');
+    const btnToggleNoise = document.getElementById('btnToggleNoise');
+    const noiseFilterStatus = document.getElementById('noiseFilterStatus');
+    const liveInterimContainer = document.getElementById('liveInterimContainer');
     const interimText = document.getElementById('interimText');
-    const debugLog = document.getElementById('debugLog');
+    const transcriptFeed = document.getElementById('transcriptFeed');
+    const emptyState = document.getElementById('emptyState');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const reconnectCountEl = document.getElementById('reconnectCount');
+    const statGain = document.getElementById('statGain');
+    const statLatency = document.getElementById('statLatency');
+    const rowCountEl = document.getElementById('rowCount');
+    const wordCountOrigEl = document.getElementById('wordCountOrig');
+    const vuCanvas = document.getElementById('vuCanvas');
+    const vuCtx = vuCanvas.getContext('2d');
 
+    const btnCopy = document.getElementById('btnCopy');
+    const btnExport = document.getElementById('btnExport');
+    const btnClear = document.getElementById('btnClear');
+
+    // App State
     let isListening = false;
+    let audioSourceMode = 'mic'; // 'mic' or 'tab'
+    let noiseSuppressionEnabled = false; // Default OFF for better far-field TV capture
+    let gainMultiplier = 2.5; // 250% default
     let recognition = null;
-    let meetingHistory = [];
+    let reconnectCounter = 0;
+    let meetingHistory = []; // Array of { id, timestamp, original, translated }
+    let totalOrigWords = 0;
 
-    function log(msg) {
-      const time = new Date().toLocaleTimeString();
-      debugLog.innerHTML += `<br>[${time}] ${msg}`;
-      debugLog.scrollTop = debugLog.scrollHeight;
+    // Web Audio API Instances
+    let audioCtx = null;
+    let gainNode = null;
+    let analyserNode = null;
+    let mediaStream = null;
+    let animationFrameId = null;
+
+    // Interim Speech Flushing Safeguard Timers
+    let lastInterimText = '';
+    let interimTimer = null;
+
+    function showToast(message, type = 'info') {
+      const toastContainer = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xl border backdrop-blur-md pointer-events-auto transition-all duration-300 opacity-0 transform translate-y-2 flex items-center gap-2 ${
+        type === 'success' ? 'bg-emerald-950/90 text-emerald-300 border-emerald-500/40' :
+        type === 'error' ? 'bg-rose-950/90 text-rose-300 border-rose-500/40' :
+        'bg-slate-900/90 text-sky-300 border-sky-500/40'
+      }`;
+
+      const icon = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-info';
+      toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+      
+      toastContainer.appendChild(toast);
+      
+      requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0', 'translate-y-2');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    async function setupWebAudioAPI(stream) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          await audioCtx.resume();
+        }
+
+        const source = audioCtx.createMediaStreamSource(stream);
+        
+        // Gain Node Booster
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = gainMultiplier;
+
+        // Analyser Node for Visualizer
+        analyserNode = audioCtx.createAnalyser();
+        analyserNode.fftSize = 64;
+
+        source.connect(gainNode);
+        gainNode.connect(analyserNode);
+
+        drawAudioVisualizer();
+        updateStatus("🟢 Web Audio API Booster đang hoạt động (Gain " + (gainMultiplier * 100) + "%)");
+      } catch (err) {
+        console.warn("Audio Context setup warning:", err);
+      }
+    }
+
+    function drawAudioVisualizer() {
+      if (!analyserNode) return;
+
+      const bufferLength = analyserNode.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      function render() {
+        if (!isListening) {
+          vuCtx.clearRect(0, 0, vuCanvas.width, vuCanvas.height);
+          return;
+        }
+
+        animationFrameId = requestAnimationFrame(render);
+        analyserNode.getByteFrequencyData(dataArray);
+
+        vuCtx.clearRect(0, 0, vuCanvas.width, vuCanvas.height);
+
+        let sum = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+        let average = sum / bufferLength;
+        let normLevel = Math.min(1, average / 128);
+
+        // Draw bar level
+        const width = vuCanvas.width * normLevel;
+        const gradient = vuCtx.createLinearGradient(0, 0, vuCanvas.width, 0);
+        gradient.addColorStop(0, '#22c55e');
+        gradient.addColorStop(0.7, '#eab308');
+        gradient.addColorStop(1, '#ef4444');
+
+        vuCtx.fillStyle = gradient;
+        vuCtx.fillRect(0, 0, width, vuCanvas.height);
+      }
+
+      render();
     }
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      log("❌ Trình duyệt không hỗ trợ Web Speech API. Hãy dùng Google Chrome!");
+      updateStatus("❌ Trình duyệt không hỗ trợ Web Speech API. Vui lòng dùng Google Chrome!", "error");
+      showToast("Vui lòng mở bằng Google Chrome trên máy tính!", "error");
     } else {
-      initSpeech();
+      initSpeechEngine();
     }
 
-    function initSpeech() {
+    function initSpeechEngine() {
       recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
@@ -211,144 +396,370 @@
 
       langSelect.addEventListener('change', () => {
         recognition.lang = langSelect.value;
-        log("Đã đổi ngôn ngữ sang: " + recognition.lang);
+        updateStatus("Đã chuyển ngôn ngữ sang: " + langSelect.options[langSelect.selectedIndex].text);
         if (isListening) restartRecognition();
       });
 
       recognition.onstart = () => {
-        log("✅ Đang lắng nghe giọng nói (" + recognition.lang + ")...");
+        updateStatus("✅ Đang lắng nghe & phân tích giọng nói (" + recognition.lang + ")...", "active");
+        statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 mic-pulse";
       };
 
       recognition.onresult = (event) => {
         let currentInterim = '';
 
         for (let i = event.resultIndex; i < event.results.length; ++i) {
-          const transcript = event.results[i][0].transcript.trim();
+          const transcript = event.results[i][0].transcript;
 
           if (event.results[i].isFinal) {
-            if (transcript.length > 0) {
-              addSentenceToLog(transcript);
+            clearTimeout(interimTimer);
+            lastInterimText = '';
+            liveInterimContainer.classList.add('hidden');
+            
+            if (transcript.trim().length > 0) {
+              commitSentence(transcript.trim());
             }
           } else {
-            currentInterim += transcript + ' ';
+            currentInterim += transcript;
           }
         }
 
         if (currentInterim.trim() !== '') {
           interimText.innerText = currentInterim;
-          interimBox.style.display = 'block';
-        } else {
-          interimBox.style.display = 'none';
+          liveInterimContainer.classList.remove('hidden');
+          
+          // Interim Auto-Flush Guard:
+          // If TV keeps speaking without pausing for > 3.5 seconds, automatically promote interim to final
+          // so Chrome speech recognition doesn't discard speech!
+          lastInterimText = currentInterim.trim();
+          clearTimeout(interimTimer);
+          interimTimer = setTimeout(() => {
+            if (lastInterimText.length > 0) {
+              commitSentence(lastInterimText);
+              lastInterimText = '';
+              liveInterimContainer.classList.add('hidden');
+            }
+          }, 3500);
         }
-
-        meetingLog.scrollTop = meetingLog.scrollHeight;
       };
 
       recognition.onerror = (event) => {
-        // Lỗi no-speech là bình thường khi im lặng, không ghi log báo lỗi đỏ
-        if (event.error === 'no-speech') {
-          return;
+        if (event.error === 'no-speech') return; // Silence is normal, don't break loop
+        console.warn("Speech recognition error:", event.error);
+        if (event.error === 'not-allowed') {
+          showToast("Microphone bị chặn! Hãy bấm nút 🔒 trên URL để Cho phép (Allow).", "error");
+          stopListening();
         }
-        log("❌ Lỗi Speech: " + event.error);
       };
 
       recognition.onend = () => {
-        interimBox.style.display = 'none';
+        // If there was dangling interim text when engine stopped, commit it immediately
+        if (lastInterimText.trim().length > 0) {
+          commitSentence(lastInterimText.trim());
+          lastInterimText = '';
+          liveInterimContainer.classList.add('hidden');
+        }
+
         if (isListening) {
-          try { 
-            recognition.start(); 
-          } catch (e) {}
+          reconnectCounter++;
+          reconnectCountEl.innerText = reconnectCounter;
+          try {
+            recognition.start();
+          } catch (e) {
+            setTimeout(() => recognition.start(), 300);
+          }
         } else {
-          log("⏹ Đã dừng nghe.");
+          updateStatus("⏹ Đã dừng nhận diện.");
+          statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
         }
       };
     }
 
-    // Hiển thị câu gốc & dịch ngầm
-    function addSentenceToLog(originalText) {
-      log("🗣️ Nhận diện: " + originalText);
+    async function startListening() {
+      try {
+        let constraints = {
+          audio: {
+            echoCancellation: false,
+            noiseSuppression: noiseSuppressionEnabled,
+            autoGainControl: true
+          }
+        };
 
-      const row = document.createElement('div');
-      row.className = 'log-row';
+        if (audioSourceMode === 'tab') {
+          // Tab / System Audio mode using getDisplayMedia
+          showToast("Vui lòng chọn Tab YouTube / Chrome và nhớ TÍCH CHỌN 'Chia sẻ âm thanh'!", "info");
+          mediaStream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+            audio: {
+              echoCancellation: false,
+              noiseSuppression: false,
+              autoGainControl: false
+            }
+          });
+        } else {
+          // Normal Microphone Mode with Audio Amplification
+          mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        }
 
-      const colOrig = document.createElement('div');
-      colOrig.className = 'col-orig';
-      colOrig.innerText = originalText;
+        await setupWebAudioAPI(mediaStream);
 
-      const colTrans = document.createElement('div');
-      colTrans.className = 'col-trans';
-      colTrans.innerText = "⏳ Đang dịch...";
+        isListening = true;
+        btnStart.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-rose-500 hover:bg-rose-400 text-white transition-all duration-200 flex items-center gap-2 shadow-lg shadow-rose-500/20 active:scale-95";
+        btnStartText.innerText = "DỪNG NGHE";
 
-      row.appendChild(colOrig);
-      row.appendChild(colTrans);
+        recognition.start();
+        showToast("Đã bật thu âm & khuếch đại thành công!", "success");
 
-      meetingLog.insertBefore(row, interimBox);
-      meetingLog.scrollTop = meetingLog.scrollHeight;
-
-      const historyItem = { original: originalText, translated: '' };
-      meetingHistory.push(historyItem);
-
-      fetchTranslation(originalText, recognition.lang, colTrans, historyItem);
+      } catch (err) {
+        console.error("Audio Capture error:", err);
+        showToast("Không thể mở nguồn âm thanh: " + err.message, "error");
+        stopListening();
+      }
     }
 
-    // Dịch thuật ngầm
-    async function fetchTranslation(text, srcLang, targetElement, historyItem) {
-      const src = srcLang.split('-')[0];
+    function stopListening() {
+      isListening = false;
+      btnStart.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all duration-200 flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95";
+      btnStartText.innerText = "BẮT ĐẦU NGHE";
+      
+      if (recognition) {
+        try { recognition.stop(); } catch(e){}
+      }
+
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+      }
+
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+
+      liveInterimContainer.classList.add('hidden');
+      statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
+      updateStatus("⏹ Đã dừng nghe.");
+    }
+
+    function restartRecognition() {
+      if (isListening && recognition) {
+        recognition.stop();
+      }
+    }
+
+    function commitSentence(originalText) {
+      if (!originalText || originalText.trim().length === 0) return;
+
+      if (emptyState) {
+        emptyState.style.display = 'none';
+      }
+
+      const id = 'log-' + Date.now();
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      // Create Feed Row DOM
+      const row = document.createElement('div');
+      row.id = id;
+      row.className = "grid grid-cols-1 md:grid-cols-2 gap-3 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 transition duration-150 text-sm";
+      
+      row.innerHTML = `
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 text-[10px] text-slate-500 font-mono">
+            <span class="text-sky-400 font-bold"><i class="fa-regular fa-clock"></i> ${timeStr}</span>
+            <span>•</span>
+            <span>${recognition.lang}</span>
+          </div>
+          <p class="text-slate-100 font-medium leading-relaxed">${escapeHtml(originalText)}</p>
+        </div>
+        <div class="space-y-1 md:border-l md:border-slate-800/80 md:pl-3 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
+          <div class="text-[10px] text-amber-400/80 font-mono font-bold flex items-center justify-between">
+            <span>🇻🇳 TIẾNG VIỆT</span>
+            <span class="status-trans text-[9px] text-slate-500">⏳ Đang dịch...</span>
+          </div>
+          <p class="trans-text text-amber-300 font-medium leading-relaxed italic">⏳ Đang dịch...</p>
+        </div>
+      `;
+
+      transcriptFeed.appendChild(row);
+      transcriptFeed.scrollTop = transcriptFeed.scrollHeight;
+
+      // Update counters
+      const words = originalText.trim().split(/\s+/).length;
+      totalOrigWords += words;
+      wordCountOrigEl.innerText = totalOrigWords + " từ";
+
+      const historyItem = { id, timestamp: timeStr, original: originalText, translated: '' };
+      meetingHistory.push(historyItem);
+      rowCountEl.innerText = meetingHistory.length + " câu";
+
+      // Trigger Async Translation
+      fetchGoogleTranslation(originalText, recognition.lang, row, historyItem);
+    }
+
+    async function fetchGoogleTranslation(text, srcLang, rowElement, historyItem) {
+      const transEl = rowElement.querySelector('.trans-text');
+      const statusTrans = rowElement.querySelector('.status-trans');
+      const langCode = srcLang.split('-')[0];
+
       try {
-        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${src}&tl=vi&dt=t&q=${encodeURIComponent(text)}`;
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${langCode}&tl=vi&dt=t&q=${encodeURIComponent(text)}`;
         const res = await fetch(url);
+        
         if (res.ok) {
           const data = await res.json();
           if (data && data[0]) {
-            const translated = data[0].map(item => item[0]).join('');
-            targetElement.innerText = translated;
-            historyItem.translated = translated;
+            const translatedText = data[0].map(item => item[0]).join('');
+            transEl.innerText = translatedText;
+            transEl.classList.remove('italic');
+            statusTrans.innerText = '✓ Xong';
+            statusTrans.className = 'status-trans text-[9px] text-emerald-400';
+            historyItem.translated = translatedText;
             return;
           }
         }
-      } catch (e) {
-        console.warn("Lỗi dịch:", e);
+      } catch (err) {
+        console.warn("Translation API error:", err);
       }
-      targetElement.innerText = "(Chưa dịch được)";
+
+      transEl.innerText = "(Chưa dịch được - Kiểm tra mạng)";
+      statusTrans.innerText = '❌ Lỗi';
+      statusTrans.className = 'status-trans text-[9px] text-rose-400';
     }
 
-    // Nút Bắt đầu / Dừng
+    // Start / Stop Toggle Button
     btnStart.addEventListener('click', () => {
       if (!isListening) {
-        isListening = true;
-        btnStart.innerText = "⏹ Dừng nghe";
-        btnStart.classList.add('listening');
-        try {
-          recognition.start();
-        } catch(e) {
-          log("Lỗi khởi chạy: " + e.message);
-        }
+        startListening();
       } else {
-        isListening = false;
-        btnStart.innerText = "▶ Bắt đầu nghe";
-        btnStart.classList.remove('listening');
-        recognition.stop();
+        stopListening();
       }
     });
 
-    // Nút Copy
+    // Audio Source Mode Switcher
+    btnSrcMic.addEventListener('click', () => {
+      audioSourceMode = 'mic';
+      btnSrcMic.className = "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 bg-sky-600 text-white shadow-sm flex items-center gap-1.5";
+      btnSrcTab.className = "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5";
+      showToast("Đã chọn nguồn: Microphone phòng", "info");
+      if (isListening) {
+        stopListening();
+        startListening();
+      }
+    });
+
+    btnSrcTab.addEventListener('click', () => {
+      audioSourceMode = 'tab';
+      btnSrcTab.className = "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 bg-sky-600 text-white shadow-sm flex items-center gap-1.5";
+      btnSrcMic.className = "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5";
+      showToast("Đã chọn nguồn: Tab / TV Audio trực tiếp", "info");
+      if (isListening) {
+        stopListening();
+        startListening();
+      }
+    });
+
+    // Gain Amplifier Slider
+    gainSlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      gainMultiplier = val / 100;
+      gainValue.innerText = val + "%";
+      statGain.innerText = gainMultiplier.toFixed(1) + "x";
+
+      if (gainNode) {
+        gainNode.gain.value = gainMultiplier;
+      }
+    });
+
+    // Noise Filter Toggle
+    btnToggleNoise.addEventListener('click', () => {
+      noiseSuppressionEnabled = !noiseSuppressionEnabled;
+      noiseFilterStatus.innerText = "Lọc ồn: " + (noiseSuppressionEnabled ? "BẬT" : "TẮT");
+      btnToggleNoise.className = `px-3 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition ${
+        noiseSuppressionEnabled ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300' : 'bg-slate-900/80 border-slate-700/60 text-slate-300'
+      }`;
+      showToast(`Lọc tiếng ồn: ${noiseSuppressionEnabled ? 'ĐÃ BẬT' : 'ĐÃ TẮT (Tốt hơn cho TV xa)'}`, "info");
+      if (isListening) {
+        stopListening();
+        startListening();
+      }
+    });
+
+    // Action Buttons
     btnCopy.addEventListener('click', () => {
       if (meetingHistory.length === 0) {
-        alert("Chưa có nội dung!");
+        showToast("Chưa có nội dung biên bản!", "error");
         return;
       }
-      let exportText = "=== BIÊN BẢN CUỘC HỌP ===\n\n";
+      let content = "=== BIÊN BẢN HỘI THOẠI SONG NGỮ ===\n";
+      content += `Thời gian: ${new Date().toLocaleString()}\n\n`;
+      
       meetingHistory.forEach((item, index) => {
-        exportText += `[${index + 1}] Gốc: ${item.original}\n    Việt: ${item.translated}\n\n`;
+        content += `[${index + 1}] (${item.timestamp})\n`;
+        content += `   Gốc: ${item.original}\n`;
+        content += `   Việt: ${item.translated}\n\n`;
       });
 
-      navigator.clipboard.writeText(exportText).then(() => {
-        alert("✅ Đã sao chép toàn bộ biên bản vào bộ nhớ tạm!");
-      });
+      copyToClipboard(content);
+      showToast("Đã sao chép toàn bộ biên bản vào clipboard!", "success");
     });
 
-    function restartRecognition() {
-      if (isListening) recognition.stop();
+    btnExport.addEventListener('click', () => {
+      if (meetingHistory.length === 0) {
+        showToast("Chưa có nội dung để tải!", "error");
+        return;
+      }
+      let content = "=== BIÊN BẢN HỘI THOẠI SONG NGỮ ===\n";
+      content += `Thời gian xuất: ${new Date().toLocaleString()}\n\n`;
+      
+      meetingHistory.forEach((item, index) => {
+        content += `[${index + 1}] (${item.timestamp})\n`;
+        content += `   Gốc: ${item.original}\n`;
+        content += `   Việt: ${item.translated}\n\n`;
+      });
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `Bien-ban-subtitles-${Date.now()}.txt`;
+      a.click();
+      showToast("Đã tải file văn bản về máy!", "success");
+    });
+
+    btnClear.addEventListener('click', () => {
+      if (meetingHistory.length === 0) return;
+      meetingHistory = [];
+      totalOrigWords = 0;
+      wordCountOrigEl.innerText = "0 từ";
+      rowCountEl.innerText = "0 câu";
+      
+      // Clear DOM
+      transcriptFeed.innerHTML = '';
+      transcriptFeed.appendChild(emptyState);
+      emptyState.style.display = 'flex';
+      showToast("Đã xóa sạch lịch sử thoại!", "info");
+    });
+
+    // Helper Utils
+    function updateStatus(msg, type = 'normal') {
+      statusText.innerText = msg;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-999999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+      }
     }
   </script>
 </body>
