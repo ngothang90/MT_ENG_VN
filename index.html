@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biên Bản Cuộc Họp Song Ngữ - Trực Tiếp</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+    }
+
+    /* Thanh điều khiển */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1e293b;
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #334155;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    select, button {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    select {
+      background-color: #334155;
+      color: #fff;
+    }
+    #btnStart {
+      background-color: #22c55e;
+      color: #000;
+    }
+    #btnStart.listening {
+      background-color: #ef4444;
+      color: #fff;
+    }
+    .btn-copy {
+      background-color: #38bdf8;
+      color: #0f172a;
+    }
+
+    /* Header 2 Cột */
+    .column-headers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 12px 20px;
+      background-color: #1e293b;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      border: 1px solid #334155;
+      border-bottom: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .col-title-left { color: #38bdf8; }
+    .col-title-right { color: #facc15; }
+
+    /* Khung danh sách lưu toàn bộ hội thoại */
+    .meeting-log {
+      flex: 1;
+      background-color: #020617;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border: 1px solid #334155;
+    }
+
+    /* Mỗi dòng hội thoại */
+    .log-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 14px 18px;
+      background-color: #1e293b;
+      border-radius: 10px;
+      border-left: 4px solid #38bdf8;
+    }
+    .col-orig {
+      font-size: 20px;
+      line-height: 1.5;
+      color: #f1f5f9;
+      word-break: break-word;
+    }
+    .col-trans {
+      font-size: 20px;
+      line-height: 1.5;
+      color: #facc15;
+      word-break: break-word;
+    }
+
+    /* Dòng phát biểu tạm thời khi đang nói */
+    .interim-box {
+      padding: 12px 18px;
+      background-color: #0f172a;
+      border: 1px dashed #eab308;
+      border-radius: 8px;
+      color: #38bdf8;
+      font-style: italic;
+      font-size: 18px;
+      display: none;
+    }
+
+    /* Bảng thông báo / Debug lỗi */
+    .debug-box {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #000;
+      color: #22c55e;
+      font-family: monospace;
+      font-size: 12px;
+      border-radius: 6px;
+      max-height: 80px;
+      overflow-y: auto;
+      border: 1px solid #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div style="font-size: 18px; font-weight: bold; color: #38bdf8;">
+      📺 Web Subtitle Live
+    </div>
+
+    <div class="controls">
+      <select id="langSelect">
+        <option value="en-US">🇬🇧 Tiếng Anh (English)</option>
+        <option value="ja-JP">🇯🇵 Tiếng Nhật (日本語)</option>
+      </select>
+
+      <button id="btnStart">▶ Bắt đầu nghe</button>
+      <button id="btnCopy" class="btn-copy">📋 Copy cho AI</button>
+    </div>
+  </div>
+
+  <!-- Header chia 2 cột -->
+  <div class="column-headers">
+    <div class="col-title-left">🗣️ Tiếng Gốc (Anh / Nhật)</div>
+    <div class="col-title-right">🇻🇳 Tiếng Việt (Dịch tự động)</div>
+  </div>
+
+  <!-- Nơi lưu trữ vĩnh viễn toàn bộ danh sách hội thoại -->
+  <div class="meeting-log" id="meetingLog">
+    <div id="interimBox" class="interim-box">🎙️ Đang nghe: <span id="interimText">...</span></div>
+  </div>
+
+  <!-- Bảng theo dõi trạng thái / Lỗi kỹ thuật -->
+  <div class="debug-box" id="debugLog">
+    [Hệ thống] Sẵn sàng. Nhấn "Bắt đầu nghe" để chạy...
+  </div>
+
+  <script>
+    const btnStart = document.getElementById('btnStart');
+    const btnCopy = document.getElementById('btnCopy');
+    const langSelect = document.getElementById('langSelect');
+    const meetingLog = document.getElementById('meetingLog');
+    const interimBox = document.getElementById('interimBox');
+    const interimText = document.getElementById('interimText');
+    const debugLog = document.getElementById('debugLog');
+
+    let isListening = false;
+    let recognition = null;
+    let meetingHistory = [];
+
+    function log(msg) {
+      const time = new Date().toLocaleTimeString();
+      debugLog.innerHTML += `<br>[${time}] ${msg}`;
+      debugLog.scrollTop = debugLog.scrollHeight;
+    }
+
+    // Kiểm tra môi trường file://
+    if (window.location.protocol === 'file:') {
+      log("⚠️ CẢNH BÁO: Bạn đang mở file trực tiếp (file://). Nếu không nghe được, hãy mở qua Live Server (VS Code) hoặc Web Server!");
+    }
+
+    // 1. Kiểm tra hỗ trợ Web Speech API
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      log("❌ RẤT TIẾC: Trình duyệt của bạn không hỗ trợ Web Speech API. Vui lòng dùng Google Chrome trên máy tính!");
+    } else {
+      initSpeech();
+    }
+
+    function initSpeech() {
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = langSelect.value;
+
+      langSelect.addEventListener('change', () => {
+        recognition.lang = langSelect.value;
+        log("Đã đổi ngôn ngữ sang: " + recognition.lang);
+        if (isListening) restartRecognition();
+      });
+
+      recognition.onstart = () => {
+        log("✅ Đã bật Micro & Đang nhận diện tiếng " + recognition.lang);
+      };
+
+      recognition.onresult = (event) => {
+        let currentInterim = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const transcript = event.results[i][0].transcript.trim();
+
+          if (event.results[i].isFinal) {
+            if (transcript.length > 0) {
+              // HIỂN THỊ CÂU GỐC NGAY LẬP TỨC
+              addSentenceToLog(transcript);
+            }
+          } else {
+            currentInterim += transcript + ' ';
+          }
+        }
+
+        if (currentInterim.trim() !== '') {
+          interimText.innerText = currentInterim;
+          interimBox.style.display = 'block';
+        } else {
+          interimBox.style.display = 'none';
+        }
+
+        meetingLog.scrollTop = meetingLog.scrollHeight;
+      };
+
+      recognition.onerror = (event) => {
+        log("❌ Lỗi Speech: " + event.error);
+        if (event.error === 'not-allowed') {
+          alert("Trình duyệt đang BỊ CHẶN QUYỀN MICRO! Bạn hãy bấm vào biểu tượng 🔒 Ổ khóa trên thanh địa chỉ web để Cho phép (Allow) Micro.");
+        }
+      };
+
+      recognition.onend = () => {
+        interimBox.style.display = 'none';
+        if (isListening) {
+          try { recognition.start(); } catch (e) {}
+        } else {
+          log("⏹ Đã dừng nghe.");
+        }
+      };
+    }
+
+    // 2. Hiển thị ngay câu gốc và dịch ngầm độc lập
+    function addSentenceToLog(originalText) {
+      log("🗣️ Nghe được: " + originalText);
+
+      const row = document.createElement('div');
+      row.className = 'log-row';
+
+      const colOrig = document.createElement('div');
+      colOrig.className = 'col-orig';
+      colOrig.innerText = originalText;
+
+      const colTrans = document.createElement('div');
+      colTrans.className = 'col-trans';
+      colTrans.innerText = "⏳ Đang dịch...";
+
+      row.appendChild(colOrig);
+      row.appendChild(colTrans);
+
+      meetingLog.insertBefore(row, interimBox);
+      meetingLog.scrollTop = meetingLog.scrollHeight;
+
+      const historyItem = { original: originalText, translated: '' };
+      meetingHistory.push(historyItem);
+
+      // Gọi dịch ngầm
+      fetchTranslation(originalText, recognition.lang, colTrans, historyItem);
+    }
+
+    // 3. Hàm dịch ngầm an toàn (Không làm chết ứng dụng nếu lỗi)
+    async function fetchTranslation(text, srcLang, targetElement, historyItem) {
+      const src = srcLang.split('-')[0];
+      try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${src}&tl=vi&dt=t&q=${encodeURIComponent(text)}`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data[0]) {
+            const translated = data[0].map(item => item[0]).join('');
+            targetElement.innerText = translated;
+            historyItem.translated = translated;
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn("Lỗi dịch Google:", e);
+      }
+
+      targetElement.innerText = "(Chưa dịch được - Kiểm tra kết nối mạng)";
+    }
+
+    // Nút Bắt đầu / Dừng
+    btnStart.addEventListener('click', () => {
+      if (!isListening) {
+        isListening = true;
+        btnStart.innerText = "⏹ Dừng nghe";
+        btnStart.classList.add('listening');
+        try {
+          recognition.start();
+        } catch(e) {
+          log("Lỗi khởi chạy: " + e.message);
+        }
+      } else {
+        isListening = false;
+        btnStart.innerText = "▶ Bắt đầu nghe";
+        btnStart.classList.remove('listening');
+        recognition.stop();
+      }
+    });
+
+    // Nút Copy
+    btnCopy.addEventListener('click', () => {
+      if (meetingHistory.length === 0) {
+        alert("Chưa có nội dung!");
+        return;
+      }
+      let exportText = "=== BIÊN BẢN CUỘC HỌP ===\n\n";
+      meetingHistory.forEach((item, index) => {
+        exportText += `[${index + 1}] Gốc: ${item.original}\n    Việt: ${item.translated}\n\n`;
+      });
+
+      navigator.clipboard.writeText(exportText).then(() => {
+        alert("✅ Đã sao chép toàn bộ biên bản vào bộ nhớ tạm!");
+      });
+    });
+
+    function restartRecognition() {
+      if (isListening) recognition.stop();
+    }
+  </script>
+</body>
+</html>
