@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biên Bản Cuộc Họp Song Ngữ - Trực Tiếp</title>
+  <title>Web Subtitle Live</title>
   <style>
     * {
       box-sizing: border-box;
@@ -33,7 +33,7 @@
     }
     .controls {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
     }
     select, button {
@@ -59,6 +59,28 @@
     .btn-copy {
       background-color: #38bdf8;
       color: #0f172a;
+    }
+
+    /* Thanh đo sóng âm Micro (VU Meter) */
+    .vu-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .vu-bg {
+      width: 100px;
+      height: 10px;
+      background-color: #334155;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .vu-fill {
+      height: 100%;
+      width: 0%;
+      background-color: #22c55e;
+      transition: width 0.1s linear;
     }
 
     /* Header 2 Cột */
@@ -127,7 +149,7 @@
       display: none;
     }
 
-    /* Bảng thông báo / Debug lỗi */
+    /* Bảng log hệ thống */
     .debug-box {
       margin-top: 10px;
       padding: 10px;
@@ -150,6 +172,14 @@
     </div>
 
     <div class="controls">
+      <!-- ĐO TÍN HIỆU ÂM THANH TV -->
+      <div class="vu-box">
+        <span>Sóng Mic:</span>
+        <div class="vu-bg">
+          <div id="vuFill" class="vu-fill"></div>
+        </div>
+      </div>
+
       <select id="langSelect">
         <option value="en-US">🇬🇧 Tiếng Anh (English)</option>
         <option value="ja-JP">🇯🇵 Tiếng Nhật (日本語)</option>
@@ -184,10 +214,14 @@
     const interimBox = document.getElementById('interimBox');
     const interimText = document.getElementById('interimText');
     const debugLog = document.getElementById('debugLog');
+    const vuFill = document.getElementById('vuFill');
 
     let isListening = false;
     let recognition = null;
     let meetingHistory = [];
+    let audioContext = null;
+    let analyser = null;
+    let micStream = null;
 
     function log(msg) {
       const time = new Date().toLocaleTimeString();
@@ -195,16 +229,10 @@
       debugLog.scrollTop = debugLog.scrollHeight;
     }
 
-    // Kiểm tra môi trường file://
-    if (window.location.protocol === 'file:') {
-      log("⚠️ CẢNH BÁO: Bạn đang mở file trực tiếp (file://). Nếu không nghe được, hãy mở qua Live Server (VS Code) hoặc Web Server!");
-    }
-
-    // 1. Kiểm tra hỗ trợ Web Speech API
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      log("❌ RẤT TIẾC: Trình duyệt của bạn không hỗ trợ Web Speech API. Vui lòng dùng Google Chrome trên máy tính!");
+      log("❌ Trình duyệt không hỗ trợ Web Speech API. Hãy dùng Google Chrome!");
     } else {
       initSpeech();
     }
@@ -233,7 +261,6 @@
 
           if (event.results[i].isFinal) {
             if (transcript.length > 0) {
-              // HIỂN THỊ CÂU GỐC NGAY LẬP TỨC
               addSentenceToLog(transcript);
             }
           } else {
@@ -253,9 +280,6 @@
 
       recognition.onerror = (event) => {
         log("❌ Lỗi Speech: " + event.error);
-        if (event.error === 'not-allowed') {
-          alert("Trình duyệt đang BỊ CHẶN QUYỀN MICRO! Bạn hãy bấm vào biểu tượng 🔒 Ổ khóa trên thanh địa chỉ web để Cho phép (Allow) Micro.");
-        }
       };
 
       recognition.onend = () => {
@@ -268,7 +292,7 @@
       };
     }
 
-    // 2. Hiển thị ngay câu gốc và dịch ngầm độc lập
+    // Hiển thị câu gốc & dịch ngầm
     function addSentenceToLog(originalText) {
       log("🗣️ Nghe được: " + originalText);
 
@@ -292,11 +316,10 @@
       const historyItem = { original: originalText, translated: '' };
       meetingHistory.push(historyItem);
 
-      // Gọi dịch ngầm
       fetchTranslation(originalText, recognition.lang, colTrans, historyItem);
     }
 
-    // 3. Hàm dịch ngầm an toàn (Không làm chết ứng dụng nếu lỗi)
+    // Dịch thuật ngầm
     async function fetchTranslation(text, srcLang, targetElement, historyItem) {
       const src = srcLang.split('-')[0];
       try {
@@ -312,10 +335,46 @@
           }
         }
       } catch (e) {
-        console.warn("Lỗi dịch Google:", e);
+        console.warn("Lỗi dịch:", e);
       }
+      targetElement.innerText = "(Chưa dịch được)";
+    }
 
-      targetElement.innerText = "(Chưa dịch được - Kiểm tra kết nối mạng)";
+    // Bộ đo sóng âm Micro (VU Meter)
+    async function startVUMeter() {
+      try {
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaStreamSource(micStream);
+        source.connect(analyser);
+        analyser.fftSize = 256;
+
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        function drawVU() {
+          if (!isListening) {
+            vuFill.style.width = '0%';
+            return;
+          }
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+          let avg = sum / dataArray.length;
+          let pct = Math.min(100, Math.round((avg / 128) * 100 * 2)); // Nhân hệ số để nhạy hơn
+          vuFill.style.width = pct + '%';
+          requestAnimationFrame(drawVU);
+        }
+        drawVU();
+      } catch (err) {
+        log("⚠️ Không mở được bộ đo sóng Mic: " + err.message);
+      }
+    }
+
+    function stopVUMeter() {
+      if (micStream) micStream.getTracks().forEach(t => t.stop());
+      if (audioContext) audioContext.close();
+      vuFill.style.width = '0%';
     }
 
     // Nút Bắt đầu / Dừng
@@ -326,6 +385,7 @@
         btnStart.classList.add('listening');
         try {
           recognition.start();
+          startVUMeter();
         } catch(e) {
           log("Lỗi khởi chạy: " + e.message);
         }
@@ -334,6 +394,7 @@
         btnStart.innerText = "▶ Bắt đầu nghe";
         btnStart.classList.remove('listening');
         recognition.stop();
+        stopVUMeter();
       }
     });
 
