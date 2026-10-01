@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Live Translator Pro - Auto Speaker Detection</title>
+  <title>Live Translator Pro</title>
 
-  <!-- iOS WebApp Standalone Meta Tags -->
+  <!-- PWA & WebApp Standalone Meta Tags cho iOS/Android -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Dịch Live Pro">
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Dịch Live Pro">
   <meta name="theme-color" content="#0b1120">
 
-  <!-- Manifest Inline -->
-  <link rel="manifest" href='data:application/manifest+json,{"name":"Live Translator Pro","short_name":"Dịch Live","start_url":".","display":"standalone","background_color":"#0b1120","theme_color":"#0b1120"}'>
+  <!-- Manifest Standalone Inline -->
+  <link rel="manifest" href='data:application/manifest+json,{"name":"Live Translator Pro","short_name":"Dịch Live","start_url":".","display":"standalone","background_color":"#0b1120","theme_color":"#0b1120","orientation":"any","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/3898/3898150.png","sizes":"512x512","type":"image/png"}]}'>
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3898/3898150.png">
 
   <!-- Tailwind CSS & FontAwesome Icons -->
@@ -32,6 +33,9 @@
       color: #f8fafc;
       overflow: hidden;
       touch-action: manipulation;
+      /* Tối ưu không gian notch/tai thỏ cho iOS Standalone */
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
     }
     
     .scroll-touch {
@@ -39,16 +43,9 @@
       overscroll-behavior-y: contain;
     }
 
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0f172a;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 4px;
-    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
 
     .card-solid {
       background: #1e293b;
@@ -80,14 +77,21 @@
       </div>
     </div>
 
-    <!-- Mode Selector Switcher -->
-    <div class="flex bg-slate-900 p-1.5 rounded-xl border border-slate-700">
-      <button id="tabModeOneWay" class="px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-sky-600 text-white shadow">
-        <i class="fa-solid fa-play text-xs mr-1"></i> 1 Chiều (2 Cột)
+    <!-- PWA Install Button (Hiển thị khi trình duyệt Desktop/Android hỗ trợ) -->
+    <div class="flex items-center gap-2">
+      <button id="pwaInstallBtn" class="hidden px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+        <i class="fa-solid fa-download"></i> Cài Đặt App
       </button>
-      <button id="tabModeTwoWay" class="px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white">
-        <i class="fa-solid fa-comments text-xs mr-1"></i> Song Ngữ Direct
-      </button>
+
+      <!-- Mode Selector Switcher -->
+      <div class="flex bg-slate-900 p-1.5 rounded-xl border border-slate-700">
+        <button id="tabModeOneWay" class="px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-sky-600 text-white shadow">
+          <i class="fa-solid fa-play text-xs mr-1"></i> 1 Chiều (2 Cột)
+        </button>
+        <button id="tabModeTwoWay" class="px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white">
+          <i class="fa-solid fa-comments text-xs mr-1"></i> Song Ngữ Direct
+        </button>
+      </div>
     </div>
   </header>
 
@@ -256,7 +260,44 @@
   </footer>
 
   <script>
-    // Speaker Profiles & Badges
+    // ----------------------------------------------------
+    // SERVICE WORKER REGISTRATION (Kích hoạt chế độ PWA App)
+    // ----------------------------------------------------
+    if ('serviceWorker' in navigator) {
+      const swBlob = new Blob([`
+        self.addEventListener('install', (e) => self.skipWaiting());
+        self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
+        self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));
+      `], { type: 'application/javascript' });
+
+      navigator.serviceWorker.register(URL.createObjectURL(swBlob))
+        .catch(err => console.log('SW Reg bypass:', err));
+    }
+
+    // PWA Install Prompt (Dành cho Chrome / Edge trên Laptop/Desktop)
+    let deferredPrompt = null;
+    const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      pwaInstallBtn.classList.remove('hidden');
+    });
+
+    pwaInstallBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          pwaInstallBtn.classList.add('hidden');
+        }
+        deferredPrompt = null;
+      }
+    });
+
+    // ----------------------------------------------------
+    // TRÌNH XỬ LÝ NHẬN DIỆN GIỌNG NÓI & ÂM TẦN
+    // ----------------------------------------------------
     const speakerBadges = [
       { name: 'Người A', badgeBg: 'bg-sky-950 text-sky-300 border-sky-500/50' },
       { name: 'Người B', badgeBg: 'bg-amber-950 text-amber-300 border-amber-500/50' },
@@ -264,9 +305,8 @@
       { name: 'Người D', badgeBg: 'bg-emerald-950 text-emerald-300 border-emerald-500/50' }
     ];
 
-    // Automatic Pitch / Audio Profiling Cluster State
-    let knownSpeakers = []; // Array of average pitches: [120, 210, ...]
-    let currentPhrasePitches = []; // Samples collected for active phrase
+    let knownSpeakers = []; 
+    let currentPhrasePitches = []; 
     let activeSpeakerIdx = 0;
     let lastSpeechEndTime = Date.now();
 
@@ -276,19 +316,16 @@
     let autoTTS = true;
     let gainMultiplier = 1.8;
 
-    // Web Audio DSP Variables
     let audioCtx = null;
     let mediaStream = null;
     let gainNode = null;
     let analyserNode = null;
     let animFrameId = null;
 
-    // Speech Engine
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition = null;
     let interimDebounce = null;
 
-    // DOM Elements
     const tabModeOneWay = document.getElementById('tabModeOneWay');
     const tabModeTwoWay = document.getElementById('tabModeTwoWay');
     const modeOneWayView = document.getElementById('modeOneWayView');
@@ -328,7 +365,6 @@
       'vi-VN': 'VN', 'ja-JP': 'JA', 'en-US': 'EN', 'ko-KR': 'KO', 'zh-CN': 'ZH'
     };
 
-    // Web Speech Initialization
     if (SpeechRecognition) {
       recognition = new SpeechRecognition();
       recognition.continuous = true;
@@ -373,11 +409,10 @@
       alert("Trình duyệt không hỗ trợ Web Speech API. Vui lòng sử dụng Google Chrome!");
     }
 
-    // App Mode Switching
     tabModeOneWay.addEventListener('click', () => {
       currentAppMode = 'oneWay';
-      tabModeOneWay.className = "px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-sky-600 text-white shadow";
-      tabModeTwoWay.className = "px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white";
+      tabModeOneWay.className = "px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-sky-600 text-white shadow";
+      tabModeTwoWay.className = "px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white";
       modeOneWayView.classList.remove('hidden');
       modeTwoWayView.classList.add('hidden');
       stopAudioAndSpeech();
@@ -385,8 +420,8 @@
 
     tabModeTwoWay.addEventListener('click', () => {
       currentAppMode = 'twoWay';
-      tabModeTwoWay.className = "px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-amber-600 text-white shadow";
-      tabModeOneWay.className = "px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white";
+      tabModeTwoWay.className = "px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-amber-600 text-white shadow";
+      tabModeOneWay.className = "px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white";
       modeTwoWayView.classList.remove('hidden');
       modeOneWayView.classList.add('hidden');
       stopAudioAndSpeech();
@@ -421,7 +456,6 @@
       knownSpeakers = [];
     });
 
-    // Mode 2 Controls
     btnMicUser.addEventListener('click', async () => {
       if (activeTwoWayMic === 'user') {
         stopAudioAndSpeech();
@@ -467,7 +501,6 @@
     m2UserLang.addEventListener('change', () => lblUserLang.innerText = langNames[m2UserLang.value] || 'VN');
     m2PartnerLang.addEventListener('change', () => lblPartnerLang.innerText = langNames[m2PartnerLang.value] || 'JA');
 
-    // Real-time Interim Processing
     function handleInterimSentence(text) {
       if (currentAppMode === 'oneWay') {
         m1LiveOrigText.innerText = text;
@@ -481,7 +514,6 @@
       }
     }
 
-    // Final Sentence Handle + Automatic Speaker Clustering Logic
     async function handleFinalSentence(originalText) {
       if (!originalText || originalText.length === 0) return;
 
@@ -490,18 +522,16 @@
         m1LiveOrigText.innerText = '...';
         m1LiveTransText.innerText = '---';
 
-        // Calculate average pitch/frequency of current phrase
         let avgPitch = 150;
         if (currentPhrasePitches.length > 0) {
           avgPitch = currentPhrasePitches.reduce((a, b) => a + b, 0) / currentPhrasePitches.length;
         }
-        currentPhrasePitches = []; // reset for next phrase
+        currentPhrasePitches = []; 
 
         const now = Date.now();
         const pauseDuration = now - lastSpeechEndTime;
         lastSpeechEndTime = now;
 
-        // Auto Speaker Clustering Algorithm
         activeSpeakerIdx = autoClusterSpeaker(avgPitch, pauseDuration);
 
         const currentSpkObj = speakerBadges[activeSpeakerIdx] || speakerBadges[0];
@@ -534,14 +564,12 @@
       }
     }
 
-    // Auto Cluster Speaker based on Voice Pitch Frequency & Silence Gap
     function autoClusterSpeaker(avgPitch, pauseMs) {
       if (knownSpeakers.length === 0) {
         knownSpeakers.push(avgPitch);
-        return 0; // First speaker = Speaker A
+        return 0; 
       }
 
-      // Check distance to existing speaker pitches
       let minDiff = 9999;
       let matchedIdx = 0;
 
@@ -553,23 +581,19 @@
         }
       }
 
-      // Threshold: Pitch difference > 28 units means distinctly different voice
       if (minDiff > 28 && knownSpeakers.length < 4) {
         knownSpeakers.push(avgPitch);
-        return knownSpeakers.length - 1; // New Speaker (B, C, D...)
+        return knownSpeakers.length - 1; 
       }
 
-      // If silence gap > 2000ms and pitches are moderately different, switch turn
       if (pauseMs > 2000 && knownSpeakers.length > 1 && minDiff > 12) {
         return matchedIdx;
       }
 
-      // Otherwise match nearest known speaker profile
-      knownSpeakers[matchedIdx] = (knownSpeakers[matchedIdx] * 0.7) + (avgPitch * 0.3); // update profile centroid
+      knownSpeakers[matchedIdx] = (knownSpeakers[matchedIdx] * 0.7) + (avgPitch * 0.3); 
       return matchedIdx;
     }
 
-    // Append 2-Column Row in Mode 1
     function appendOneWayDualColumnCard(orig, trans, speakerIdx, tgtLangCode) {
       const spk = speakerBadges[speakerIdx] || speakerBadges[0];
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -612,7 +636,6 @@
       m1Feed.scrollTop = m1Feed.scrollHeight;
     }
 
-    // Append Chat Bubble in Mode 2
     function appendTwoWayBubble(orig, trans, isUser, tgtLangCode) {
       const bubble = document.createElement('div');
       bubble.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1`;
@@ -639,7 +662,6 @@
       m2Feed.scrollTop = m2Feed.scrollHeight;
     }
 
-    // Translation API
     async function translateTextAPI(text, src, tgt) {
       if (!text) return '';
       try {
@@ -657,7 +679,6 @@
       return text;
     }
 
-    // Text To Speech
     function speakText(text, langCode) {
       if (!('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
@@ -667,7 +688,6 @@
       window.speechSynthesis.speak(utterance);
     }
 
-    // Web Audio Pipeline + Pitch Profile Collector
     async function startAudioPipeline() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -704,16 +724,15 @@
       const data = new Uint8Array(analyserNode.frequencyBinCount);
       analyserNode.getByteFrequencyData(data);
 
-      // Collect spectral energy/pitch centroid for active speaker profiling
       let totalEnergy = 0;
       let weightedFreq = 0;
       for (let i = 0; i < data.length; i++) {
         totalEnergy += data[i];
         weightedFreq += data[i] * (i + 1);
       }
-      if (totalEnergy > 50) { // voice threshold
+      if (totalEnergy > 50) { 
         const currentCentroid = weightedFreq / totalEnergy;
-        currentPhrasePitches.push(currentCentroid * 20); // normalized pitch
+        currentPhrasePitches.push(currentCentroid * 20); 
       }
 
       specCtx.clearRect(0, 0, specCanvas.width, specCanvas.height);
