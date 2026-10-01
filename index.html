@@ -5,16 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Live Translator Pro</title>
 
-  <!-- PWA & WebApp Standalone Meta Tags cho iOS/Android -->
+  <!-- iOS & Android PWA Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Dịch Live Pro">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="Dịch Live Pro">
   <meta name="theme-color" content="#0b1120">
 
-  <!-- Manifest Standalone Inline -->
-  <link rel="manifest" href='data:application/manifest+json,{"name":"Live Translator Pro","short_name":"Dịch Live","start_url":".","display":"standalone","background_color":"#0b1120","theme_color":"#0b1120","orientation":"any","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/3898/3898150.png","sizes":"512x512","type":"image/png"}]}'>
+  <!-- Manifest External Link -->
+  <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3898/3898150.png">
 
   <!-- Tailwind CSS & FontAwesome Icons -->
@@ -25,17 +24,22 @@
   <style>
     * {
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
+      box-sizing: border-box;
     }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    
+    /* Dynamic Viewport Height hỗ trợ tai thỏ và thanh điều hướng Safari/Chrome */
+    html, body {
+      min-height: 100dvh;
       background-color: #0b1120;
       color: #f8fafc;
-      overflow: hidden;
-      touch-action: manipulation;
-      /* Tối ưu không gian notch/tai thỏ cho iOS Standalone */
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
       padding-top: env(safe-area-inset-top);
       padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
     }
     
     .scroll-touch {
@@ -43,7 +47,7 @@
       overscroll-behavior-y: contain;
     }
 
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
 
@@ -63,241 +67,180 @@
     }
   </style>
 </head>
-<body class="h-screen flex flex-col justify-between p-2 md:p-5 max-w-7xl mx-auto">
+<body class="flex flex-col min-h-[100dvh] p-2 md:p-4 max-w-7xl mx-auto overflow-y-auto">
 
   <!-- Header Section -->
-  <header class="card-solid rounded-2xl p-3 md:p-4 flex flex-wrap items-center justify-between gap-3 shrink-0 shadow-md">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-sky-600 flex items-center justify-center text-white shrink-0 font-bold shadow-lg shadow-sky-600/30">
-        <i class="fa-solid fa-language text-xl md:text-2xl"></i>
+  <header class="card-solid rounded-2xl p-3 flex items-center justify-between gap-2 shrink-0 shadow-md mb-2">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-sky-600 flex items-center justify-center text-white shrink-0 font-bold shadow-md">
+        <i class="fa-solid fa-language text-lg md:text-2xl"></i>
       </div>
       <div>
-        <h1 class="text-base md:text-xl font-extrabold text-white leading-tight">Live Translator Pro</h1>
-        <span class="text-xs text-sky-400 font-medium hidden sm:inline-block">Auto Pitch Detection • Tự Nhận Diện Người Nói • Desktop Expanded</span>
+        <h1 class="text-sm md:text-xl font-extrabold text-white leading-tight">Live Translator Pro</h1>
+        <span class="text-[10px] md:text-xs text-sky-400 font-medium hidden sm:inline-block">Auto Pitch Detection • Tự Nhận Diện Người Nói</span>
       </div>
     </div>
 
-    <!-- PWA Install Button (Hiển thị khi trình duyệt Desktop/Android hỗ trợ) -->
-    <div class="flex items-center gap-2">
-      <button id="pwaInstallBtn" class="hidden px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
-        <i class="fa-solid fa-download"></i> Cài Đặt App
+    <!-- Mode Selector Switcher -->
+    <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700">
+      <button id="tabModeOneWay" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-sky-600 text-white shadow">
+        1 Chiều
       </button>
-
-      <!-- Mode Selector Switcher -->
-      <div class="flex bg-slate-900 p-1.5 rounded-xl border border-slate-700">
-        <button id="tabModeOneWay" class="px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-sky-600 text-white shadow">
-          <i class="fa-solid fa-play text-xs mr-1"></i> 1 Chiều (2 Cột)
-        </button>
-        <button id="tabModeTwoWay" class="px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white">
-          <i class="fa-solid fa-comments text-xs mr-1"></i> Song Ngữ Direct
-        </button>
-      </div>
+      <button id="tabModeTwoWay" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+        Song Ngữ
+      </button>
     </div>
   </header>
 
-  <!-- ==================== MODE 1: PHIÊN DỊCH 1 CHIỀU (2 CỘT + TỰ ĐỘNG NHẬN DIỆN GIỌNG) ==================== -->
-  <main id="modeOneWayView" class="flex-1 flex flex-col gap-3 my-2 min-h-0">
+  <!-- ==================== MODE 1: PHIÊN DỊCH 1 CHIỀU ==================== -->
+  <main id="modeOneWayView" class="flex-1 flex flex-col gap-2 min-h-0">
     
     <!-- Controls Toolbar -->
-    <div class="card-solid rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shrink-0">
+    <div class="card-solid rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 shrink-0">
       
       <!-- Language Selection -->
-      <div class="flex items-center gap-2 flex-1 min-w-[280px]">
+      <div class="flex items-center gap-2 flex-1 w-full sm:w-auto">
         <div class="flex-1">
-          <label class="text-[10px] md:text-xs text-slate-400 font-bold uppercase block mb-1">Nguồn (Nghe)</label>
-          <select id="m1SrcLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs md:text-sm font-semibold rounded-lg p-2 outline-none">
-            <option value="ja-JP">🇯🇵 Tiếng Nhật (日本語)</option>
-            <option value="en-US">🇬🇧 Tiếng Anh (English)</option>
+          <label class="text-[9px] md:text-xs text-slate-400 font-bold uppercase block mb-0.5">Nguồn (Nghe)</label>
+          <select id="m1SrcLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-2 outline-none">
+            <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
+            <option value="en-US">🇬🇧 Tiếng Anh</option>
             <option value="vi-VN">🇻🇳 Tiếng Việt</option>
-            <option value="ko-KR">🇰🇷 Tiếng Hàn (한국어)</option>
-            <option value="zh-CN">🇨🇳 Tiếng Trung (中文)</option>
+            <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
+            <option value="zh-CN">🇨🇳 Tiếng Trung</option>
           </select>
         </div>
 
-        <button id="btnSwapM1" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-sky-400 flex items-center justify-center border border-slate-700 mt-4 shrink-0 active:scale-95 transition" title="Đổi ngôn ngữ">
+        <button id="btnSwapM1" class="w-8 h-8 rounded-full bg-slate-800 text-sky-400 flex items-center justify-center border border-slate-700 mt-3 shrink-0 active:scale-95" title="Đổi ngôn ngữ">
           <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
         </button>
 
         <div class="flex-1">
-          <label class="text-[10px] md:text-xs text-slate-400 font-bold uppercase block mb-1">Đích (Dịch)</label>
-          <select id="m1TgtLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs md:text-sm font-semibold rounded-lg p-2 outline-none">
+          <label class="text-[9px] md:text-xs text-slate-400 font-bold uppercase block mb-0.5">Đích (Dịch)</label>
+          <select id="m1TgtLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-2 outline-none">
             <option value="vi-VN">🇻🇳 Tiếng Việt</option>
-            <option value="ja-JP">🇯🇵 Tiếng Nhật (日本語)</option>
-            <option value="en-US">🇬🇧 Tiếng Anh (English)</option>
-            <option value="ko-KR">🇰🇷 Tiếng Hàn (한국어)</option>
-            <option value="zh-CN">🇨🇳 Tiếng Trung (中文)</option>
+            <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
+            <option value="en-US">🇬🇧 Tiếng Anh</option>
+            <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
+            <option value="zh-CN">🇨🇳 Tiếng Trung</option>
           </select>
         </div>
-      </div>
-
-      <!-- Auto Speaker Status Indicator -->
-      <div class="flex items-center gap-2 bg-slate-900 px-3 py-2 rounded-xl border border-slate-800">
-        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
-        <span class="text-xs font-bold text-slate-300">Tự động phân tách giọng A/B/C: <span id="autoDetectLabel" class="text-amber-400">Đang bật</span></span>
       </div>
 
     </div>
 
     <!-- Live Real-time Subtitle Box -->
-    <div class="card-solid rounded-xl p-3 md:p-4 border-l-4 border-l-amber-400 shrink-0">
-      <div class="flex items-center justify-between text-xs font-bold text-slate-400 uppercase mb-2">
-        <span class="flex items-center gap-1.5 text-amber-400">
-          <i class="fa-solid fa-bolt"></i> Phát hiện thời gian thực: <b id="currentDetectedSpeaker" class="text-sky-300 ml-1">👤 Người A</b>
+    <div class="card-solid rounded-xl p-3 border-l-4 border-l-amber-400 shrink-0">
+      <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase mb-1">
+        <span class="flex items-center gap-1 text-amber-400">
+          <i class="fa-solid fa-bolt"></i> Thời gian thực: <b id="currentDetectedSpeaker" class="text-sky-300 ml-1">👤 Người A</b>
         </span>
-        <span class="text-[10px] text-slate-500 font-mono">Tự phân tích tần số giọng</span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
-        <div class="space-y-1">
-          <span class="text-[10px] font-mono text-sky-400 font-bold uppercase">Gốc:</span>
-          <p id="m1LiveOrigText" class="text-sm md:text-base lg:text-lg text-slate-300 italic min-h-[1.5rem] truncate">Đang lắng nghe hội thoại...</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div>
+          <span class="text-[9px] font-mono text-sky-400 font-bold uppercase">Gốc:</span>
+          <p id="m1LiveOrigText" class="text-xs md:text-base text-slate-300 italic min-h-[1.25rem] truncate">Đang lắng nghe...</p>
         </div>
-        <div class="space-y-1 md:border-l md:border-slate-800 md:pl-4">
-          <span class="text-[10px] font-mono text-amber-400 font-bold uppercase">Bản Dịch:</span>
-          <p id="m1LiveTransText" class="text-base md:text-lg lg:text-xl font-bold text-amber-300 min-h-[1.5rem]">---</p>
+        <div class="md:border-l md:border-slate-800 md:pl-3">
+          <span class="text-[9px] font-mono text-amber-400 font-bold uppercase">Bản Dịch:</span>
+          <p id="m1LiveTransText" class="text-sm md:text-lg font-bold text-amber-300 min-h-[1.25rem]">---</p>
         </div>
       </div>
     </div>
 
-    <!-- Dual Column Transcript Feed Header -->
-    <div class="grid grid-cols-2 bg-slate-900 border border-slate-800 rounded-t-xl px-4 py-2.5 text-xs md:text-sm font-bold uppercase tracking-wider text-slate-300 shrink-0">
-      <div class="flex items-center gap-2 text-sky-400">
-        <i class="fa-solid fa-align-left"></i> Tiếng Gốc (Phân tách tự động)
-      </div>
-      <div class="flex items-center gap-2 text-amber-400 border-l border-slate-800 pl-4">
-        <i class="fa-solid fa-language"></i> Bản Dịch Tiếng Việt
-      </div>
-    </div>
-
-    <!-- Transcript Feed for Mode 1 -->
-    <div id="m1Feed" class="flex-1 card-solid rounded-b-xl p-3 md:p-4 overflow-y-auto scroll-touch space-y-3">
-      <div id="m1Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-6">
-        <i class="fa-solid fa-microphone-lines text-3xl mb-2 text-slate-600"></i>
-        <p class="text-sm font-semibold text-slate-300 mb-1">Tự động nhận diện & phân tách giọng nhiều người</p>
-        <p class="text-xs text-slate-500 max-w-md">Bấm "BẮT ĐẦU NGHE". Hệ thống dựa trên tần số giọng và khoảng ngắt lời để tự động gán nhãn Người A, Người B, Người C...</p>
+    <!-- Feed Container - Đã cho phép cuộn độc lập -->
+    <div id="m1Feed" class="flex-1 min-h-[180px] max-h-[42vh] md:max-h-none card-solid rounded-xl p-3 overflow-y-auto scroll-touch space-y-2.5">
+      <div id="m1Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-4">
+        <i class="fa-solid fa-microphone-lines text-2xl mb-1 text-slate-600"></i>
+        <p class="text-xs font-semibold text-slate-300">Tự động phân tách giọng A/B/C/D</p>
+        <p class="text-[11px] text-slate-500">Bấm "BẮT ĐẦU NGHE" ở bên dưới.</p>
       </div>
     </div>
 
-    <!-- Mode 1 Control Bar -->
-    <div class="flex items-center gap-3 shrink-0">
-      <button id="btnStartM1" class="flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg active:scale-98 transition">
+    <!-- Sticky Bottom Control Bar - Luôn ghim dưới đáy màn hình điện thoại -->
+    <div class="sticky bottom-0 z-50 pt-2 pb-1 bg-[#0b1120] flex items-center gap-2 shrink-0">
+      <button id="btnStartM1" class="flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
         <i class="fa-solid fa-play"></i> <span id="btnStartM1Text">BẮT ĐẦU NGHE</span>
       </button>
-      <button id="btnClearM1" class="px-4 py-3.5 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-400 border border-slate-700 flex items-center justify-center shrink-0 font-bold text-xs" title="Xóa lịch sử">
-        <i class="fa-solid fa-trash-can text-sm mr-1"></i> Xóa Lịch Sử
+      <button id="btnClearM1" class="px-3 py-3.5 rounded-xl bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center shrink-0 font-bold text-xs">
+        <i class="fa-solid fa-trash-can text-sm"></i>
       </button>
     </div>
   </main>
 
-  <!-- ==================== MODE 2: HỘI THOẠI SONG NGỮ DIRECT ==================== -->
-  <main id="modeTwoWayView" class="flex-1 flex flex-col gap-3 my-2 min-h-0 hidden">
-    
-    <div class="card-solid rounded-xl p-3 flex items-center justify-between gap-3 shrink-0">
+  <!-- ==================== MODE 2: SONG NGỮ DIRECT ==================== -->
+  <main id="modeTwoWayView" class="flex-1 flex flex-col gap-2 min-h-0 hidden">
+    <div class="card-solid rounded-xl p-2.5 flex items-center justify-between gap-2 shrink-0">
       <div class="flex-1">
-        <label class="text-xs text-sky-400 font-bold uppercase block mb-1">Bạn Nói</label>
-        <select id="m2UserLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs md:text-sm font-semibold rounded-lg p-2 outline-none">
+        <label class="text-[10px] text-sky-400 font-bold uppercase block mb-0.5">Tôi Nói</label>
+        <select id="m2UserLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
           <option value="vi-VN">🇻🇳 Tiếng Việt</option>
           <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
           <option value="en-US">🇬🇧 Tiếng Anh</option>
-          <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
-          <option value="zh-CN">🇨🇳 Tiếng Trung</option>
         </select>
       </div>
 
       <div class="flex-1">
-        <label class="text-xs text-amber-400 font-bold uppercase block mb-1">Đối Phương Nói</label>
-        <select id="m2PartnerLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs md:text-sm font-semibold rounded-lg p-2 outline-none">
+        <label class="text-[10px] text-amber-400 font-bold uppercase block mb-0.5">Đối Phương</label>
+        <select id="m2PartnerLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
           <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
           <option value="vi-VN">🇻🇳 Tiếng Việt</option>
           <option value="en-US">🇬🇧 Tiếng Anh</option>
-          <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
-          <option value="zh-CN">🇨🇳 Tiếng Trung</option>
         </select>
       </div>
 
-      <button id="btnToggleAutoTTS" class="mt-4 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold text-emerald-400 flex items-center gap-1.5 shrink-0">
-        <i class="fa-solid fa-volume-high"></i> <span id="autoTtsStatus">Tự Đọc: ON</span>
+      <button id="btnToggleAutoTTS" class="mt-3 px-2 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-[10px] font-bold text-emerald-400 shrink-0">
+        <span id="autoTtsStatus">Đọc: ON</span>
       </button>
     </div>
 
-    <div id="m2Feed" class="flex-1 card-solid rounded-xl p-4 overflow-y-auto scroll-touch space-y-3">
-      <div id="m2Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-6">
-        <i class="fa-solid fa-comments text-3xl mb-2 text-slate-600"></i>
-        <p class="text-sm font-semibold text-slate-300">Chế độ giao tiếp trực tiếp 2 người</p>
-        <p class="text-xs text-slate-500">Bấm nút micro tương ứng bên dưới để nói chuyện trực tiếp.</p>
+    <div id="m2Feed" class="flex-1 min-h-[180px] max-h-[42vh] md:max-h-none card-solid rounded-xl p-3 overflow-y-auto scroll-touch space-y-2">
+      <div id="m2Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-4">
+        <i class="fa-solid fa-comments text-2xl mb-1 text-slate-600"></i>
+        <p class="text-xs font-semibold text-slate-300">Giao tiếp trực tiếp 2 người</p>
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-3 shrink-0">
-      <button id="btnMicUser" class="py-4 px-3 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-sm md:text-base flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95 transition">
-        <i class="fa-solid fa-microphone text-xl"></i>
+    <div class="sticky bottom-0 z-50 pt-2 pb-1 bg-[#0b1120] grid grid-cols-2 gap-2 shrink-0">
+      <button id="btnMicUser" class="py-3.5 px-2 rounded-xl bg-sky-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95">
+        <i class="fa-solid fa-microphone text-base"></i>
         <span>TÔI NÓI (<span id="lblUserLang">VN</span>)</span>
       </button>
 
-      <button id="btnMicPartner" class="py-4 px-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-sm md:text-base flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95 transition">
-        <i class="fa-solid fa-microphone text-xl"></i>
-        <span>ĐỐI PHƯƠNG NÓI (<span id="lblPartnerLang">JA</span>)</span>
+      <button id="btnMicPartner" class="py-3.5 px-2 rounded-xl bg-amber-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95">
+        <i class="fa-solid fa-microphone text-base"></i>
+        <span>ĐỐI PHƯƠNG (<span id="lblPartnerLang">JA</span>)</span>
       </button>
     </div>
   </main>
 
   <!-- Footer Info & Gain Control -->
-  <footer class="card-solid rounded-xl px-4 py-2 flex items-center justify-between gap-4 text-xs shrink-0">
-    <div class="flex items-center gap-3 flex-1 max-w-md">
-      <i class="fa-solid fa-volume-high text-amber-400 text-sm"></i>
-      <span class="text-xs font-bold text-slate-400 shrink-0">Tăng Âm Sạch:</span>
-      <input type="range" id="gainSlider" min="100" max="300" value="180" step="10" class="w-full h-1.5 bg-slate-700 rounded appearance-none cursor-pointer accent-amber-400">
-      <span id="gainValText" class="text-xs font-mono font-bold text-amber-400 w-12 text-right">180%</span>
+  <footer class="card-solid rounded-xl px-3 py-1.5 flex items-center justify-between gap-3 text-xs shrink-0 mt-2">
+    <div class="flex items-center gap-2 flex-1 max-w-xs">
+      <i class="fa-solid fa-volume-high text-amber-400 text-xs"></i>
+      <span class="text-[10px] font-bold text-slate-400 shrink-0">Lọc Âm:</span>
+      <input type="range" id="gainSlider" min="100" max="300" value="180" step="10" class="w-full h-1 bg-slate-700 rounded appearance-none cursor-pointer accent-amber-400">
+      <span id="gainValText" class="text-[10px] font-mono font-bold text-amber-400 shrink-0">180%</span>
     </div>
 
-    <div class="flex items-center gap-3 shrink-0">
-      <canvas id="specCanvas" width="80" height="20" class="rounded bg-slate-950 border border-slate-800 hidden sm:block"></canvas>
-      <div class="flex items-center gap-1.5">
-        <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
-        <span id="statusText" class="text-[11px] text-slate-400 hidden md:inline">Sẵn sàng</span>
-      </div>
+    <div class="flex items-center gap-1.5 shrink-0">
+      <span id="statusDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+      <span id="statusText" class="text-[10px] text-slate-400">Sẵn sàng</span>
     </div>
   </footer>
 
   <script>
-    // ----------------------------------------------------
-    // SERVICE WORKER REGISTRATION (Kích hoạt chế độ PWA App)
-    // ----------------------------------------------------
+    // Đăng ký Service Worker chuẩn PWA
     if ('serviceWorker' in navigator) {
-      const swBlob = new Blob([`
-        self.addEventListener('install', (e) => self.skipWaiting());
-        self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
-        self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));
-      `], { type: 'application/javascript' });
-
-      navigator.serviceWorker.register(URL.createObjectURL(swBlob))
-        .catch(err => console.log('SW Reg bypass:', err));
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('SW Ready:', reg.scope))
+          .catch(err => console.log('SW Error:', err));
+      });
     }
 
-    // PWA Install Prompt (Dành cho Chrome / Edge trên Laptop/Desktop)
-    let deferredPrompt = null;
-    const pwaInstallBtn = document.getElementById('pwaInstallBtn');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      pwaInstallBtn.classList.remove('hidden');
-    });
-
-    pwaInstallBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          pwaInstallBtn.classList.add('hidden');
-        }
-        deferredPrompt = null;
-      }
-    });
-
-    // ----------------------------------------------------
-    // TRÌNH XỬ LÝ NHẬN DIỆN GIỌNG NÓI & ÂM TẦN
-    // ----------------------------------------------------
+    // Logic Phiên dịch & Audio Processing
     const speakerBadges = [
       { name: 'Người A', badgeBg: 'bg-sky-950 text-sky-300 border-sky-500/50' },
       { name: 'Người B', badgeBg: 'bg-amber-950 text-amber-300 border-amber-500/50' },
@@ -320,7 +263,6 @@
     let mediaStream = null;
     let gainNode = null;
     let analyserNode = null;
-    let animFrameId = null;
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition = null;
@@ -356,14 +298,10 @@
 
     const gainSlider = document.getElementById('gainSlider');
     const gainValText = document.getElementById('gainValText');
-    const specCanvas = document.getElementById('specCanvas');
-    const specCtx = specCanvas.getContext('2d');
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
 
-    const langNames = {
-      'vi-VN': 'VN', 'ja-JP': 'JA', 'en-US': 'EN', 'ko-KR': 'KO', 'zh-CN': 'ZH'
-    };
+    const langNames = { 'vi-VN': 'VN', 'ja-JP': 'JA', 'en-US': 'EN', 'ko-KR': 'KO', 'zh-CN': 'ZH' };
 
     if (SpeechRecognition) {
       recognition = new SpeechRecognition();
@@ -371,8 +309,8 @@
       recognition.interimResults = true;
 
       recognition.onstart = () => {
-        statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping";
-        statusText.innerText = "Đang thu âm...";
+        statusDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-ping";
+        statusText.innerText = "Đang thu...";
       };
 
       recognition.onresult = (event) => {
@@ -386,18 +324,13 @@
             interimStr += trans;
           }
         }
-
         if (interimStr.trim().length > 0) {
           handleInterimSentence(interimStr.trim());
         }
       };
 
-      recognition.onerror = (e) => {
-        if (e.error !== 'no-speech') console.warn('Speech err:', e.error);
-      };
-
       recognition.onend = () => {
-        statusDot.className = "w-2.5 h-2.5 rounded-full bg-slate-500";
+        statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
         statusText.innerText = "Sẵn sàng";
         if (currentAppMode === 'oneWay' && isListeningMode1) {
           try { recognition.start(); } catch(e){}
@@ -405,14 +338,12 @@
           resetTwoWayButtons();
         }
       };
-    } else {
-      alert("Trình duyệt không hỗ trợ Web Speech API. Vui lòng sử dụng Google Chrome!");
     }
 
     tabModeOneWay.addEventListener('click', () => {
       currentAppMode = 'oneWay';
-      tabModeOneWay.className = "px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-sky-600 text-white shadow";
-      tabModeTwoWay.className = "px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white";
+      tabModeOneWay.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-sky-600 text-white shadow";
+      tabModeTwoWay.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
       modeOneWayView.classList.remove('hidden');
       modeTwoWayView.classList.add('hidden');
       stopAudioAndSpeech();
@@ -420,8 +351,8 @@
 
     tabModeTwoWay.addEventListener('click', () => {
       currentAppMode = 'twoWay';
-      tabModeTwoWay.className = "px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-amber-600 text-white shadow";
-      tabModeOneWay.className = "px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white";
+      tabModeTwoWay.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-amber-600 text-white shadow";
+      tabModeOneWay.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
       modeTwoWayView.classList.remove('hidden');
       modeOneWayView.classList.add('hidden');
       stopAudioAndSpeech();
@@ -437,13 +368,13 @@
     btnStartM1.addEventListener('click', async () => {
       if (!isListeningMode1) {
         isListeningMode1 = true;
-        btnStartM1.className = "flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-rose-500 text-white flex items-center justify-center gap-2 shadow-lg active:scale-98 transition mic-active";
+        btnStartM1.className = "flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-rose-500 text-white flex items-center justify-center gap-2 shadow-lg mic-active";
         btnStartM1Text.innerText = "DỪNG NGHE";
         await startAudioPipeline();
         restartSpeechEngine(m1SrcLang.value);
       } else {
         isListeningMode1 = false;
-        btnStartM1.className = "flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg active:scale-98 transition";
+        btnStartM1.className = "flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg";
         btnStartM1Text.innerText = "BẮT ĐẦU NGHE";
         stopAudioAndSpeech();
       }
@@ -463,8 +394,8 @@
       } else {
         stopAudioAndSpeech();
         activeTwoWayMic = 'user';
-        btnMicUser.className = "py-4 px-3 rounded-2xl bg-rose-600 text-white font-extrabold text-sm md:text-base flex flex-col items-center justify-center gap-1 shadow-lg mic-active";
-        btnMicPartner.className = "py-4 px-3 rounded-2xl bg-amber-600/40 text-slate-400 font-extrabold text-sm md:text-base flex flex-col items-center justify-center gap-1 opacity-50";
+        btnMicUser.className = "py-3.5 px-2 rounded-xl bg-rose-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg mic-active";
+        btnMicPartner.className = "py-3.5 px-2 rounded-xl bg-amber-600/40 text-slate-400 font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 opacity-50";
         await startAudioPipeline();
         restartSpeechEngine(m2UserLang.value);
       }
@@ -477,8 +408,8 @@
       } else {
         stopAudioAndSpeech();
         activeTwoWayMic = 'partner';
-        btnMicPartner.className = "py-4 px-3 rounded-2xl bg-rose-600 text-white font-extrabold text-sm md:text-base flex flex-col items-center justify-center gap-1 shadow-lg mic-active";
-        btnMicUser.className = "py-4 px-3 rounded-2xl bg-sky-600/40 text-slate-400 font-extrabold text-sm md:text-base flex flex-col items-center justify-center gap-1 opacity-50";
+        btnMicPartner.className = "py-3.5 px-2 rounded-xl bg-rose-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg mic-active";
+        btnMicUser.className = "py-3.5 px-2 rounded-xl bg-sky-600/40 text-slate-400 font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 opacity-50";
         await startAudioPipeline();
         restartSpeechEngine(m2PartnerLang.value);
       }
@@ -486,16 +417,13 @@
 
     function resetTwoWayButtons() {
       activeTwoWayMic = null;
-      btnMicUser.className = "py-4 px-3 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-sm md:text-base flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95 transition";
-      btnMicPartner.className = "py-4 px-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-sm md:text-base flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95 transition";
+      btnMicUser.className = "py-3.5 px-2 rounded-xl bg-sky-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg";
+      btnMicPartner.className = "py-3.5 px-2 rounded-xl bg-amber-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg";
     }
 
     btnToggleAutoTTS.addEventListener('click', () => {
       autoTTS = !autoTTS;
-      autoTtsStatus.innerText = `Tự Đọc: ${autoTTS ? 'ON' : 'OFF'}`;
-      btnToggleAutoTTS.className = `mt-4 px-3 py-2 rounded-xl border text-xs font-bold flex items-center gap-1.5 shrink-0 ${
-        autoTTS ? 'bg-slate-800 border-slate-700 text-emerald-400' : 'bg-slate-900 border-slate-800 text-slate-500'
-      }`;
+      autoTtsStatus.innerText = `Đọc: ${autoTTS ? 'ON' : 'OFF'}`;
     });
 
     m2UserLang.addEventListener('change', () => lblUserLang.innerText = langNames[m2UserLang.value] || 'VN');
@@ -533,7 +461,6 @@
         lastSpeechEndTime = now;
 
         activeSpeakerIdx = autoClusterSpeaker(avgPitch, pauseDuration);
-
         const currentSpkObj = speakerBadges[activeSpeakerIdx] || speakerBadges[0];
         currentDetectedSpeaker.innerText = `👤 ${currentSpkObj.name}`;
 
@@ -555,10 +482,7 @@
 
         appendTwoWayBubble(originalText, translated, isUser, tgtLang);
 
-        if (autoTTS && translated) {
-          speakText(translated, tgtLang);
-        }
-
+        if (autoTTS && translated) speakText(translated, tgtLang);
         stopAudioAndSpeech();
         resetTwoWayButtons();
       }
@@ -596,43 +520,35 @@
 
     function appendOneWayDualColumnCard(orig, trans, speakerIdx, tgtLangCode) {
       const spk = speakerBadges[speakerIdx] || speakerBadges[0];
-      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
       const row = document.createElement('div');
-      row.className = "grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 p-3 md:p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition";
+      row.className = "grid grid-cols-1 md:grid-cols-2 gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800";
 
       const safeOrig = escapeHtml(orig);
       const safeTrans = escapeHtml(trans);
 
       row.innerHTML = `
-        <div class="space-y-1.5">
-          <div class="flex items-center justify-between text-xs font-mono">
-            <span class="px-2 py-0.5 rounded-md font-bold text-[11px] ${spk.badgeBg} border">
-              👤 ${spk.name}
-            </span>
-            <div class="flex items-center gap-2 text-slate-500 text-[10px]">
-              <span>${timeStr}</span>
-              <button onclick="speakText('${safeOrig.replace(/'/g, "\\'")}', '${m1SrcLang.value}')" class="text-sky-400 hover:text-sky-300 p-1">
-                <i class="fa-solid fa-volume-high text-xs"></i>
-              </button>
-            </div>
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-[10px] font-mono">
+            <span class="px-1.5 py-0.5 rounded font-bold ${spk.badgeBg} border">👤 ${spk.name}</span>
+            <span class="text-slate-500">${timeStr}</span>
           </div>
-          <p class="text-slate-100 font-medium text-xs md:text-sm lg:text-base leading-relaxed">${safeOrig}</p>
+          <p class="text-slate-100 font-medium text-xs md:text-sm">${safeOrig}</p>
         </div>
 
-        <div class="space-y-1.5 md:border-l md:border-slate-800 md:pl-4 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
-          <div class="flex items-center justify-between text-xs font-mono">
-            <span class="text-[10px] font-bold text-emerald-400 uppercase">🇻🇳 Tiếng Dịch</span>
-            <button onclick="speakText('${safeTrans.replace(/'/g, "\\'")}', '${tgtLangCode}')" class="text-amber-400 hover:text-amber-300 p-1">
+        <div class="space-y-1 md:border-l md:border-slate-800 md:pl-3 pt-1 md:pt-0 border-t md:border-t-0 border-slate-800">
+          <div class="flex items-center justify-between text-[10px] font-mono">
+            <span class="text-emerald-400 font-bold uppercase">🇻🇳 Dịch</span>
+            <button onclick="speakText('${safeTrans.replace(/'/g, "\\'")}', '${tgtLangCode}')" class="text-amber-400 p-0.5">
               <i class="fa-solid fa-volume-high text-xs"></i>
             </button>
           </div>
-          <p class="text-amber-300 font-bold text-sm md:text-base lg:text-lg leading-relaxed">${safeTrans}</p>
+          <p class="text-amber-300 font-bold text-xs md:text-base">${safeTrans}</p>
         </div>
       `;
 
       m1Feed.appendChild(row);
-      limitDOMNodes(m1Feed, 50);
       m1Feed.scrollTop = m1Feed.scrollHeight;
     }
 
@@ -645,12 +561,12 @@
       const safeTrans = escapeHtml(trans);
 
       bubble.innerHTML = `
-        <span class="text-[10px] text-slate-500 font-mono px-1">${isUser ? 'Bạn' : 'Đối phương'}</span>
-        <div class="max-w-[85%] md:max-w-[70%] p-3.5 border ${bgClass} ${alignClass} space-y-1.5 shadow-md">
-          <p class="text-xs md:text-sm opacity-80 italic">${escapeHtml(orig)}</p>
-          <div class="flex items-center justify-between gap-3 pt-1 border-t border-white/10">
-            <p class="text-sm md:text-base lg:text-lg font-bold text-white">${safeTrans}</p>
-            <button onclick="speakText('${safeTrans.replace(/'/g, "\\'")}', '${tgtLangCode}')" class="text-emerald-400 hover:text-emerald-300 p-1 shrink-0">
+        <span class="text-[9px] text-slate-500 font-mono px-1">${isUser ? 'Bạn' : 'Đối phương'}</span>
+        <div class="max-w-[88%] p-2.5 border ${bgClass} ${alignClass} space-y-1 shadow">
+          <p class="text-xs opacity-80 italic">${escapeHtml(orig)}</p>
+          <div class="flex items-center justify-between gap-2 pt-1 border-t border-white/10">
+            <p class="text-xs md:text-sm font-bold text-white">${safeTrans}</p>
+            <button onclick="speakText('${safeTrans.replace(/'/g, "\\'")}', '${tgtLangCode}')" class="text-emerald-400 p-0.5 shrink-0">
               <i class="fa-solid fa-volume-high text-xs"></i>
             </button>
           </div>
@@ -658,7 +574,6 @@
       `;
 
       m2Feed.appendChild(bubble);
-      limitDOMNodes(m2Feed, 50);
       m2Feed.scrollTop = m2Feed.scrollHeight;
     }
 
@@ -669,13 +584,9 @@
         const res = await fetch(url);
         if (res.ok) {
           const data = await res.json();
-          if (data && data[0]) {
-            return data[0].map(item => item[0]).join('');
-          }
+          if (data && data[0]) return data[0].map(item => item[0]).join('');
         }
-      } catch (err) {
-        console.warn("Translation API error:", err);
-      }
+      } catch (err) {}
       return text;
     }
 
@@ -693,10 +604,7 @@
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') await audioCtx.resume();
 
-        mediaStream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: false, autoGainControl: true }
-        });
-
+        mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const source = audioCtx.createMediaStreamSource(mediaStream);
         gainNode = audioCtx.createGain();
         gainNode.gain.value = gainMultiplier;
@@ -706,21 +614,12 @@
 
         source.connect(gainNode);
         gainNode.connect(analyserNode);
-
-        renderSpectrum();
-      } catch (e) {
-        console.warn("Mic Audio Pipeline warning:", e);
-      }
+        processPitch();
+      } catch (e) {}
     }
 
-    let lastDraw = 0;
-    function renderSpectrum(timestamp) {
+    function processPitch() {
       if (!analyserNode) return;
-      animFrameId = requestAnimationFrame(renderSpectrum);
-
-      if (timestamp - lastDraw < 50) return;
-      lastDraw = timestamp;
-
       const data = new Uint8Array(analyserNode.frequencyBinCount);
       analyserNode.getByteFrequencyData(data);
 
@@ -734,35 +633,22 @@
         const currentCentroid = weightedFreq / totalEnergy;
         currentPhrasePitches.push(currentCentroid * 20); 
       }
-
-      specCtx.clearRect(0, 0, specCanvas.width, specCanvas.height);
-      const barW = specCanvas.width / data.length;
-      for (let i = 0; i < data.length; i++) {
-        const h = (data[i] / 255) * specCanvas.height;
-        specCtx.fillStyle = '#38bdf8';
-        specCtx.fillRect(i * barW, specCanvas.height - h, barW - 1, h);
-      }
+      if (isListeningMode1 || activeTwoWayMic) setTimeout(processPitch, 100);
     }
 
     function stopAudioAndSpeech() {
-      if (recognition) {
-        try { recognition.stop(); } catch(e){}
-      }
+      if (recognition) { try { recognition.stop(); } catch(e){} }
       if (mediaStream) {
         mediaStream.getTracks().forEach(t => t.stop());
         mediaStream = null;
       }
-      if (animFrameId) cancelAnimationFrame(animFrameId);
-      specCtx.clearRect(0, 0, specCanvas.width, specCanvas.height);
     }
 
     function restartSpeechEngine(langCode) {
       if (!recognition) return;
       try { recognition.stop(); } catch(e){}
       recognition.lang = langCode;
-      setTimeout(() => {
-        try { recognition.start(); } catch(e){}
-      }, 150);
+      setTimeout(() => { try { recognition.start(); } catch(e){} }, 150);
     }
 
     gainSlider.addEventListener('input', (e) => {
@@ -771,16 +657,6 @@
       gainValText.innerText = val + "%";
       if (gainNode) gainNode.gain.value = gainMultiplier;
     });
-
-    function limitDOMNodes(container, maxItems) {
-      while (container.children.length > maxItems + 1) {
-        if (container.children[1] && container.children[1].id !== 'm1Empty' && container.children[1].id !== 'm2Empty') {
-          container.removeChild(container.children[1]);
-        } else {
-          break;
-        }
-      }
-    }
 
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
