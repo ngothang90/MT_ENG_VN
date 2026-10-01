@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Live Translator Pro - Dual Column Desktop & Multi-Speaker</title>
+  <title>Live Translator Pro - Auto Speaker Detection</title>
 
   <!-- iOS WebApp Standalone Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -49,9 +49,6 @@
       background: #334155;
       border-radius: 4px;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #475569;
-    }
 
     .card-solid {
       background: #1e293b;
@@ -71,7 +68,7 @@
 </head>
 <body class="h-screen flex flex-col justify-between p-2 md:p-5 max-w-7xl mx-auto">
 
-  <!-- Header Section & Mode Switcher -->
+  <!-- Header Section -->
   <header class="card-solid rounded-2xl p-3 md:p-4 flex flex-wrap items-center justify-between gap-3 shrink-0 shadow-md">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-sky-600 flex items-center justify-center text-white shrink-0 font-bold shadow-lg shadow-sky-600/30">
@@ -79,7 +76,7 @@
       </div>
       <div>
         <h1 class="text-base md:text-xl font-extrabold text-white leading-tight">Live Translator Pro</h1>
-        <span class="text-xs text-sky-400 font-medium hidden sm:inline-block">2 Cột Song Song • Phân Biệt Người Nói (A/B/C) • Desktop Expanded</span>
+        <span class="text-xs text-sky-400 font-medium hidden sm:inline-block">Auto Pitch Detection • Tự Nhận Diện Người Nói • Desktop Expanded</span>
       </div>
     </div>
 
@@ -94,16 +91,16 @@
     </div>
   </header>
 
-  <!-- ==================== MODE 1: PHIÊN DỊCH 1 CHIỀU (2 CỘT PARALLEL) ==================== -->
+  <!-- ==================== MODE 1: PHIÊN DỊCH 1 CHIỀU (2 CỘT + TỰ ĐỘNG NHẬN DIỆN GIỌNG) ==================== -->
   <main id="modeOneWayView" class="flex-1 flex flex-col gap-3 my-2 min-h-0">
     
-    <!-- Controls Toolbar (Languages & Speaker Selection) -->
+    <!-- Controls Toolbar -->
     <div class="card-solid rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shrink-0">
       
       <!-- Language Selection -->
       <div class="flex items-center gap-2 flex-1 min-w-[280px]">
         <div class="flex-1">
-          <label class="text-[10px] md:text-xs text-slate-400 font-bold uppercase block mb-1">Gốc (Nghe)</label>
+          <label class="text-[10px] md:text-xs text-slate-400 font-bold uppercase block mb-1">Nguồn (Nghe)</label>
           <select id="m1SrcLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs md:text-sm font-semibold rounded-lg p-2 outline-none">
             <option value="ja-JP">🇯🇵 Tiếng Nhật (日本語)</option>
             <option value="en-US">🇬🇧 Tiếng Anh (English)</option>
@@ -113,7 +110,6 @@
           </select>
         </div>
 
-        <!-- Swap Button -->
         <button id="btnSwapM1" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-sky-400 flex items-center justify-center border border-slate-700 mt-4 shrink-0 active:scale-95 transition" title="Đổi ngôn ngữ">
           <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
         </button>
@@ -130,40 +126,27 @@
         </div>
       </div>
 
-      <!-- Speaker Switcher Bar (Người A, B, C, D) -->
-      <div class="flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800">
-        <span class="text-[11px] font-bold text-slate-400 uppercase px-1 hidden lg:inline">Người Nói:</span>
-        <div class="flex gap-1">
-          <button onclick="selectActiveSpeaker(0)" id="spkBtn-0" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-950 text-sky-300 border border-sky-500/50 shadow">
-            👤 Người A
-          </button>
-          <button onclick="selectActiveSpeaker(1)" id="spkBtn-1" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent">
-            👤 Người B
-          </button>
-          <button onclick="selectActiveSpeaker(2)" id="spkBtn-2" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent">
-            👤 Người C
-          </button>
-          <button onclick="selectActiveSpeaker(3)" id="spkBtn-3" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent">
-            👤 Người D
-          </button>
-        </div>
+      <!-- Auto Speaker Status Indicator -->
+      <div class="flex items-center gap-2 bg-slate-900 px-3 py-2 rounded-xl border border-slate-800">
+        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+        <span class="text-xs font-bold text-slate-300">Tự động phân tách giọng A/B/C: <span id="autoDetectLabel" class="text-amber-400">Đang bật</span></span>
       </div>
 
     </div>
 
-    <!-- Live Subtitle Real-time Box (Dual Column) -->
+    <!-- Live Real-time Subtitle Box -->
     <div class="card-solid rounded-xl p-3 md:p-4 border-l-4 border-l-amber-400 shrink-0">
       <div class="flex items-center justify-between text-xs font-bold text-slate-400 uppercase mb-2">
         <span class="flex items-center gap-1.5 text-amber-400">
-          <i class="fa-solid fa-bolt"></i> Nhận diện tức thì: <b id="activeSpeakerText" class="text-sky-300 ml-1">👤 Người A</b>
+          <i class="fa-solid fa-bolt"></i> Phát hiện thời gian thực: <b id="currentDetectedSpeaker" class="text-sky-300 ml-1">👤 Người A</b>
         </span>
-        <span class="text-[10px] text-slate-500 font-mono">Thời gian thực</span>
+        <span class="text-[10px] text-slate-500 font-mono">Tự phân tích tần số giọng</span>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
         <div class="space-y-1">
-          <span class="text-[10px] font-mono text-sky-400 font-bold uppercase">Gốc (Thời gian thực):</span>
-          <p id="m1LiveOrigText" class="text-sm md:text-base lg:text-lg text-slate-300 italic min-h-[1.5rem] truncate">Chưa phát hiện giọng nói...</p>
+          <span class="text-[10px] font-mono text-sky-400 font-bold uppercase">Gốc:</span>
+          <p id="m1LiveOrigText" class="text-sm md:text-base lg:text-lg text-slate-300 italic min-h-[1.5rem] truncate">Đang lắng nghe hội thoại...</p>
         </div>
         <div class="space-y-1 md:border-l md:border-slate-800 md:pl-4">
           <span class="text-[10px] font-mono text-amber-400 font-bold uppercase">Bản Dịch:</span>
@@ -175,23 +158,23 @@
     <!-- Dual Column Transcript Feed Header -->
     <div class="grid grid-cols-2 bg-slate-900 border border-slate-800 rounded-t-xl px-4 py-2.5 text-xs md:text-sm font-bold uppercase tracking-wider text-slate-300 shrink-0">
       <div class="flex items-center gap-2 text-sky-400">
-        <i class="fa-solid fa-align-left"></i> Tiếng Gốc (Source)
+        <i class="fa-solid fa-align-left"></i> Tiếng Gốc (Phân tách tự động)
       </div>
       <div class="flex items-center gap-2 text-amber-400 border-l border-slate-800 pl-4">
-        <i class="fa-solid fa-language"></i> Bản Dịch (Target)
+        <i class="fa-solid fa-language"></i> Bản Dịch Tiếng Việt
       </div>
     </div>
 
-    <!-- Transcript Feed for Mode 1 (Scrollable 2-Column List) -->
+    <!-- Transcript Feed for Mode 1 -->
     <div id="m1Feed" class="flex-1 card-solid rounded-b-xl p-3 md:p-4 overflow-y-auto scroll-touch space-y-3">
       <div id="m1Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-6">
-        <i class="fa-solid fa-ear-listen text-3xl mb-2 text-slate-600"></i>
-        <p class="text-sm font-semibold text-slate-300 mb-1">Sẵn sàng thu âm hội thoại nhiều người</p>
-        <p class="text-xs text-slate-500 max-w-md">Bấm "BẮT ĐẦU NGHE". Chế độ 2 cột sẽ hiển thị song song tiếng gốc và bản dịch với từng thẻ tên người nói riêng biệt.</p>
+        <i class="fa-solid fa-microphone-lines text-3xl mb-2 text-slate-600"></i>
+        <p class="text-sm font-semibold text-slate-300 mb-1">Tự động nhận diện & phân tách giọng nhiều người</p>
+        <p class="text-xs text-slate-500 max-w-md">Bấm "BẮT ĐẦU NGHE". Hệ thống dựa trên tần số giọng và khoảng ngắt lời để tự động gán nhãn Người A, Người B, Người C...</p>
       </div>
     </div>
 
-    <!-- Mode 1 Action Bar -->
+    <!-- Mode 1 Control Bar -->
     <div class="flex items-center gap-3 shrink-0">
       <button id="btnStartM1" class="flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg active:scale-98 transition">
         <i class="fa-solid fa-play"></i> <span id="btnStartM1Text">BẮT ĐẦU NGHE</span>
@@ -205,7 +188,6 @@
   <!-- ==================== MODE 2: HỘI THOẠI SONG NGỮ DIRECT ==================== -->
   <main id="modeTwoWayView" class="flex-1 flex flex-col gap-3 my-2 min-h-0 hidden">
     
-    <!-- Language Settings & Auto TTS Toggle -->
     <div class="card-solid rounded-xl p-3 flex items-center justify-between gap-3 shrink-0">
       <div class="flex-1">
         <label class="text-xs text-sky-400 font-bold uppercase block mb-1">Bạn Nói</label>
@@ -229,13 +211,11 @@
         </select>
       </div>
 
-      <!-- Auto Play TTS Toggle -->
       <button id="btnToggleAutoTTS" class="mt-4 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold text-emerald-400 flex items-center gap-1.5 shrink-0">
         <i class="fa-solid fa-volume-high"></i> <span id="autoTtsStatus">Tự Đọc: ON</span>
       </button>
     </div>
 
-    <!-- Chat History Feed -->
     <div id="m2Feed" class="flex-1 card-solid rounded-xl p-4 overflow-y-auto scroll-touch space-y-3">
       <div id="m2Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-6">
         <i class="fa-solid fa-comments text-3xl mb-2 text-slate-600"></i>
@@ -244,7 +224,6 @@
       </div>
     </div>
 
-    <!-- Dual Big Mic Buttons for Direct Chat -->
     <div class="grid grid-cols-2 gap-3 shrink-0">
       <button id="btnMicUser" class="py-4 px-3 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-sm md:text-base flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95 transition">
         <i class="fa-solid fa-microphone text-xl"></i>
@@ -277,21 +256,25 @@
   </footer>
 
   <script>
-    // Speaker Configuration Array
-    const speakerList = [
-      { id: 0, name: 'Người A', badgeBg: 'bg-sky-950 text-sky-300 border-sky-500/50' },
-      { id: 1, name: 'Người B', badgeBg: 'bg-amber-950 text-amber-300 border-amber-500/50' },
-      { id: 2, name: 'Người C', badgeBg: 'bg-purple-950 text-purple-300 border-purple-500/50' },
-      { id: 3, name: 'Người D', badgeBg: 'bg-emerald-950 text-emerald-300 border-emerald-500/50' }
+    // Speaker Profiles & Badges
+    const speakerBadges = [
+      { name: 'Người A', badgeBg: 'bg-sky-950 text-sky-300 border-sky-500/50' },
+      { name: 'Người B', badgeBg: 'bg-amber-950 text-amber-300 border-amber-500/50' },
+      { name: 'Người C', badgeBg: 'bg-purple-950 text-purple-300 border-purple-500/50' },
+      { name: 'Người D', badgeBg: 'bg-emerald-950 text-emerald-300 border-emerald-500/50' }
     ];
 
-    let currentSpeakerIdx = 0;
-    let currentAppMode = 'oneWay'; // 'oneWay' | 'twoWay'
+    // Automatic Pitch / Audio Profiling Cluster State
+    let knownSpeakers = []; // Array of average pitches: [120, 210, ...]
+    let currentPhrasePitches = []; // Samples collected for active phrase
+    let activeSpeakerIdx = 0;
+    let lastSpeechEndTime = Date.now();
+
+    let currentAppMode = 'oneWay';
     let isListeningMode1 = false;
-    let activeTwoWayMic = null; // 'user' | 'partner' | null
+    let activeTwoWayMic = null;
     let autoTTS = true;
     let gainMultiplier = 1.8;
-    let lastSpeechTimestamp = Date.now();
 
     // Web Audio DSP Variables
     let audioCtx = null;
@@ -300,7 +283,7 @@
     let analyserNode = null;
     let animFrameId = null;
 
-    // Speech Recognition Engine
+    // Speech Engine
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition = null;
     let interimDebounce = null;
@@ -321,6 +304,7 @@
     const m1LiveTransText = document.getElementById('m1LiveTransText');
     const m1Feed = document.getElementById('m1Feed');
     const m1Empty = document.getElementById('m1Empty');
+    const currentDetectedSpeaker = document.getElementById('currentDetectedSpeaker');
 
     const m2UserLang = document.getElementById('m2UserLang');
     const m2PartnerLang = document.getElementById('m2PartnerLang');
@@ -339,27 +323,12 @@
     const specCtx = specCanvas.getContext('2d');
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
-    const activeSpeakerText = document.getElementById('activeSpeakerText');
 
     const langNames = {
       'vi-VN': 'VN', 'ja-JP': 'JA', 'en-US': 'EN', 'ko-KR': 'KO', 'zh-CN': 'ZH'
     };
 
-    // Speaker Selection Handler
-    function selectActiveSpeaker(idx) {
-      currentSpeakerIdx = idx;
-      speakerList.forEach((spk, i) => {
-        const btn = document.getElementById(`spkBtn-${i}`);
-        if (i === idx) {
-          btn.className = `px-2.5 py-1 rounded-lg text-xs font-bold ${spk.badgeBg} border shadow`;
-        } else {
-          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent";
-        }
-      });
-      activeSpeakerText.innerText = `👤 ${speakerList[idx].name}`;
-    }
-
-    // Initialize Web Speech Engine
+    // Web Speech Initialization
     if (SpeechRecognition) {
       recognition = new SpeechRecognition();
       recognition.continuous = true;
@@ -372,14 +341,6 @@
 
       recognition.onresult = (event) => {
         let interimStr = '';
-        const now = Date.now();
-
-        // Auto speaker turn toggle if pause > 3 seconds
-        if (now - lastSpeechTimestamp > 3000 && isListeningMode1) {
-          // Keep current active speaker or option to cycle
-        }
-        lastSpeechTimestamp = now;
-
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           const trans = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
@@ -409,10 +370,10 @@
         }
       };
     } else {
-      alert("Trình duyệt không hỗ trợ Web Speech API. Vui lòng mở bằng Google Chrome!");
+      alert("Trình duyệt không hỗ trợ Web Speech API. Vui lòng sử dụng Google Chrome!");
     }
 
-    // Switch App Modes
+    // App Mode Switching
     tabModeOneWay.addEventListener('click', () => {
       currentAppMode = 'oneWay';
       tabModeOneWay.className = "px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-sky-600 text-white shadow";
@@ -431,7 +392,6 @@
       stopAudioAndSpeech();
     });
 
-    // Language Swapper
     btnSwapM1.addEventListener('click', () => {
       const tmp = m1SrcLang.value;
       m1SrcLang.value = m1TgtLang.value;
@@ -439,7 +399,6 @@
       if (isListeningMode1) restartSpeechEngine(m1SrcLang.value);
     });
 
-    // Mode 1 Start/Stop
     btnStartM1.addEventListener('click', async () => {
       if (!isListeningMode1) {
         isListeningMode1 = true;
@@ -459,9 +418,10 @@
       m1Feed.innerHTML = '';
       m1Feed.appendChild(m1Empty);
       m1Empty.style.display = 'flex';
+      knownSpeakers = [];
     });
 
-    // Mode 2 Mic Buttons
+    // Mode 2 Controls
     btnMicUser.addEventListener('click', async () => {
       if (activeTwoWayMic === 'user') {
         stopAudioAndSpeech();
@@ -507,7 +467,7 @@
     m2UserLang.addEventListener('change', () => lblUserLang.innerText = langNames[m2UserLang.value] || 'VN');
     m2PartnerLang.addEventListener('change', () => lblPartnerLang.innerText = langNames[m2PartnerLang.value] || 'JA');
 
-    // Interim Realtime Handle
+    // Real-time Interim Processing
     function handleInterimSentence(text) {
       if (currentAppMode === 'oneWay') {
         m1LiveOrigText.innerText = text;
@@ -521,7 +481,7 @@
       }
     }
 
-    // Final Sentence Handle
+    // Final Sentence Handle + Automatic Speaker Clustering Logic
     async function handleFinalSentence(originalText) {
       if (!originalText || originalText.length === 0) return;
 
@@ -530,11 +490,28 @@
         m1LiveOrigText.innerText = '...';
         m1LiveTransText.innerText = '---';
 
+        // Calculate average pitch/frequency of current phrase
+        let avgPitch = 150;
+        if (currentPhrasePitches.length > 0) {
+          avgPitch = currentPhrasePitches.reduce((a, b) => a + b, 0) / currentPhrasePitches.length;
+        }
+        currentPhrasePitches = []; // reset for next phrase
+
+        const now = Date.now();
+        const pauseDuration = now - lastSpeechEndTime;
+        lastSpeechEndTime = now;
+
+        // Auto Speaker Clustering Algorithm
+        activeSpeakerIdx = autoClusterSpeaker(avgPitch, pauseDuration);
+
+        const currentSpkObj = speakerBadges[activeSpeakerIdx] || speakerBadges[0];
+        currentDetectedSpeaker.innerText = `👤 ${currentSpkObj.name}`;
+
         const src = m1SrcLang.value.split('-')[0];
         const tgt = m1TgtLang.value.split('-')[0];
         const translated = await translateTextAPI(originalText, src, tgt);
 
-        appendOneWayDualColumnCard(originalText, translated, currentSpeakerIdx, m1TgtLang.value);
+        appendOneWayDualColumnCard(originalText, translated, activeSpeakerIdx, m1TgtLang.value);
 
       } else if (currentAppMode === 'twoWay') {
         m2Empty.style.display = 'none';
@@ -557,9 +534,44 @@
       }
     }
 
+    // Auto Cluster Speaker based on Voice Pitch Frequency & Silence Gap
+    function autoClusterSpeaker(avgPitch, pauseMs) {
+      if (knownSpeakers.length === 0) {
+        knownSpeakers.push(avgPitch);
+        return 0; // First speaker = Speaker A
+      }
+
+      // Check distance to existing speaker pitches
+      let minDiff = 9999;
+      let matchedIdx = 0;
+
+      for (let i = 0; i < knownSpeakers.length; i++) {
+        const diff = Math.abs(knownSpeakers[i] - avgPitch);
+        if (diff < minDiff) {
+          minDiff = diff;
+          matchedIdx = i;
+        }
+      }
+
+      // Threshold: Pitch difference > 28 units means distinctly different voice
+      if (minDiff > 28 && knownSpeakers.length < 4) {
+        knownSpeakers.push(avgPitch);
+        return knownSpeakers.length - 1; // New Speaker (B, C, D...)
+      }
+
+      // If silence gap > 2000ms and pitches are moderately different, switch turn
+      if (pauseMs > 2000 && knownSpeakers.length > 1 && minDiff > 12) {
+        return matchedIdx;
+      }
+
+      // Otherwise match nearest known speaker profile
+      knownSpeakers[matchedIdx] = (knownSpeakers[matchedIdx] * 0.7) + (avgPitch * 0.3); // update profile centroid
+      return matchedIdx;
+    }
+
     // Append 2-Column Row in Mode 1
     function appendOneWayDualColumnCard(orig, trans, speakerIdx, tgtLangCode) {
-      const spk = speakerList[speakerIdx] || speakerList[0];
+      const spk = speakerBadges[speakerIdx] || speakerBadges[0];
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
       const row = document.createElement('div');
@@ -569,12 +581,11 @@
       const safeTrans = escapeHtml(trans);
 
       row.innerHTML = `
-        <!-- Left Column: Source Language & Speaker Tag -->
         <div class="space-y-1.5">
           <div class="flex items-center justify-between text-xs font-mono">
-            <button onclick="cycleSpeakerTag(this)" data-spk-idx="${spk.id}" class="px-2 py-0.5 rounded-md font-bold text-[11px] ${spk.badgeBg} border transition" title="Bấm để đổi người nói">
+            <span class="px-2 py-0.5 rounded-md font-bold text-[11px] ${spk.badgeBg} border">
               👤 ${spk.name}
-            </button>
+            </span>
             <div class="flex items-center gap-2 text-slate-500 text-[10px]">
               <span>${timeStr}</span>
               <button onclick="speakText('${safeOrig.replace(/'/g, "\\'")}', '${m1SrcLang.value}')" class="text-sky-400 hover:text-sky-300 p-1">
@@ -585,7 +596,6 @@
           <p class="text-slate-100 font-medium text-xs md:text-sm lg:text-base leading-relaxed">${safeOrig}</p>
         </div>
 
-        <!-- Right Column: Translated Language -->
         <div class="space-y-1.5 md:border-l md:border-slate-800 md:pl-4 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
           <div class="flex items-center justify-between text-xs font-mono">
             <span class="text-[10px] font-bold text-emerald-400 uppercase">🇻🇳 Tiếng Dịch</span>
@@ -600,17 +610,6 @@
       m1Feed.appendChild(row);
       limitDOMNodes(m1Feed, 50);
       m1Feed.scrollTop = m1Feed.scrollHeight;
-    }
-
-    // Cycle speaker badge on click (A -> B -> C -> D)
-    function cycleSpeakerTag(btn) {
-      let currentIdx = parseInt(btn.getAttribute('data-spk-idx')) || 0;
-      let nextIdx = (currentIdx + 1) % speakerList.length;
-      const newSpk = speakerList[nextIdx];
-
-      btn.setAttribute('data-spk-idx', nextIdx);
-      btn.className = `px-2 py-0.5 rounded-md font-bold text-[11px] ${newSpk.badgeBg} border transition`;
-      btn.innerText = `👤 ${newSpk.name}`;
     }
 
     // Append Chat Bubble in Mode 2
@@ -640,7 +639,7 @@
       m2Feed.scrollTop = m2Feed.scrollHeight;
     }
 
-    // Google Translate GTX API
+    // Translation API
     async function translateTextAPI(text, src, tgt) {
       if (!text) return '';
       try {
@@ -658,7 +657,7 @@
       return text;
     }
 
-    // Text-To-Speech Engine
+    // Text To Speech
     function speakText(text, langCode) {
       if (!('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
@@ -668,7 +667,7 @@
       window.speechSynthesis.speak(utterance);
     }
 
-    // Web Audio Gain Booster Setup
+    // Web Audio Pipeline + Pitch Profile Collector
     async function startAudioPipeline() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -683,7 +682,7 @@
         gainNode.gain.value = gainMultiplier;
 
         analyserNode = audioCtx.createAnalyser();
-        analyserNode.fftSize = 32;
+        analyserNode.fftSize = 64;
 
         source.connect(gainNode);
         gainNode.connect(analyserNode);
@@ -704,6 +703,18 @@
 
       const data = new Uint8Array(analyserNode.frequencyBinCount);
       analyserNode.getByteFrequencyData(data);
+
+      // Collect spectral energy/pitch centroid for active speaker profiling
+      let totalEnergy = 0;
+      let weightedFreq = 0;
+      for (let i = 0; i < data.length; i++) {
+        totalEnergy += data[i];
+        weightedFreq += data[i] * (i + 1);
+      }
+      if (totalEnergy > 50) { // voice threshold
+        const currentCentroid = weightedFreq / totalEnergy;
+        currentPhrasePitches.push(currentCentroid * 20); // normalized pitch
+      }
 
       specCtx.clearRect(0, 0, specCanvas.width, specCanvas.height);
       const barW = specCanvas.width / data.length;
