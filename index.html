@@ -27,7 +27,6 @@
       box-sizing: border-box;
     }
     
-    /* Dynamic Viewport Height hỗ trợ tai thỏ và thanh điều hướng Safari/Chrome */
     html, body {
       min-height: 100dvh;
       background-color: #0b1120;
@@ -97,8 +96,6 @@
     
     <!-- Controls Toolbar -->
     <div class="card-solid rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 shrink-0">
-      
-      <!-- Language Selection -->
       <div class="flex items-center gap-2 flex-1 w-full sm:w-auto">
         <div class="flex-1">
           <label class="text-[9px] md:text-xs text-slate-400 font-bold uppercase block mb-0.5">Nguồn (Nghe)</label>
@@ -126,7 +123,6 @@
           </select>
         </div>
       </div>
-
     </div>
 
     <!-- Live Real-time Subtitle Box -->
@@ -149,7 +145,7 @@
       </div>
     </div>
 
-    <!-- Feed Container - Đã cho phép cuộn độc lập -->
+    <!-- Feed Container -->
     <div id="m1Feed" class="flex-1 min-h-[180px] max-h-[42vh] md:max-h-none card-solid rounded-xl p-3 overflow-y-auto scroll-touch space-y-2.5">
       <div id="m1Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-4">
         <i class="fa-solid fa-microphone-lines text-2xl mb-1 text-slate-600"></i>
@@ -158,7 +154,7 @@
       </div>
     </div>
 
-    <!-- Sticky Bottom Control Bar - Luôn ghim dưới đáy màn hình điện thoại -->
+    <!-- Sticky Bottom Control Bar -->
     <div class="sticky bottom-0 z-50 pt-2 pb-1 bg-[#0b1120] flex items-center gap-2 shrink-0">
       <button id="btnStartM1" class="flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
         <i class="fa-solid fa-play"></i> <span id="btnStartM1Text">BẮT ĐẦU NGHE</span>
@@ -172,21 +168,28 @@
   <!-- ==================== MODE 2: SONG NGỮ DIRECT ==================== -->
   <main id="modeTwoWayView" class="flex-1 flex flex-col gap-2 min-h-0 hidden">
     <div class="card-solid rounded-xl p-2.5 flex items-center justify-between gap-2 shrink-0">
+      
+      <!-- Tôi Nói (Đầy đủ 5 ngôn ngữ) -->
       <div class="flex-1">
         <label class="text-[10px] text-sky-400 font-bold uppercase block mb-0.5">Tôi Nói</label>
         <select id="m2UserLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
           <option value="vi-VN">🇻🇳 Tiếng Việt</option>
           <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
           <option value="en-US">🇬🇧 Tiếng Anh</option>
+          <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
+          <option value="zh-CN">🇨🇳 Tiếng Trung</option>
         </select>
       </div>
 
+      <!-- Đối Phương Nói (Đầy đủ 5 ngôn ngữ) -->
       <div class="flex-1">
         <label class="text-[10px] text-amber-400 font-bold uppercase block mb-0.5">Đối Phương</label>
         <select id="m2PartnerLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
           <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
           <option value="vi-VN">🇻🇳 Tiếng Việt</option>
           <option value="en-US">🇬🇧 Tiếng Anh</option>
+          <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
+          <option value="zh-CN">🇨🇳 Tiếng Trung</option>
         </select>
       </div>
 
@@ -231,7 +234,7 @@
   </footer>
 
   <script>
-    // Đăng ký Service Worker chuẩn PWA
+    // Register Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
@@ -240,7 +243,6 @@
       });
     }
 
-    // Logic Phiên dịch & Audio Processing
     const speakerBadges = [
       { name: 'Người A', badgeBg: 'bg-sky-950 text-sky-300 border-sky-500/50' },
       { name: 'Người B', badgeBg: 'bg-amber-950 text-amber-300 border-amber-500/50' },
@@ -301,7 +303,13 @@
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
 
-    const langNames = { 'vi-VN': 'VN', 'ja-JP': 'JA', 'en-US': 'EN', 'ko-KR': 'KO', 'zh-CN': 'ZH' };
+    const langNames = { 
+      'vi-VN': 'VN', 
+      'ja-JP': 'JA', 
+      'en-US': 'EN', 
+      'ko-KR': 'KO', 
+      'zh-CN': 'ZH' 
+    };
 
     if (SpeechRecognition) {
       recognition = new SpeechRecognition();
