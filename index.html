@@ -28,17 +28,19 @@
     }
     
     html, body {
-      min-height: 100dvh;
+      height: 100dvh;
       background-color: #0b1120;
       color: #f8fafc;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
     }
 
+    /* Đệm an toàn tránh tai thỏ và vạch vuốt trang chủ iOS */
     body {
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
+      padding-top: max(20px, env(safe-area-inset-top));
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+      padding-left: max(12px, env(safe-area-inset-left));
+      padding-right: max(12px, env(safe-area-inset-right));
     }
     
     .scroll-touch {
@@ -66,17 +68,17 @@
     }
   </style>
 </head>
-<body class="flex flex-col min-h-[100dvh] p-2 md:p-4 max-w-7xl mx-auto overflow-y-auto">
+<body class="flex flex-col h-[100dvh] max-w-7xl mx-auto">
 
-  <!-- Header Section -->
-  <header class="card-solid rounded-2xl p-3 flex items-center justify-between gap-2 shrink-0 shadow-md mb-2">
-    <div class="flex items-center gap-2.5">
-      <div class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-sky-600 flex items-center justify-center text-white shrink-0 font-bold shadow-md">
-        <i class="fa-solid fa-language text-lg md:text-2xl"></i>
+  <!-- Header Section (Nâng khoảng cách tránh tai thỏ/Dynamic Island) -->
+  <header class="card-solid rounded-2xl p-2.5 flex items-center justify-between gap-2 shrink-0 shadow-md mb-2 mt-1">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white shrink-0 font-bold shadow-md">
+        <i class="fa-solid fa-language text-lg"></i>
       </div>
       <div>
-        <h1 class="text-sm md:text-xl font-extrabold text-white leading-tight">Live Translator Pro</h1>
-        <span class="text-[10px] md:text-xs text-sky-400 font-medium hidden sm:inline-block">Auto Pitch Detection • Tự Nhận Diện Người Nói</span>
+        <h1 class="text-xs md:text-lg font-extrabold text-white leading-tight">Live Translator Pro</h1>
+        <span class="text-[9px] md:text-xs text-sky-400 font-medium hidden sm:inline-block">Tự Nhận Diện Người Nói</span>
       </div>
     </div>
 
@@ -91,147 +93,156 @@
     </div>
   </header>
 
-  <!-- ==================== MODE 1: PHIÊN DỊCH 1 CHIỀU ==================== -->
-  <main id="modeOneWayView" class="flex-1 flex flex-col gap-2 min-h-0">
+  <!-- ==================== CONTENT AREA ==================== -->
+  <div class="flex-1 flex flex-col min-h-0 overflow-hidden gap-2">
     
-    <!-- Controls Toolbar -->
-    <div class="card-solid rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2 shrink-0">
-      <div class="flex items-center gap-2 flex-1 w-full sm:w-auto">
+    <!-- MODE 1: PHIÊN DỊCH 1 CHIỀU -->
+    <main id="modeOneWayView" class="flex-1 flex flex-col gap-2 min-h-0">
+      <!-- Controls Toolbar -->
+      <div class="card-solid rounded-xl p-2 flex items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center gap-2 flex-1">
+          <div class="flex-1">
+            <label class="text-[9px] text-slate-400 font-bold uppercase block mb-0.5">Nguồn (Nghe)</label>
+            <select id="m1SrcLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
+              <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
+              <option value="en-US">🇬🇧 Tiếng Anh</option>
+              <option value="vi-VN">🇻🇳 Tiếng Việt</option>
+              <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
+              <option value="zh-CN">🇨🇳 Tiếng Trung</option>
+            </select>
+          </div>
+
+          <button id="btnSwapM1" class="w-7 h-7 rounded-full bg-slate-800 text-sky-400 flex items-center justify-center border border-slate-700 mt-3 shrink-0 active:scale-95" title="Đổi ngôn ngữ">
+            <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
+          </button>
+
+          <div class="flex-1">
+            <label class="text-[9px] text-slate-400 font-bold uppercase block mb-0.5">Đích (Dịch)</label>
+            <select id="m1TgtLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
+              <option value="vi-VN">🇻🇳 Tiếng Việt</option>
+              <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
+              <option value="en-US">🇬🇧 Tiếng Anh</option>
+              <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
+              <option value="zh-CN">🇨🇳 Tiếng Trung</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Real-time Subtitle Box -->
+      <div class="card-solid rounded-xl p-2.5 border-l-4 border-l-amber-400 shrink-0">
+        <div class="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase mb-1">
+          <span class="flex items-center gap-1 text-amber-400">
+            <i class="fa-solid fa-bolt"></i> Realtime: <b id="currentDetectedSpeaker" class="text-sky-300 ml-1">👤 Người A</b>
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+          <div>
+            <span class="text-[9px] font-mono text-sky-400 font-bold uppercase">Gốc:</span>
+            <p id="m1LiveOrigText" class="text-xs text-slate-300 italic truncate">Đang lắng nghe...</p>
+          </div>
+          <div class="md:border-l md:border-slate-800 md:pl-2">
+            <span class="text-[9px] font-mono text-amber-400 font-bold uppercase">Dịch:</span>
+            <p id="m1LiveTransText" class="text-xs md:text-sm font-bold text-amber-300">---</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed Container -->
+      <div id="m1Feed" class="flex-1 card-solid rounded-xl p-2.5 overflow-y-auto scroll-touch space-y-2 min-h-0">
+        <div id="m1Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-4">
+          <i class="fa-solid fa-microphone-lines text-2xl mb-1 text-slate-600"></i>
+          <p class="text-xs font-semibold text-slate-300">Tự động phân tách giọng người nói</p>
+          <p class="text-[10px] text-slate-500">Nhấn nút bên dưới để bắt đầu.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- MODE 2: SONG NGỮ DIRECT -->
+    <main id="modeTwoWayView" class="flex-1 flex flex-col gap-2 min-h-0 hidden">
+      <div class="card-solid rounded-xl p-2 flex items-center justify-between gap-2 shrink-0">
+        <!-- Tôi Nói -->
         <div class="flex-1">
-          <label class="text-[9px] md:text-xs text-slate-400 font-bold uppercase block mb-0.5">Nguồn (Nghe)</label>
-          <select id="m1SrcLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-2 outline-none">
+          <label class="text-[9px] text-sky-400 font-bold uppercase block mb-0.5">Tôi Nói</label>
+          <select id="m2UserLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
+            <option value="vi-VN">🇻🇳 Tiếng Việt</option>
             <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
             <option value="en-US">🇬🇧 Tiếng Anh</option>
-            <option value="vi-VN">🇻🇳 Tiếng Việt</option>
             <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
             <option value="zh-CN">🇨🇳 Tiếng Trung</option>
           </select>
         </div>
 
-        <button id="btnSwapM1" class="w-8 h-8 rounded-full bg-slate-800 text-sky-400 flex items-center justify-center border border-slate-700 mt-3 shrink-0 active:scale-95" title="Đổi ngôn ngữ">
-          <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
+        <!-- Đối Phương -->
+        <div class="flex-1">
+          <label class="text-[9px] text-amber-400 font-bold uppercase block mb-0.5">Đối Phương</label>
+          <select id="m2PartnerLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
+            <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
+            <option value="vi-VN">🇻🇳 Tiếng Việt</option>
+            <option value="en-US">🇬🇧 Tiếng Anh</option>
+            <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
+            <option value="zh-CN">🇨🇳 Tiếng Trung</option>
+          </select>
+        </div>
+
+        <button id="btnToggleAutoTTS" class="mt-3 px-2 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-[10px] font-bold text-emerald-400 shrink-0">
+          <span id="autoTtsStatus">Đọc: ON</span>
         </button>
+      </div>
 
-        <div class="flex-1">
-          <label class="text-[9px] md:text-xs text-slate-400 font-bold uppercase block mb-0.5">Đích (Dịch)</label>
-          <select id="m1TgtLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-2 outline-none">
-            <option value="vi-VN">🇻🇳 Tiếng Việt</option>
-            <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
-            <option value="en-US">🇬🇧 Tiếng Anh</option>
-            <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
-            <option value="zh-CN">🇨🇳 Tiếng Trung</option>
-          </select>
+      <div id="m2Feed" class="flex-1 card-solid rounded-xl p-2.5 overflow-y-auto scroll-touch space-y-2 min-h-0">
+        <div id="m2Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-4">
+          <i class="fa-solid fa-comments text-2xl mb-1 text-slate-600"></i>
+          <p class="text-xs font-semibold text-slate-300">Hội thoại trực tiếp song ngữ</p>
         </div>
       </div>
-    </div>
+    </main>
 
-    <!-- Live Real-time Subtitle Box -->
-    <div class="card-solid rounded-xl p-3 border-l-4 border-l-amber-400 shrink-0">
-      <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase mb-1">
-        <span class="flex items-center gap-1 text-amber-400">
-          <i class="fa-solid fa-bolt"></i> Thời gian thực: <b id="currentDetectedSpeaker" class="text-sky-300 ml-1">👤 Người A</b>
-        </span>
-      </div>
+  </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <div>
-          <span class="text-[9px] font-mono text-sky-400 font-bold uppercase">Gốc:</span>
-          <p id="m1LiveOrigText" class="text-xs md:text-base text-slate-300 italic min-h-[1.25rem] truncate">Đang lắng nghe...</p>
-        </div>
-        <div class="md:border-l md:border-slate-800 md:pl-3">
-          <span class="text-[9px] font-mono text-amber-400 font-bold uppercase">Bản Dịch:</span>
-          <p id="m1LiveTransText" class="text-sm md:text-lg font-bold text-amber-300 min-h-[1.25rem]">---</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Feed Container -->
-    <div id="m1Feed" class="flex-1 min-h-[180px] max-h-[42vh] md:max-h-none card-solid rounded-xl p-3 overflow-y-auto scroll-touch space-y-2.5">
-      <div id="m1Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-4">
-        <i class="fa-solid fa-microphone-lines text-2xl mb-1 text-slate-600"></i>
-        <p class="text-xs font-semibold text-slate-300">Tự động phân tách giọng A/B/C/D</p>
-        <p class="text-[11px] text-slate-500">Bấm "BẮT ĐẦU NGHE" ở bên dưới.</p>
-      </div>
-    </div>
-
-    <!-- Sticky Bottom Control Bar -->
-    <div class="sticky bottom-0 z-50 pt-2 pb-1 bg-[#0b1120] flex items-center gap-2 shrink-0">
-      <button id="btnStartM1" class="flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
+  <!-- ==================== CỤM ĐIỀU KHIỂN BẤM & LỌC ÂM (NÂNG CAO TRÁNH VẠCH VUỐT) ==================== -->
+  <div class="shrink-0 pt-2 flex flex-col gap-2 bg-[#0b1120] z-50">
+    
+    <!-- Action Buttons cho Chế độ 1 Chiều -->
+    <div id="m1ActionButtons" class="flex items-center gap-2">
+      <button id="btnStartM1" class="flex-1 py-3 rounded-xl font-extrabold text-xs md:text-sm bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
         <i class="fa-solid fa-play"></i> <span id="btnStartM1Text">BẮT ĐẦU NGHE</span>
       </button>
-      <button id="btnClearM1" class="px-3 py-3.5 rounded-xl bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center shrink-0 font-bold text-xs">
+      <button id="btnClearM1" class="px-3.5 py-3 rounded-xl bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center shrink-0 font-bold text-xs">
         <i class="fa-solid fa-trash-can text-sm"></i>
       </button>
     </div>
-  </main>
 
-  <!-- ==================== MODE 2: SONG NGỮ DIRECT ==================== -->
-  <main id="modeTwoWayView" class="flex-1 flex flex-col gap-2 min-h-0 hidden">
-    <div class="card-solid rounded-xl p-2.5 flex items-center justify-between gap-2 shrink-0">
-      
-      <!-- Tôi Nói (Đầy đủ 5 ngôn ngữ) -->
-      <div class="flex-1">
-        <label class="text-[10px] text-sky-400 font-bold uppercase block mb-0.5">Tôi Nói</label>
-        <select id="m2UserLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
-          <option value="vi-VN">🇻🇳 Tiếng Việt</option>
-          <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
-          <option value="en-US">🇬🇧 Tiếng Anh</option>
-          <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
-          <option value="zh-CN">🇨🇳 Tiếng Trung</option>
-        </select>
-      </div>
-
-      <!-- Đối Phương Nói (Đầy đủ 5 ngôn ngữ) -->
-      <div class="flex-1">
-        <label class="text-[10px] text-amber-400 font-bold uppercase block mb-0.5">Đối Phương</label>
-        <select id="m2PartnerLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
-          <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
-          <option value="vi-VN">🇻🇳 Tiếng Việt</option>
-          <option value="en-US">🇬🇧 Tiếng Anh</option>
-          <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
-          <option value="zh-CN">🇨🇳 Tiếng Trung</option>
-        </select>
-      </div>
-
-      <button id="btnToggleAutoTTS" class="mt-3 px-2 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-[10px] font-bold text-emerald-400 shrink-0">
-        <span id="autoTtsStatus">Đọc: ON</span>
-      </button>
-    </div>
-
-    <div id="m2Feed" class="flex-1 min-h-[180px] max-h-[42vh] md:max-h-none card-solid rounded-xl p-3 overflow-y-auto scroll-touch space-y-2">
-      <div id="m2Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-4">
-        <i class="fa-solid fa-comments text-2xl mb-1 text-slate-600"></i>
-        <p class="text-xs font-semibold text-slate-300">Giao tiếp trực tiếp 2 người</p>
-      </div>
-    </div>
-
-    <div class="sticky bottom-0 z-50 pt-2 pb-1 bg-[#0b1120] grid grid-cols-2 gap-2 shrink-0">
-      <button id="btnMicUser" class="py-3.5 px-2 rounded-xl bg-sky-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95">
-        <i class="fa-solid fa-microphone text-base"></i>
+    <!-- Action Buttons cho Chế độ Song Ngữ -->
+    <div id="m2ActionButtons" class="grid grid-cols-2 gap-2 hidden">
+      <button id="btnMicUser" class="py-3 px-2 rounded-xl bg-sky-600 text-white font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 shadow-lg active:scale-95">
+        <i class="fa-solid fa-microphone text-sm"></i>
         <span>TÔI NÓI (<span id="lblUserLang">VN</span>)</span>
       </button>
 
-      <button id="btnMicPartner" class="py-3.5 px-2 rounded-xl bg-amber-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95">
-        <i class="fa-solid fa-microphone text-base"></i>
+      <button id="btnMicPartner" class="py-3 px-2 rounded-xl bg-amber-600 text-white font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 shadow-lg active:scale-95">
+        <i class="fa-solid fa-microphone text-sm"></i>
         <span>ĐỐI PHƯƠNG (<span id="lblPartnerLang">JA</span>)</span>
       </button>
     </div>
-  </main>
 
-  <!-- Footer Info & Gain Control -->
-  <footer class="card-solid rounded-xl px-3 py-1.5 flex items-center justify-between gap-3 text-xs shrink-0 mt-2">
-    <div class="flex items-center gap-2 flex-1 max-w-xs">
-      <i class="fa-solid fa-volume-high text-amber-400 text-xs"></i>
-      <span class="text-[10px] font-bold text-slate-400 shrink-0">Lọc Âm:</span>
-      <input type="range" id="gainSlider" min="100" max="300" value="180" step="10" class="w-full h-1 bg-slate-700 rounded appearance-none cursor-pointer accent-amber-400">
-      <span id="gainValText" class="text-[10px] font-mono font-bold text-amber-400 shrink-0">180%</span>
+    <!-- NẮM NẰM NGAY DƯỚI CÁC NÚT BẤM (Đã nâng khoảng cách không chạm vạch Home iOS) -->
+    <div class="card-solid rounded-xl px-3 py-1.5 flex items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2 flex-1 max-w-xs">
+        <i class="fa-solid fa-volume-high text-amber-400 text-xs"></i>
+        <span class="text-[10px] font-bold text-slate-400 shrink-0">Lọc Âm:</span>
+        <input type="range" id="gainSlider" min="100" max="300" value="180" step="10" class="w-full h-1 bg-slate-700 rounded appearance-none cursor-pointer accent-amber-400">
+        <span id="gainValText" class="text-[10px] font-mono font-bold text-amber-400 shrink-0">180%</span>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <span id="statusDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+        <span id="statusText" class="text-[10px] text-slate-400">Sẵn sàng</span>
+      </div>
     </div>
 
-    <div class="flex items-center gap-1.5 shrink-0">
-      <span id="statusDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
-      <span id="statusText" class="text-[10px] text-slate-400">Sẵn sàng</span>
-    </div>
-  </footer>
+  </div>
 
   <script>
     // Register Service Worker
@@ -274,6 +285,8 @@
     const tabModeTwoWay = document.getElementById('tabModeTwoWay');
     const modeOneWayView = document.getElementById('modeOneWayView');
     const modeTwoWayView = document.getElementById('modeTwoWayView');
+    const m1ActionButtons = document.getElementById('m1ActionButtons');
+    const m2ActionButtons = document.getElementById('m2ActionButtons');
 
     const m1SrcLang = document.getElementById('m1SrcLang');
     const m1TgtLang = document.getElementById('m1TgtLang');
@@ -348,12 +361,15 @@
       };
     }
 
+    // Tab switcher logic
     tabModeOneWay.addEventListener('click', () => {
       currentAppMode = 'oneWay';
       tabModeOneWay.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-sky-600 text-white shadow";
       tabModeTwoWay.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
       modeOneWayView.classList.remove('hidden');
       modeTwoWayView.classList.add('hidden');
+      m1ActionButtons.classList.remove('hidden');
+      m2ActionButtons.classList.add('hidden');
       stopAudioAndSpeech();
     });
 
@@ -363,6 +379,8 @@
       tabModeOneWay.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
       modeTwoWayView.classList.remove('hidden');
       modeOneWayView.classList.add('hidden');
+      m2ActionButtons.classList.remove('hidden');
+      m1ActionButtons.classList.add('hidden');
       stopAudioAndSpeech();
     });
 
@@ -376,13 +394,13 @@
     btnStartM1.addEventListener('click', async () => {
       if (!isListeningMode1) {
         isListeningMode1 = true;
-        btnStartM1.className = "flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-rose-500 text-white flex items-center justify-center gap-2 shadow-lg mic-active";
+        btnStartM1.className = "flex-1 py-3 rounded-xl font-extrabold text-xs md:text-sm bg-rose-500 text-white flex items-center justify-center gap-2 shadow-lg mic-active";
         btnStartM1Text.innerText = "DỪNG NGHE";
         await startAudioPipeline();
         restartSpeechEngine(m1SrcLang.value);
       } else {
         isListeningMode1 = false;
-        btnStartM1.className = "flex-1 py-3.5 rounded-xl font-extrabold text-sm md:text-base bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg";
+        btnStartM1.className = "flex-1 py-3 rounded-xl font-extrabold text-xs md:text-sm bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg";
         btnStartM1Text.innerText = "BẮT ĐẦU NGHE";
         stopAudioAndSpeech();
       }
@@ -402,8 +420,8 @@
       } else {
         stopAudioAndSpeech();
         activeTwoWayMic = 'user';
-        btnMicUser.className = "py-3.5 px-2 rounded-xl bg-rose-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg mic-active";
-        btnMicPartner.className = "py-3.5 px-2 rounded-xl bg-amber-600/40 text-slate-400 font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 opacity-50";
+        btnMicUser.className = "py-3 px-2 rounded-xl bg-rose-600 text-white font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 shadow-lg mic-active";
+        btnMicPartner.className = "py-3 px-2 rounded-xl bg-amber-600/40 text-slate-400 font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 opacity-50";
         await startAudioPipeline();
         restartSpeechEngine(m2UserLang.value);
       }
@@ -416,8 +434,8 @@
       } else {
         stopAudioAndSpeech();
         activeTwoWayMic = 'partner';
-        btnMicPartner.className = "py-3.5 px-2 rounded-xl bg-rose-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg mic-active";
-        btnMicUser.className = "py-3.5 px-2 rounded-xl bg-sky-600/40 text-slate-400 font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 opacity-50";
+        btnMicPartner.className = "py-3 px-2 rounded-xl bg-rose-600 text-white font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 shadow-lg mic-active";
+        btnMicUser.className = "py-3 px-2 rounded-xl bg-sky-600/40 text-slate-400 font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 opacity-50";
         await startAudioPipeline();
         restartSpeechEngine(m2PartnerLang.value);
       }
@@ -425,8 +443,8 @@
 
     function resetTwoWayButtons() {
       activeTwoWayMic = null;
-      btnMicUser.className = "py-3.5 px-2 rounded-xl bg-sky-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg";
-      btnMicPartner.className = "py-3.5 px-2 rounded-xl bg-amber-600 text-white font-extrabold text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg";
+      btnMicUser.className = "py-3 px-2 rounded-xl bg-sky-600 text-white font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 shadow-lg";
+      btnMicPartner.className = "py-3 px-2 rounded-xl bg-amber-600 text-white font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 shadow-lg";
     }
 
     btnToggleAutoTTS.addEventListener('click', () => {
@@ -531,7 +549,7 @@
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
       const row = document.createElement('div');
-      row.className = "grid grid-cols-1 md:grid-cols-2 gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800";
+      row.className = "grid grid-cols-1 md:grid-cols-2 gap-2 p-2 rounded-xl bg-slate-900 border border-slate-800";
 
       const safeOrig = escapeHtml(orig);
       const safeTrans = escapeHtml(trans);
@@ -542,17 +560,17 @@
             <span class="px-1.5 py-0.5 rounded font-bold ${spk.badgeBg} border">👤 ${spk.name}</span>
             <span class="text-slate-500">${timeStr}</span>
           </div>
-          <p class="text-slate-100 font-medium text-xs md:text-sm">${safeOrig}</p>
+          <p class="text-slate-100 font-medium text-xs">${safeOrig}</p>
         </div>
 
-        <div class="space-y-1 md:border-l md:border-slate-800 md:pl-3 pt-1 md:pt-0 border-t md:border-t-0 border-slate-800">
+        <div class="space-y-1 md:border-l md:border-slate-800 md:pl-2 pt-1 md:pt-0 border-t md:border-t-0 border-slate-800">
           <div class="flex items-center justify-between text-[10px] font-mono">
             <span class="text-emerald-400 font-bold uppercase">🇻🇳 Dịch</span>
             <button onclick="speakText('${safeTrans.replace(/'/g, "\\'")}', '${tgtLangCode}')" class="text-amber-400 p-0.5">
               <i class="fa-solid fa-volume-high text-xs"></i>
             </button>
           </div>
-          <p class="text-amber-300 font-bold text-xs md:text-base">${safeTrans}</p>
+          <p class="text-amber-300 font-bold text-xs md:text-sm">${safeTrans}</p>
         </div>
       `;
 
@@ -570,10 +588,10 @@
 
       bubble.innerHTML = `
         <span class="text-[9px] text-slate-500 font-mono px-1">${isUser ? 'Bạn' : 'Đối phương'}</span>
-        <div class="max-w-[88%] p-2.5 border ${bgClass} ${alignClass} space-y-1 shadow">
+        <div class="max-w-[88%] p-2 border ${bgClass} ${alignClass} space-y-1 shadow">
           <p class="text-xs opacity-80 italic">${escapeHtml(orig)}</p>
           <div class="flex items-center justify-between gap-2 pt-1 border-t border-white/10">
-            <p class="text-xs md:text-sm font-bold text-white">${safeTrans}</p>
+            <p class="text-xs font-bold text-white">${safeTrans}</p>
             <button onclick="speakText('${safeTrans.replace(/'/g, "\\'")}', '${tgtLangCode}')" class="text-emerald-400 p-0.5 shrink-0">
               <i class="fa-solid fa-volume-high text-xs"></i>
             </button>
