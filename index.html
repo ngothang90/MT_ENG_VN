@@ -35,12 +35,11 @@
       overflow: hidden;
     }
 
-    /* Đệm an toàn tránh tai thỏ và vạch vuốt trang chủ iOS */
     body {
-      padding-top: max(20px, env(safe-area-inset-top));
-      padding-bottom: max(24px, env(safe-area-inset-bottom));
-      padding-left: max(12px, env(safe-area-inset-left));
-      padding-right: max(12px, env(safe-area-inset-right));
+      padding-top: max(16px, env(safe-area-inset-top));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+      padding-left: max(10px, env(safe-area-inset-left));
+      padding-right: max(10px, env(safe-area-inset-right));
     }
     
     .scroll-touch {
@@ -70,7 +69,7 @@
 </head>
 <body class="flex flex-col h-[100dvh] max-w-7xl mx-auto">
 
-  <!-- Header Section (Nâng khoảng cách tránh tai thỏ/Dynamic Island) -->
+  <!-- Header Section -->
   <header class="card-solid rounded-2xl p-2.5 flex items-center justify-between gap-2 shrink-0 shadow-md mb-2 mt-1">
     <div class="flex items-center gap-2">
       <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white shrink-0 font-bold shadow-md">
@@ -78,7 +77,7 @@
       </div>
       <div>
         <h1 class="text-xs md:text-lg font-extrabold text-white leading-tight">Live Translator Pro</h1>
-        <span class="text-[9px] md:text-xs text-sky-400 font-medium hidden sm:inline-block">Tự Nhận Diện Người Nói</span>
+        <span class="text-[9px] md:text-xs text-sky-400 font-medium hidden sm:inline-block">Auto Pitch & Far-field Mic</span>
       </div>
     </div>
 
@@ -105,8 +104,8 @@
             <label class="text-[9px] text-slate-400 font-bold uppercase block mb-0.5">Nguồn (Nghe)</label>
             <select id="m1SrcLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
               <option value="ja-JP">🇯🇵 Tiếng Nhật</option>
-              <option value="en-US">🇬🇧 Tiếng Anh</option>
               <option value="vi-VN">🇻🇳 Tiếng Việt</option>
+              <option value="en-US">🇬🇧 Tiếng Anh</option>
               <option value="ko-KR">🇰🇷 Tiếng Hàn</option>
               <option value="zh-CN">🇨🇳 Tiếng Trung</option>
             </select>
@@ -129,23 +128,24 @@
         </div>
       </div>
 
-      <!-- Live Real-time Subtitle Box -->
-      <div class="card-solid rounded-xl p-2.5 border-l-4 border-l-amber-400 shrink-0">
-        <div class="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase mb-1">
+      <!-- Real-time Live Subtitle Box (Chia 2 nửa ngang) -->
+      <div class="card-solid rounded-xl p-2.5 border-l-4 border-l-amber-400 shrink-0 space-y-1.5">
+        <div class="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
           <span class="flex items-center gap-1 text-amber-400">
-            <i class="fa-solid fa-bolt"></i> Realtime: <b id="currentDetectedSpeaker" class="text-sky-300 ml-1">👤 Người A</b>
+            <i class="fa-solid fa-bolt"></i> Đang thu âm: <b id="currentDetectedSpeaker" class="text-sky-300 ml-1">👤 Người A</b>
           </span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-1.5">
-          <div>
-            <span class="text-[9px] font-mono text-sky-400 font-bold uppercase">Gốc:</span>
-            <p id="m1LiveOrigText" class="text-xs text-slate-300 italic truncate">Đang lắng nghe...</p>
-          </div>
-          <div class="md:border-l md:border-slate-800 md:pl-2">
-            <span class="text-[9px] font-mono text-amber-400 font-bold uppercase">Dịch:</span>
-            <p id="m1LiveTransText" class="text-xs md:text-sm font-bold text-amber-300">---</p>
-          </div>
+        <!-- Nửa trên: Ngôn ngữ nguồn -->
+        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+          <span class="text-[9px] font-mono text-sky-400 font-bold uppercase block">Gốc (Nguồn):</span>
+          <p id="m1LiveOrigText" class="text-xs text-slate-200 italic truncate min-h-[1.2rem]">Đang lắng nghe...</p>
+        </div>
+
+        <!-- Nửa dưới: Ngôn ngữ dịch -->
+        <div class="bg-amber-950/40 p-2 rounded-lg border border-amber-900/50">
+          <span class="text-[9px] font-mono text-amber-400 font-bold uppercase block">Bản Dịch:</span>
+          <p id="m1LiveTransText" class="text-xs md:text-sm font-bold text-amber-300 min-h-[1.2rem]">---</p>
         </div>
       </div>
 
@@ -153,7 +153,7 @@
       <div id="m1Feed" class="flex-1 card-solid rounded-xl p-2.5 overflow-y-auto scroll-touch space-y-2 min-h-0">
         <div id="m1Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-4">
           <i class="fa-solid fa-microphone-lines text-2xl mb-1 text-slate-600"></i>
-          <p class="text-xs font-semibold text-slate-300">Tự động phân tách giọng người nói</p>
+          <p class="text-xs font-semibold text-slate-300">Nhận diện & tự động dịch 1 chiều</p>
           <p class="text-[10px] text-slate-500">Nhấn nút bên dưới để bắt đầu.</p>
         </div>
       </div>
@@ -194,14 +194,14 @@
       <div id="m2Feed" class="flex-1 card-solid rounded-xl p-2.5 overflow-y-auto scroll-touch space-y-2 min-h-0">
         <div id="m2Empty" class="h-full flex flex-col items-center justify-center text-slate-500 text-center p-4">
           <i class="fa-solid fa-comments text-2xl mb-1 text-slate-600"></i>
-          <p class="text-xs font-semibold text-slate-300">Hội thoại trực tiếp song ngữ</p>
+          <p class="text-xs font-semibold text-slate-300">Hội thoại song ngữ trực tiếp</p>
         </div>
       </div>
     </main>
 
   </div>
 
-  <!-- ==================== CỤM ĐIỀU KHIỂN BẤM & LỌC ÂM (NÂNG CAO TRÁNH VẠCH VUỐT) ==================== -->
+  <!-- ==================== CỤM ĐIỀU KHIỂN VÀ LỌC ÂM ==================== -->
   <div class="shrink-0 pt-2 flex flex-col gap-2 bg-[#0b1120] z-50">
     
     <!-- Action Buttons cho Chế độ 1 Chiều -->
@@ -227,13 +227,13 @@
       </button>
     </div>
 
-    <!-- NẮM NẰM NGAY DƯỚI CÁC NÚT BẤM (Đã nâng khoảng cách không chạm vạch Home iOS) -->
+    <!-- Thanh Lọc Âm & Tăng Độ Nhạy Mic Xa -->
     <div class="card-solid rounded-xl px-3 py-1.5 flex items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2 flex-1 max-w-xs">
         <i class="fa-solid fa-volume-high text-amber-400 text-xs"></i>
-        <span class="text-[10px] font-bold text-slate-400 shrink-0">Lọc Âm:</span>
-        <input type="range" id="gainSlider" min="100" max="300" value="180" step="10" class="w-full h-1 bg-slate-700 rounded appearance-none cursor-pointer accent-amber-400">
-        <span id="gainValText" class="text-[10px] font-mono font-bold text-amber-400 shrink-0">180%</span>
+        <span class="text-[10px] font-bold text-slate-400 shrink-0">Lọc/Kích Âm:</span>
+        <input type="range" id="gainSlider" min="100" max="400" value="220" step="10" class="w-full h-1 bg-slate-700 rounded appearance-none cursor-pointer accent-amber-400">
+        <span id="gainValText" class="text-[10px] font-mono font-bold text-amber-400 shrink-0">220%</span>
       </div>
 
       <div class="flex items-center gap-1.5 shrink-0">
@@ -245,6 +245,18 @@
   </div>
 
   <script>
+    // System Voices Loader for iOS/Android
+    let systemVoices = [];
+    function loadSystemVoices() {
+      if ('speechSynthesis' in window) {
+        systemVoices = window.speechSynthesis.getVoices();
+      }
+    }
+    if ('speechSynthesis' in window) {
+      loadSystemVoices();
+      window.speechSynthesis.onvoiceschanged = loadSystemVoices;
+    }
+
     // Register Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -269,8 +281,9 @@
     let currentAppMode = 'oneWay';
     let isListeningMode1 = false;
     let activeTwoWayMic = null;
+    let lastActiveTwoWaySpeaker = 'user'; // Biến giữ vết người nói gần nhất
     let autoTTS = true;
-    let gainMultiplier = 1.8;
+    let gainMultiplier = 2.2;
 
     let audioCtx = null;
     let mediaStream = null;
@@ -361,7 +374,7 @@
       };
     }
 
-    // Tab switcher logic
+    // Switcher Logic
     tabModeOneWay.addEventListener('click', () => {
       currentAppMode = 'oneWay';
       tabModeOneWay.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-sky-600 text-white shadow";
@@ -420,6 +433,7 @@
       } else {
         stopAudioAndSpeech();
         activeTwoWayMic = 'user';
+        lastActiveTwoWaySpeaker = 'user';
         btnMicUser.className = "py-3 px-2 rounded-xl bg-rose-600 text-white font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 shadow-lg mic-active";
         btnMicPartner.className = "py-3 px-2 rounded-xl bg-amber-600/40 text-slate-400 font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 opacity-50";
         await startAudioPipeline();
@@ -434,6 +448,7 @@
       } else {
         stopAudioAndSpeech();
         activeTwoWayMic = 'partner';
+        lastActiveTwoWaySpeaker = 'partner';
         btnMicPartner.className = "py-3 px-2 rounded-xl bg-rose-600 text-white font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 shadow-lg mic-active";
         btnMicUser.className = "py-3 px-2 rounded-xl bg-sky-600/40 text-slate-400 font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 opacity-50";
         await startAudioPipeline();
@@ -460,16 +475,15 @@
         m1LiveOrigText.innerText = text;
         clearTimeout(interimDebounce);
         interimDebounce = setTimeout(async () => {
-          const src = m1SrcLang.value.split('-')[0];
           const tgt = m1TgtLang.value.split('-')[0];
-          const trans = await translateTextAPI(text, src, tgt);
+          const trans = await translateTextAPI(text, 'auto', tgt);
           m1LiveTransText.innerText = trans || '...';
         }, 150);
       }
     }
 
     async function handleFinalSentence(originalText) {
-      if (!originalText || originalText.length === 0) return;
+      if (!originalText || originalText.trim().length === 0) return;
 
       if (currentAppMode === 'oneWay') {
         m1Empty.style.display = 'none';
@@ -490,23 +504,23 @@
         const currentSpkObj = speakerBadges[activeSpeakerIdx] || speakerBadges[0];
         currentDetectedSpeaker.innerText = `👤 ${currentSpkObj.name}`;
 
-        const src = m1SrcLang.value.split('-')[0];
         const tgt = m1TgtLang.value.split('-')[0];
-        const translated = await translateTextAPI(originalText, src, tgt);
+        const translated = await translateTextAPI(originalText, 'auto', tgt);
 
-        appendOneWayDualColumnCard(originalText, translated, activeSpeakerIdx, m1TgtLang.value);
+        appendOneWayDualRowCard(originalText, translated, activeSpeakerIdx, m1TgtLang.value);
 
       } else if (currentAppMode === 'twoWay') {
         m2Empty.style.display = 'none';
-        const isUser = (activeTwoWayMic === 'user');
+        const speaker = activeTwoWayMic || lastActiveTwoWaySpeaker || 'user';
+        const isUser = (speaker === 'user');
+        
         const srcLang = isUser ? m2UserLang.value : m2PartnerLang.value;
         const tgtLang = isUser ? m2PartnerLang.value : m2UserLang.value;
 
-        const src = srcLang.split('-')[0];
         const tgt = tgtLang.split('-')[0];
-        const translated = await translateTextAPI(originalText, src, tgt);
+        const translated = await translateTextAPI(originalText, 'auto', tgt);
 
-        appendTwoWayBubble(originalText, translated, isUser, tgtLang);
+        appendTwoWayStackedCard(originalText, translated, isUser, tgtLang);
 
         if (autoTTS && translated) speakText(translated, tgtLang);
         stopAudioAndSpeech();
@@ -544,93 +558,150 @@
       return matchedIdx;
     }
 
-    function appendOneWayDualColumnCard(orig, trans, speakerIdx, tgtLangCode) {
+    // Hiển thị 1 Chiều: Chia 2 Nửa Ngang (Nửa Trên = Gốc, Nửa Dưới = Dịch)
+    function appendOneWayDualRowCard(orig, trans, speakerIdx, tgtLangCode) {
       const spk = speakerBadges[speakerIdx] || speakerBadges[0];
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      const row = document.createElement('div');
-      row.className = "grid grid-cols-1 md:grid-cols-2 gap-2 p-2 rounded-xl bg-slate-900 border border-slate-800";
+      const card = document.createElement('div');
+      card.className = "flex flex-col gap-1.5 p-2.5 rounded-xl bg-slate-900 border border-slate-800 shadow";
 
       const safeOrig = escapeHtml(orig);
       const safeTrans = escapeHtml(trans);
 
-      row.innerHTML = `
-        <div class="space-y-1">
-          <div class="flex items-center justify-between text-[10px] font-mono">
+      card.innerHTML = `
+        <!-- Nửa Trên: Lời Nói Gốc -->
+        <div class="bg-slate-950/80 p-2 rounded-lg border border-slate-800/80 space-y-1">
+          <div class="flex items-center justify-between text-[9px] font-mono">
             <span class="px-1.5 py-0.5 rounded font-bold ${spk.badgeBg} border">👤 ${spk.name}</span>
             <span class="text-slate-500">${timeStr}</span>
           </div>
-          <p class="text-slate-100 font-medium text-xs">${safeOrig}</p>
+          <p class="text-slate-200 font-medium text-xs leading-relaxed">${safeOrig}</p>
         </div>
 
-        <div class="space-y-1 md:border-l md:border-slate-800 md:pl-2 pt-1 md:pt-0 border-t md:border-t-0 border-slate-800">
-          <div class="flex items-center justify-between text-[10px] font-mono">
-            <span class="text-emerald-400 font-bold uppercase">🇻🇳 Dịch</span>
-            <button onclick="speakText('${safeTrans.replace(/'/g, "\\'")}', '${tgtLangCode}')" class="text-amber-400 p-0.5">
+        <!-- Nửa Dưới: Bản Dịch + Phím Đọc -->
+        <div class="bg-amber-950/30 p-2 rounded-lg border border-amber-900/40 space-y-1">
+          <div class="flex items-center justify-between text-[9px] font-mono">
+            <span class="text-amber-400 font-bold uppercase">🌐 Bản Dịch</span>
+            <button onclick="speakText('${safeTrans.replace(/'/g, "\\'")}', '${tgtLangCode}')" class="text-amber-400 hover:text-amber-300 p-0.5">
               <i class="fa-solid fa-volume-high text-xs"></i>
             </button>
           </div>
-          <p class="text-amber-300 font-bold text-xs md:text-sm">${safeTrans}</p>
+          <p class="text-amber-300 font-bold text-xs md:text-sm leading-relaxed">${safeTrans}</p>
         </div>
       `;
 
-      m1Feed.appendChild(row);
+      m1Feed.appendChild(card);
       m1Feed.scrollTop = m1Feed.scrollHeight;
     }
 
-    function appendTwoWayBubble(orig, trans, isUser, tgtLangCode) {
-      const bubble = document.createElement('div');
-      bubble.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1`;
+    // Hiển thị Song Ngữ: Phần Trên Lời Người Nói - Phần Dưới Lời Dịch + Loa Phát Âm
+    function appendTwoWayStackedCard(orig, trans, isUser, tgtLangCode) {
+      const card = document.createElement('div');
+      card.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1 w-full`;
 
-      const bgClass = isUser ? 'bg-sky-950 border-sky-800/80 text-sky-100' : 'bg-amber-950 border-amber-800/80 text-amber-100';
+      const borderClass = isUser ? 'border-sky-800/80 bg-sky-950/60' : 'border-amber-800/80 bg-amber-950/60';
       const alignClass = isUser ? 'rounded-2xl rounded-tr-none' : 'rounded-2xl rounded-tl-none';
+      const safeOrig = escapeHtml(orig);
       const safeTrans = escapeHtml(trans);
 
-      bubble.innerHTML = `
-        <span class="text-[9px] text-slate-500 font-mono px-1">${isUser ? 'Bạn' : 'Đối phương'}</span>
-        <div class="max-w-[88%] p-2 border ${bgClass} ${alignClass} space-y-1 shadow">
-          <p class="text-xs opacity-80 italic">${escapeHtml(orig)}</p>
-          <div class="flex items-center justify-between gap-2 pt-1 border-t border-white/10">
-            <p class="text-xs font-bold text-white">${safeTrans}</p>
-            <button onclick="speakText('${safeTrans.replace(/'/g, "\\'")}', '${tgtLangCode}')" class="text-emerald-400 p-0.5 shrink-0">
+      card.innerHTML = `
+        <span class="text-[9px] text-slate-400 font-mono px-1 font-bold">${isUser ? 'Bạn nói' : 'Đối phương nói'}</span>
+        <div class="max-w-[92%] sm:max-w-[85%] p-2.5 border ${borderClass} ${alignClass} space-y-2 shadow-md">
+          
+          <!-- Phần trên: Tiếng Người Nói -->
+          <div class="border-b border-white/10 pb-1.5">
+            <span class="text-[8px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5">Lời gốc:</span>
+            <p class="text-xs text-slate-200 italic leading-snug">${safeOrig}</p>
+          </div>
+
+          <!-- Phần dưới: Tiếng Dịch + Nút Loa -->
+          <div class="flex items-center justify-between gap-2 pt-0.5">
+            <div class="flex-1">
+              <span class="text-[8px] uppercase tracking-wider text-emerald-400 font-bold block mb-0.5">Bản dịch:</span>
+              <p class="text-xs md:text-sm font-bold text-white leading-snug">${safeTrans}</p>
+            </div>
+            <button onclick="speakText('${safeTrans.replace(/'/g, "\\'")}', '${tgtLangCode}')" class="text-emerald-400 bg-emerald-950/80 border border-emerald-700/60 p-2 rounded-lg shrink-0 active:scale-95">
               <i class="fa-solid fa-volume-high text-xs"></i>
             </button>
           </div>
+
         </div>
       `;
 
-      m2Feed.appendChild(bubble);
+      m2Feed.appendChild(card);
       m2Feed.scrollTop = m2Feed.scrollHeight;
     }
 
-    async function translateTextAPI(text, src, tgt) {
-      if (!text) return '';
+    // Google Translate API Chuẩn & Dự Phòng
+    async function translateTextAPI(text, src = 'auto', tgt = 'vi') {
+      if (!text || text.trim().length === 0) return '';
       try {
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${src}&tl=${tgt}&dt=t&q=${encodeURIComponent(text)}`;
         const res = await fetch(url);
         if (res.ok) {
           const data = await res.json();
-          if (data && data[0]) return data[0].map(item => item[0]).join('');
+          if (data && data[0]) {
+            return data[0].map(item => item[0]).join('');
+          }
         }
       } catch (err) {}
+
+      // Dự phòng API 2 nếu API chính bị nghẽn
+      try {
+        const fallbackUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src === 'auto' ? 'en' : src}|${tgt}`;
+        const res2 = await fetch(fallbackUrl);
+        if (res2.ok) {
+          const data2 = await res2.json();
+          if (data2 && data2.responseData && data2.responseData.translatedText) {
+            return data2.responseData.translatedText;
+          }
+        }
+      } catch(e) {}
+
       return text;
     }
 
+    // Phát âm chuẩn đa ngôn ngữ (iOS / Android Multi-language TTS Fix)
     function speakText(text, langCode) {
-      if (!('speechSynthesis' in window)) return;
+      if (!('speechSynthesis' in window) || !text) return;
       window.speechSynthesis.cancel();
+
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = langCode;
-      utterance.rate = 1.0;
+      utterance.rate = 0.95;
+
+      if (systemVoices.length === 0) loadSystemVoices();
+
+      // Tìm kiếm giọng phù hợp nhất với mã ngôn ngữ (Nhật, Anh, Hàn, Trung, Việt)
+      const langPrefix = langCode.split('-')[0].toLowerCase();
+      const matchedVoice = systemVoices.find(v => 
+        v.lang.toLowerCase().startsWith(langPrefix) || 
+        v.lang.toLowerCase().replace('_', '-').includes(langCode.toLowerCase())
+      );
+
+      if (matchedVoice) {
+        utterance.voice = matchedVoice;
+      }
+
       window.speechSynthesis.speak(utterance);
     }
 
+    // Cấu hình Micro Thu Âm Xa (Auto Gain & Echo/Noise Suppression)
     async function startAudioPipeline() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') await audioCtx.resume();
 
-        mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // Kích hoạt thu xa: Tự điều chỉnh âm lượng (autoGainControl), Khử tiếng ồn (noiseSuppression), Khử vang (echoCancellation)
+        mediaStream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          } 
+        });
+
         const source = audioCtx.createMediaStreamSource(mediaStream);
         gainNode = audioCtx.createGain();
         gainNode.gain.value = gainMultiplier;
@@ -655,7 +726,7 @@
         totalEnergy += data[i];
         weightedFreq += data[i] * (i + 1);
       }
-      if (totalEnergy > 50) { 
+      if (totalEnergy > 40) { 
         const currentCentroid = weightedFreq / totalEnergy;
         currentPhrasePitches.push(currentCentroid * 20); 
       }
