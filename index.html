@@ -137,7 +137,7 @@
         </div>
       </div>
 
-      <!-- Real-time Live Subtitle Box (Chia 2 nửa ngang) -->
+      <!-- Real-time Live Subtitle Box -->
       <div class="card-solid rounded-xl p-2.5 border-l-4 border-l-amber-400 shrink-0 space-y-1.5">
         <div class="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
           <span class="flex items-center gap-1 text-amber-400">
@@ -145,13 +145,11 @@
           </span>
         </div>
 
-        <!-- Nửa trên: Ngôn ngữ nguồn -->
         <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
           <span data-i18n="originalLabel" class="text-[9px] font-mono text-sky-400 font-bold uppercase block">Lời nói gốc:</span>
           <p id="m1LiveOrigText" data-i18n="waitingSpeech" class="text-xs text-slate-200 italic truncate min-h-[1.2rem]">Đang chờ giọng nói...</p>
         </div>
 
-        <!-- Nửa dưới: Ngôn ngữ dịch -->
         <div class="bg-amber-950/40 p-2 rounded-lg border border-amber-900/50">
           <span data-i18n="translationLabel" class="text-[9px] font-mono text-amber-400 font-bold uppercase block">Bản dịch:</span>
           <p id="m1LiveTransText" class="text-xs md:text-sm font-bold text-amber-300 min-h-[1.2rem]">---</p>
@@ -171,7 +169,6 @@
     <!-- MODE 2: SONG NGỮ DIRECT -->
     <main id="modeTwoWayView" class="flex-1 flex flex-col gap-2 min-h-0 hidden">
       <div class="card-solid rounded-xl p-2 flex items-center justify-between gap-2 shrink-0">
-        <!-- Tôi Nói -->
         <div class="flex-1">
           <label data-i18n="youSpeak" class="text-[9px] text-sky-400 font-bold uppercase block mb-0.5">Tôi nói</label>
           <select id="m2UserLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
@@ -183,7 +180,6 @@
           </select>
         </div>
 
-        <!-- Đối Phương -->
         <div class="flex-1">
           <label data-i18n="partnerSpeak" class="text-[9px] text-amber-400 font-bold uppercase block mb-0.5">Đối phương</label>
           <select id="m2PartnerLang" class="w-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold rounded-lg p-1.5 outline-none">
@@ -213,13 +209,11 @@
   <!-- ==================== CỤM ĐIỀU KHIỂN VÀ CÔNG CỤ COPY ==================== -->
   <div class="shrink-0 pt-2 flex flex-col gap-2 bg-[#0b1120] z-50">
     
-    <!-- Action Buttons cho Chế độ 1 Chiều -->
     <div id="m1ActionButtons" class="flex items-center gap-2">
       <button id="btnStartM1" class="flex-1 py-3 rounded-xl font-extrabold text-xs md:text-sm bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
         <i class="fa-solid fa-play"></i> <span id="btnStartM1Text">BẮT ĐẦU NGHE</span>
       </button>
 
-      <!-- Nút Copy Tất Cả Text Nguồn Cho AI -->
       <button id="btnCopySourceM1" class="px-3 py-3 rounded-xl bg-sky-700 hover:bg-sky-600 text-white border border-sky-600 flex items-center justify-center shrink-0 font-bold text-xs gap-1.5 active:scale-95 transition">
         <i class="fa-solid fa-copy"></i>
         <span data-i18n="copySource">Sao chép lời gốc</span>
@@ -230,7 +224,6 @@
       </button>
     </div>
 
-    <!-- Action Buttons cho Chế độ Song Ngữ -->
     <div id="m2ActionButtons" class="grid grid-cols-2 gap-2 hidden">
       <button id="btnMicUser" class="py-3 px-2 rounded-xl bg-sky-600 text-white font-extrabold text-xs flex flex-col items-center justify-center gap-0.5 shadow-lg active:scale-95">
         <i class="fa-solid fa-microphone text-sm"></i>
@@ -244,14 +237,13 @@
     </div>
 
     <div class="flex items-center justify-between gap-2 px-1 text-[10px] text-slate-500">
-      <span id="audioTip" data-i18n="audioTip">Nghe xa rõ hơn: đưa mic gần nguồn nói hoặc dùng mic rời.</span>
+      <span id="audioTip" data-i18n="audioTip">Nghe xa rõ hơn: đã tắt lọc ồn để bắt âm loa/TV tốt hơn.</span>
       <span class="flex items-center gap-1 shrink-0"><span id="statusDot" class="w-2 h-2 rounded-full bg-slate-500"></span><span id="statusText" data-i18n="ready">Sẵn sàng</span></span>
     </div>
 
   </div>
 
   <script>
-    // System Voices Loader
     let systemVoices = [];
     function loadSystemVoices() {
       if ('speechSynthesis' in window) {
@@ -263,7 +255,6 @@
       window.speechSynthesis.onvoiceschanged = loadSystemVoices;
     }
 
-    // Register Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
@@ -272,9 +263,7 @@
       });
     }
 
-    // Biến lưu trữ toàn bộ lịch sử tiếng gốc để copy cho AI
     let m1SourceHistory = [];
-
     let currentAppMode = 'oneWay';
     let isListeningMode1 = false;
     let activeTwoWayMic = null;
@@ -355,13 +344,13 @@
         }
       };
 
-      // Tự động kết nối lại liên tục cho các buổi nghe kéo dài 2-3 tiếng
       recognition.onend = () => {
         statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
         statusText.innerText = t('ready');
         if ((currentAppMode === 'oneWay' && isListeningMode1) || (currentAppMode === 'twoWay' && activeTwoWayMic)) {
           clearTimeout(restartTimer);
-          restartTimer = setTimeout(() => { try { recognition.start(); } catch(e){} }, 350);
+          // ĐÃ TỐI ƯU: Rút ngắn thời gian khởi động lại xuống 100ms để không bỏ sót từ
+          restartTimer = setTimeout(() => { try { recognition.start(); } catch(e){} }, 100);
         }
       };
 
@@ -379,7 +368,6 @@
       };
     }
 
-    // Switcher Tabs
     tabModeOneWay.addEventListener('click', () => {
       currentAppMode = 'oneWay';
       tabModeOneWay.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-sky-600 text-white shadow";
@@ -444,7 +432,6 @@
       m1SourceHistory = [];
     });
 
-    // Tính năng Sao Chép toàn bộ Text Gốc cho AI
     btnCopySourceM1.addEventListener('click', () => {
       if (m1SourceHistory.length === 0) {
         alert(t('copyEmpty'));
@@ -513,12 +500,13 @@
         m1LiveOrigText.innerText = text;
         clearTimeout(interimDebounce);
         const requestId = ++translationRequestId;
+        // ĐÃ TỐI ƯU: Giảm thời gian chờ từ 500ms xuống 200ms để hiển thị bản dịch nhanh hơn
         interimDebounce = setTimeout(async () => {
           const src = m1SrcLang.value.split('-')[0];
           const tgt = m1TgtLang.value.split('-')[0];
           const trans = await translateTextAPI(text, src, tgt);
           if (requestId === translationRequestId && isListeningMode1) m1LiveTransText.innerText = trans || '...';
-        }, 500);
+        }, 200);
       }
     }
 
@@ -530,11 +518,9 @@
         m1LiveOrigText.innerText = '...';
         m1LiveTransText.innerText = '---';
 
-        // Ép mã ngôn ngữ nguồn (src) và đích (tgt) theo Lựa Chọn của người dùng
         const src = m1SrcLang.value.split('-')[0];
         const tgt = m1TgtLang.value.split('-')[0];
 
-        // Lưu vào mảng lịch sử nguồn để hỗ trợ nút Copy 2-3 tiếng
         m1SourceHistory.push(originalText);
 
         const translated = await translateTextAPI(originalText, src, tgt);
@@ -560,7 +546,6 @@
       }
     }
 
-    // Đã bỏ nhãn Người A, Người B giúp ứng dụng cực kỳ nhẹ và nhanh
     function appendOneWayDualRowCard(orig, trans, tgtLangCode) {
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -571,7 +556,6 @@
       const safeTrans = escapeHtml(trans);
 
       card.innerHTML = `
-        <!-- Nửa Trên: Lời Nói Gốc -->
         <div class="bg-slate-950/80 p-2 rounded-lg border border-slate-800/80 space-y-1">
           <div class="flex items-center justify-between text-[9px] font-mono">
             <span class="text-sky-400 font-bold uppercase">🗣️ ${t('original')}</span>
@@ -580,7 +564,6 @@
           <p class="text-slate-200 font-medium text-xs leading-relaxed select-text">${safeOrig}</p>
         </div>
 
-        <!-- Nửa Dưới: Bản Dịch + Phím Đọc -->
         <div class="bg-amber-950/30 p-2 rounded-lg border border-amber-900/40 space-y-1">
           <div class="flex items-center justify-between text-[9px] font-mono">
             <span class="text-amber-400 font-bold uppercase">🌐 ${t('translation')}</span>
@@ -631,7 +614,6 @@
       m2Feed.scrollTop = m2Feed.scrollHeight;
     }
 
-    // Google Translate API Ép Ngôn Ngữ Nguồn Chuẩn Xác
     async function translateTextAPI(text, src = 'vi', tgt = 'en') {
       if (!text || text.trim().length === 0) return '';
       try {
@@ -659,7 +641,6 @@
       return text;
     }
 
-    // Phát âm chuẩn đa ngôn ngữ
     function speakText(text, langCode) {
       if (!('speechSynthesis' in window) || !text) return;
       window.speechSynthesis.cancel();
@@ -681,13 +662,13 @@
     }
 
     async function startAudioPipeline() {
-      // Web Speech API listens to the browser's microphone directly.
-      // A Web Audio gain node cannot amplify its input unless the recognizer accepts that stream.
       try {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          // Ask for microphone permission explicitly; release the test stream immediately.
+          // ĐÃ TỔI ƯU: Tắt echoCancellation và noiseSuppression để mic nhạy hơn, bắt được âm thanh ở xa hoặc từ loa TV
           const stream = await navigator.mediaDevices.getUserMedia({audio: {
-            echoCancellation: true, noiseSuppression: true, autoGainControl: true
+            echoCancellation: false, 
+            noiseSuppression: false, 
+            autoGainControl: true
           }});
           stream.getTracks().forEach(track => track.stop());
         }
@@ -726,11 +707,11 @@
     }
 
     const translations = {
-      vi: {appTitle:'Live Translator',tagline:'Nghe trực tiếp · Dịch tức thì',oneWayTab:'Nghe & dịch',twoWayTab:'Hội thoại 2 chiều',ready:'Sẵn sàng',listening:'Đang nghe...',micDenied:'Chưa cấp quyền mic',speechError:'Lỗi nhận diện giọng nói',startListening:'BẮT ĐẦU NGHE & DỊCH',stopListening:'DỪNG NGHE',audioTip:'Nghe xa rõ hơn: đưa mic gần người nói hoặc dùng mic rời.',source:'Ngôn ngữ nói',target:'Dịch sang',live:'Đang nhận giọng nói...',waitingSpeech:'Đang chờ giọng nói...',original:'Lời nói gốc',translation:'Bản dịch',originalLabel:'Lời nói gốc:',translationLabel:'Bản dịch:',youSpeak:'Ngôn ngữ của tôi',partnerSpeak:'Ngôn ngữ người đối diện',youSpeakButton:'MIC CỦA TÔI',partnerSpeakButton:'MIC NGƯỜI ĐỐI DIỆN',autoReadOn:'Đọc bản dịch: BẬT',autoReadOff:'Đọc bản dịch: TẮT',copySource:'Sao chép lời gốc',copyDone:'Đã sao chép!',copyEmpty:'Chưa có lời nói nào để sao chép.',copyFailed:'Không thể sao chép tự động. Vui lòng thử lại.',clear:'Xóa lịch sử',listeningHelp:'Nghe và dịch tự động liên tục',listeningDesc:'Phù hợp cho bài giảng, cuộc họp và hội thảo.',twoWayHelp:'Chọn ngôn ngữ của mỗi người, sau đó nhấn mic tương ứng để nói theo lượt.',swapLang:'Đổi ngôn ngữ',youSaid:'Bạn nói',partnerSaid:'Người đối diện nói',browserUnsupported:'Trình duyệt chưa hỗ trợ nhận diện giọng nói. Hãy thử Chrome hoặc Edge mới nhất.',permissionError:'Không có quyền truy cập micrô.'},
-      en: {appTitle:'Live Translator',tagline:'Live speech · Instant translation',oneWayTab:'Listen & translate',twoWayTab:'Two-way conversation',ready:'Ready',listening:'Listening...',micDenied:'Microphone permission denied',speechError:'Speech recognition error',startListening:'START LISTENING & TRANSLATING',stopListening:'STOP LISTENING',audioTip:'For distant speech, move the mic closer to the speaker or use an external microphone.',source:'Spoken language',target:'Translate into',live:'Listening in real time...',waitingSpeech:'Waiting for speech...',original:'Original speech',translation:'Translation',originalLabel:'Original speech:',translationLabel:'Translation:',youSpeak:'My language',partnerSpeak:'Other speaker’s language',youSpeakButton:'MY MICROPHONE',partnerSpeakButton:'OTHER SPEAKER’S MIC',autoReadOn:'Read translation: ON',autoReadOff:'Read translation: OFF',copySource:'Copy original text',copyDone:'Copied!',copyEmpty:'There is no speech text to copy yet.',copyFailed:'Could not copy automatically. Please try again.',clear:'Clear history',listeningHelp:'Continuous speech recognition and automatic translation',listeningDesc:'Ideal for lectures, meetings and conferences.',twoWayHelp:'Choose each person’s language, then tap the matching microphone to speak in turns.',swapLang:'Swap languages',youSaid:'You said',partnerSaid:'Other speaker said',browserUnsupported:'Speech recognition is not supported in this browser. Try the latest Chrome or Edge.',permissionError:'Microphone access is not available.'},
-      ja: {appTitle:'ライブ翻訳',tagline:'音声をリアルタイムで翻訳',oneWayTab:'聞いて翻訳',twoWayTab:'双方向会話',ready:'待機中',listening:'聞き取り中...',micDenied:'マイクの使用が許可されていません',speechError:'音声認識エラー',startListening:'聞き取り・翻訳を開始',stopListening:'聞き取りを停止',audioTip:'遠くの声を聞くには、マイクを話者に近づけるか外部マイクを使用してください。',source:'話す言語',target:'翻訳先',live:'音声を認識中...',waitingSpeech:'音声を待っています...',original:'原文',translation:'翻訳',originalLabel:'原文：',translationLabel:'翻訳：',youSpeak:'自分の言語',partnerSpeak:'相手の言語',youSpeakButton:'自分のマイク',partnerSpeakButton:'相手のマイク',autoReadOn:'翻訳を読み上げ：ON',autoReadOff:'翻訳を読み上げ：OFF',copySource:'原文をコピー',copyDone:'コピーしました！',copyEmpty:'コピーする音声テキストがありません。',copyFailed:'自動コピーに失敗しました。もう一度お試しください。',clear:'履歴を消去',listeningHelp:'音声を連続認識して自動翻訳',listeningDesc:'講義・会議・セミナーに便利です。',twoWayHelp:'それぞれの言語を選び、話す人に対応するマイクを押してください。',swapLang:'言語を入れ替え',youSaid:'あなたの発言',partnerSaid:'相手の発言',browserUnsupported:'このブラウザは音声認識に対応していません。最新版のChromeまたはEdgeをお試しください。',permissionError:'マイクへのアクセス権限がありません。'},
-      zh: {appTitle:'实时翻译',tagline:'实时语音 · 即时翻译',oneWayTab:'聆听并翻译',twoWayTab:'双向对话',ready:'准备就绪',listening:'正在聆听...',micDenied:'未获得麦克风权限',speechError:'语音识别错误',startListening:'开始聆听与翻译',stopListening:'停止聆听',audioTip:'远距离收音时，请将麦克风靠近说话者或使用外接麦克风。',source:'说话语言',target:'翻译为',live:'正在实时识别语音...',waitingSpeech:'等待语音输入...',original:'原文',translation:'译文',originalLabel:'原文：',translationLabel:'译文：',youSpeak:'我的语言',partnerSpeak:'对方的语言',youSpeakButton:'我的麦克风',partnerSpeakButton:'对方麦克风',autoReadOn:'朗读译文：开',autoReadOff:'朗读译文：关',copySource:'复制原文',copyDone:'已复制！',copyEmpty:'暂无可复制的语音文本。',copyFailed:'无法自动复制，请重试。',clear:'清除记录',listeningHelp:'连续识别语音并自动翻译',listeningDesc:'适用于课程、会议和研讨会。',twoWayHelp:'选择双方使用的语言，然后点击对应的麦克风轮流说话。',swapLang:'交换语言',youSaid:'你说',partnerSaid:'对方说',browserUnsupported:'此浏览器不支持语音识别，请尝试最新版 Chrome 或 Edge。',permissionError:'无法访问麦克风。'},
-      ko: {appTitle:'실시간 번역기',tagline:'실시간 음성 · 즉시 번역',oneWayTab:'듣고 번역',twoWayTab:'양방향 대화',ready:'준비됨',listening:'듣는 중...',micDenied:'마이크 권한이 없습니다',speechError:'음성 인식 오류',startListening:'듣기 및 번역 시작',stopListening:'듣기 중지',audioTip:'먼 거리의 음성은 마이크를 화자 가까이 두거나 외장 마이크를 사용하세요.',source:'말하는 언어',target:'번역 언어',live:'실시간 음성 인식 중...',waitingSpeech:'음성을 기다리는 중...',original:'원문',translation:'번역문',originalLabel:'원문:',translationLabel:'번역문:',youSpeak:'내 언어',partnerSpeak:'상대방 언어',youSpeakButton:'내 마이크',partnerSpeakButton:'상대방 마이크',autoReadOn:'번역 읽기: 켬',autoReadOff:'번역 읽기: 끔',copySource:'원문 복사',copyDone:'복사 완료!',copyEmpty:'복사할 음성 텍스트가 없습니다.',copyFailed:'자동 복사에 실패했습니다. 다시 시도하세요.',clear:'기록 지우기',listeningHelp:'음성을 연속 인식하고 자동 번역합니다',listeningDesc:'강의, 회의 및 세미나에 적합합니다.',twoWayHelp:'각 사람의 언어를 선택한 다음 해당 마이크를 눌러 번갈아 말하세요.',swapLang:'언어 바꾸기',youSaid:'내가 말함',partnerSaid:'상대방이 말함',browserUnsupported:'이 브라우저는 음성 인식을 지원하지 않습니다. 최신 Chrome 또는 Edge를 사용하세요.',permissionError:'마이크에 접근할 수 없습니다.'}
+      vi: {appTitle:'Live Translator',tagline:'Nghe trực tiếp · Dịch tức thì',oneWayTab:'Nghe & dịch',twoWayTab:'Hội thoại 2 chiều',ready:'Sẵn sàng',listening:'Đang nghe...',micDenied:'Chưa cấp quyền mic',speechError:'Lỗi nhận diện giọng nói',startListening:'BẮT ĐẦU NGHE & DỊCH',stopListening:'DỪNG NGHE',audioTip:'Nghe xa rõ hơn: đã tắt lọc ồn để bắt âm loa/TV tốt hơn.',source:'Ngôn ngữ nói',target:'Dịch sang',live:'Đang nhận giọng nói...',waitingSpeech:'Đang chờ giọng nói...',original:'Lời nói gốc',translation:'Bản dịch',originalLabel:'Lời nói gốc:',translationLabel:'Bản dịch:',youSpeak:'Ngôn ngữ của tôi',partnerSpeak:'Ngôn ngữ người đối diện',youSpeakButton:'MIC CỦA TÔI',partnerSpeakButton:'MIC NGƯỜI ĐỐI DIỆN',autoReadOn:'Đọc bản dịch: BẬT',autoReadOff:'Đọc bản dịch: TẮT',copySource:'Sao chép lời gốc',copyDone:'Đã sao chép!',copyEmpty:'Chưa có lời nói nào để sao chép.',copyFailed:'Không thể sao chép tự động. Vui lòng thử lại.',clear:'Xóa lịch sử',listeningHelp:'Nghe và dịch tự động liên tục',listeningDesc:'Phù hợp cho bài giảng, cuộc họp và hội thảo.',twoWayHelp:'Chọn ngôn ngữ của mỗi người, sau đó nhấn mic tương ứng để nói theo lượt.',swapLang:'Đổi ngôn ngữ',youSaid:'Bạn nói',partnerSaid:'Người đối diện nói',browserUnsupported:'Trình duyệt chưa hỗ trợ nhận diện giọng nói. Hãy thử Chrome hoặc Edge mới nhất.',permissionError:'Không có quyền truy cập micrô.'},
+      en: {appTitle:'Live Translator',tagline:'Live speech · Instant translation',oneWayTab:'Listen & translate',twoWayTab:'Two-way conversation',ready:'Ready',listening:'Listening...',micDenied:'Microphone permission denied',speechError:'Speech recognition error',startListening:'START LISTENING & TRANSLATING',stopListening:'STOP LISTENING',audioTip:'For distant speech, noise suppression is disabled to capture TV/speakers better.',source:'Spoken language',target:'Translate into',live:'Listening in real time...',waitingSpeech:'Waiting for speech...',original:'Original speech',translation:'Translation',originalLabel:'Original speech:',translationLabel:'Translation:',youSpeak:'My language',partnerSpeak:'Other speaker’s language',youSpeakButton:'MY MICROPHONE',partnerSpeakButton:'OTHER SPEAKER’S MIC',autoReadOn:'Read translation: ON',autoReadOff:'Read translation: OFF',copySource:'Copy original text',copyDone:'Copied!',copyEmpty:'There is no speech text to copy yet.',copyFailed:'Could not copy automatically. Please try again.',clear:'Clear history',listeningHelp:'Continuous speech recognition and automatic translation',listeningDesc:'Ideal for lectures, meetings and conferences.',twoWayHelp:'Choose each person’s language, then tap the matching microphone to speak in turns.',swapLang:'Swap languages',youSaid:'You said',partnerSaid:'Other speaker said',browserUnsupported:'Speech recognition is not supported in this browser. Try the latest Chrome or Edge.',permissionError:'Microphone access is not available.'},
+      ja: {appTitle:'ライブ翻訳',tagline:'音声をリアルタイムで翻訳',oneWayTab:'聞いて翻訳',twoWayTab:'双方向会話',ready:'待機中',listening:'聞き取り中...',micDenied:'マイクの使用が許可されていません',speechError:'音声認識エラー',startListening:'聞き取り・翻訳を開始',stopListening:'聞き取りを停止',audioTip:'遠くの声を聞くために、ノイズ抑制をオフにして集音性を高めています。',source:'話す言語',target:'翻訳先',live:'音声を認識中...',waitingSpeech:'音声を待っています...',original:'原文',translation:'翻訳',originalLabel:'原文：',translationLabel:'翻訳：',youSpeak:'自分の言語',partnerSpeak:'相手の言語',youSpeakButton:'自分のマイク',partnerSpeakButton:'相手のマイク',autoReadOn:'翻訳を読み上げ：ON',autoReadOff:'翻訳を読み上げ：OFF',copySource:'原文をコピー',copyDone:'コピーしました！',copyEmpty:'コピーする音声テキストがありません。',copyFailed:'自動コピーに失敗しました。もう一度お試しください。',clear:'履歴を消去',listeningHelp:'音声を連続認識して自動翻訳',listeningDesc:'講義・会議・セミナーに便利です。',twoWayHelp:'それぞれの言語を選び、話す人に対応するマイクを押してください。',swapLang:'言語を入れ替え',youSaid:'あなたの発言',partnerSaid:'相手の発言',browserUnsupported:'このブラウザは音声認識に対応していません。最新版のChromeまたはEdgeをお試しください。',permissionError:'マイクへのアクセス権限がありません。'},
+      zh: {appTitle:'实时翻译',tagline:'实时语音 · 即时翻译',oneWayTab:'聆听并翻译',twoWayTab:'双向对话',ready:'准备就绪',listening:'正在聆听...',micDenied:'未获得麦克风权限',speechError:'语音识别错误',startListening:'开始聆听与翻译',stopListening:'停止聆听',audioTip:'为了适应远距离收音，已关闭降噪以更好捕捉电视/音响声音。',source:'说话语言',target:'翻译为',live:'正在实时识别语音...',waitingSpeech:'等待语音输入...',original:'原文',translation:'译文',originalLabel:'原文：',translationLabel:'译文：',youSpeak:'我的语言',partnerSpeak:'对方的语言',youSpeakButton:'我的麦克风',partnerSpeakButton:'对方麦克风',autoReadOn:'朗读译文：开',autoReadOff:'朗读译文：关',copySource:'复制原文',copyDone:'已复制！',copyEmpty:'暂无可复制的语音文本。',copyFailed:'无法自动复制，请重试。',clear:'清除记录',listeningHelp:'连续识别语音并自动翻译',listeningDesc:'适用于课程、会议和研讨会。',twoWayHelp:'选择双方使用的语言，然后点击对应的麦克风轮流说话。',swapLang:'交换语言',youSaid:'你说',partnerSaid:'对方说',browserUnsupported:'此浏览器不支持语音识别，请尝试最新版 Chrome 或 Edge。',permissionError:'无法访问麦克风。'},
+      ko: {appTitle:'실시간 번역기',tagline:'실시간 음성 · 즉시 번역',oneWayTab:'듣고 번역',twoWayTab:'양방향 대화',ready:'준비됨',listening:'듣는 중...',micDenied:'마이크 권한이 없습니다',speechError:'음성 인식 오류',startListening:'듣기 및 번역 시작',stopListening:'듣기 중지',audioTip:'먼 거리의 음성을 더 잘 잡기 위해 노이즈 억제 기능이 꺼져 있습니다.',source:'말하는 언어',target:'번역 언어',live:'실시간 음성 인식 중...',waitingSpeech:'음성을 기다리는 중...',original:'원문',translation:'번역문',originalLabel:'원문:',translationLabel:'번역문:',youSpeak:'내 언어',partnerSpeak:'상대방 언어',youSpeakButton:'내 마이크',partnerSpeakButton:'상대방 마이크',autoReadOn:'번역 읽기: 켬',autoReadOff:'번역 읽기: 끔',copySource:'원문 복사',copyDone:'복사 완료!',copyEmpty:'복사할 음성 텍스트가 없습니다.',copyFailed:'자동 복사에 실패했습니다. 다시 시도하세요.',clear:'기록 지우기',listeningHelp:'음성을 연속 인식하고 자동 번역합니다',listeningDesc:'강의, 회의 및 세미나에 적합합니다.',twoWayHelp:'각 사람의 언어를 선택한 다음 해당 마이크를 눌러 번갈아 말하세요.',swapLang:'언어 바꾸기',youSaid:'내가 말함',partnerSaid:'상대방이 말함',browserUnsupported:'이 브라우저는 음성 인식을 지원하지 않습니다. 최신 Chrome 또는 Edge를 사용하세요.',permissionError:'마이크에 접근할 수 없습니다.'}
     };
     function t(key) { const lang = document.getElementById('uiLang')?.value || 'vi'; return (translations[lang] || translations.vi)[key] || translations.vi[key] || key; }
     function updateStartButton() {
@@ -738,17 +719,10 @@
       btnStartM1Text.textContent = isListeningMode1 ? t('stopListening') : t('startListening');
     }
     function updateAutoReadLabel() { autoTtsStatus.textContent = autoTTS ? t('autoReadOn') : t('autoReadOff'); }
-    function updateMicLabels() {
-      const u = document.querySelector('#btnMicUser [data-i18n="youSpeakButton"]');
-      const p = document.querySelector('#btnMicPartner [data-i18n="partnerSpeakButton"]');
-      if (u) u.textContent = t('youSpeakButton');
-      if (p) p.textContent = t('partnerSpeakButton');
-    }
     function applyUiLanguage() {
       document.documentElement.lang = ({vi:'vi',en:'en',ja:'ja',zh:'zh-CN',ko:'ko'})[uiLangSelect.value] || 'vi';
       document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
       document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
-      // Translate the visible language names in every speech-language selector.
       const speechNames = {vi:'Tiếng Việt',en:'English',ja:'日本語',zh:'简体中文',ko:'한국어'};
       document.querySelectorAll('#m1SrcLang, #m1TgtLang, #m2UserLang, #m2PartnerLang').forEach(sel => {
         [...sel.options].forEach(opt => {
@@ -770,7 +744,6 @@
     }
     const uiLangSelect = document.getElementById('uiLang');
     const UI_LANG_STORAGE_KEY = 'liveTranslator.uiLanguage';
-    // Restore the user's last selected interface language; only use browser language on first visit.
     try {
       const savedUiLang = localStorage.getItem(UI_LANG_STORAGE_KEY);
       const browserLang = (navigator.language || '').toLowerCase();
