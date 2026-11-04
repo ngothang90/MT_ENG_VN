@@ -1,4 +1,4 @@
-const CACHE_NAME = 'live-translator-ai-v1';
+const CACHE_NAME = 'live-translator-ai-v2';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

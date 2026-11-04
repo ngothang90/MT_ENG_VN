@@ -23,7 +23,7 @@
     .header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
     .tabs{display:flex;background:#0f172a;border:1px solid #334155;border-radius:12px;padding:4px;gap:4px}
     .tab{border:0;background:transparent;color:#94a3b8;padding:9px 12px;border-radius:9px;font-size:12px;font-weight:800}.tab.active{background:#0284c7;color:white;box-shadow:0 2px 8px #0004}.tab.two.active{background:#d97706}
-    .settings{position:relative}.settings summary{list-style:none;border:1px solid var(--border);background:#0f172a;color:#cbd5e1;border-radius:10px;padding:9px 11px;font-size:12px;font-weight:700;cursor:pointer}.settings summary::-webkit-details-marker{display:none}.settings-box{position:absolute;right:0;top:44px;width:min(340px,calc(100vw - 28px));z-index:20;padding:14px;background:#172337;border:1px solid #475569;border-radius:14px;box-shadow:0 14px 36px #0009}.settings-box p{font-size:12px;line-height:1.5;color:#cbd5e1;margin:0 0 10px}.settings-row{display:flex;gap:7px}.settings-row input{min-width:0;flex:1}
+    .display-language{display:flex;align-items:center;gap:5px;background:#0f172a;border:1px solid var(--border);border-radius:10px;padding:0 7px;color:#cbd5e1;font-size:12px}.display-language select{width:auto;max-width:116px;border:0;background:transparent;padding:8px 2px;font-size:12px;color:#f8fafc}.settings{position:relative}.settings summary{list-style:none;border:1px solid var(--border);background:#0f172a;color:#cbd5e1;border-radius:10px;padding:9px 11px;font-size:12px;font-weight:700;cursor:pointer}.settings summary::-webkit-details-marker{display:none}.settings-box{position:absolute;right:0;top:44px;width:min(340px,calc(100vw - 28px));z-index:20;padding:14px;background:#172337;border:1px solid #475569;border-radius:14px;box-shadow:0 14px 36px #0009}.settings-box p{font-size:12px;line-height:1.5;color:#cbd5e1;margin:0 0 10px}.settings-row{display:flex;gap:7px}.settings-row input{min-width:0;flex:1}
     input,select,textarea{width:100%;min-width:0;color:#f8fafc;background:#0f172a;border:1px solid #475569;border-radius:10px;padding:10px 11px;outline:none}input:focus,select:focus,textarea:focus{border-color:#38bdf8;box-shadow:0 0 0 2px #0ea5e922}
     .btn{border:1px solid transparent;border-radius:11px;padding:10px 13px;font-size:12px;font-weight:850;transition:filter .15s,transform .15s}.btn:active{transform:scale(.98)}.btn-blue{background:#0369a1;color:white;border-color:#0284c7}.btn-green{background:#34d399;color:#052e24}.btn-red{background:#e11d48;color:white}.btn-amber{background:#d97706;color:white}.btn-muted{background:#0f172a;color:#cbd5e1;border-color:#475569}.btn-small{padding:8px 10px;font-size:11px}
     .app-area{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}.mode{display:flex;flex-direction:column;gap:9px;min-height:0;flex:1}.hidden{display:none!important}
@@ -35,7 +35,7 @@
     .two-toolbar{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;padding:11px;flex-shrink:0}.mic-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;flex-shrink:0}.mic-btn{padding:14px 10px;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:13px;font-size:12px;font-weight:900;border:1px solid #0369a1;background:#075985;color:white}.mic-btn.partner{border-color:#b45309;background:#92400e}.mic-btn.selected{outline:3px solid #fb7185;outline-offset:1px;background:#be123c;border-color:#fb7185}.mic-sub{font-size:10px;font-weight:650;opacity:.82}
     .tip{font-size:10px;color:#94a3b8;line-height:1.45;padding:0 3px}.toggle{display:flex;align-items:center;gap:7px;background:#0f172a;border:1px solid #475569;border-radius:10px;padding:10px;color:#a7f3d0;font-size:11px;font-weight:800;white-space:nowrap}
     @keyframes fade{from{opacity:.5;transform:translateY(3px)}to{opacity:1;transform:none}}
-    @media(max-width:700px){body{gap:8px;padding-left:8px;padding-right:8px}.brand h1{font-size:14px}.brand-icon{width:36px;height:36px}.header-actions{width:100%;justify-content:space-between}.tabs{flex:1}.tab{flex:1;padding:9px 7px}.settings-box{right:0}.live-grid{grid-template-columns:1fr}.live-box{max-height:112px;min-height:80px}.entry-grid{grid-template-columns:1fr;gap:8px}.two-toolbar{grid-template-columns:1fr 1fr}.toggle{grid-column:1/-1;justify-content:center}.actions .btn{padding:11px 10px}.actions .primary{min-width:130px}}
+    @media(max-width:700px){body{gap:8px;padding-left:8px;padding-right:8px}.brand h1{font-size:14px}.brand-icon{width:36px;height:36px}.header-actions{width:100%;justify-content:space-between}.tabs{flex:1;min-width:0}.tab{flex:1;padding:9px 7px}.display-language select{max-width:92px}.settings-box{right:0}.live-grid{grid-template-columns:1fr}.live-box{max-height:112px;min-height:80px}.entry-grid{grid-template-columns:1fr;gap:8px}.two-toolbar{grid-template-columns:1fr 1fr}.toggle{grid-column:1/-1;justify-content:center}.actions .btn{padding:11px 10px}.actions .primary{min-width:130px}}
     @media(min-width:900px){.live-box{max-height:180px}.entry{padding:14px}.entry-text{font-size:14px}.feed{gap:12px}}
   </style>
 </head>
@@ -43,20 +43,30 @@
   <header class="panel">
     <div class="brand">
       <div class="brand-icon">AI</div>
-      <div><h1>Live Translator AI</h1><p>Nghe trực tiếp · Dịch theo ngữ cảnh · Realtime</p></div>
+      <div><h1>Live Translator AI</h1><p data-i18n="tagline">Nghe trực tiếp · Dịch theo ngữ cảnh · Realtime</p></div>
     </div>
     <div class="header-actions">
-      <div class="tabs" role="tablist" aria-label="Chế độ dịch">
-        <button id="tabOneWay" class="tab active" type="button">Nghe &amp; dịch</button>
-        <button id="tabTwoWay" class="tab two" type="button">Hội thoại 2 chiều</button>
+      <div class="tabs" role="tablist" aria-label="Translation mode">
+        <button id="tabOneWay" class="tab active" type="button" data-i18n="tabOneWay">Nghe &amp; dịch</button>
+        <button id="tabTwoWay" class="tab two" type="button" data-i18n="tabTwoWay">Hội thoại 2 chiều</button>
       </div>
+      <label class="display-language" for="displayLanguage" title="Interface language">
+        <span aria-hidden="true">🌐</span>
+        <select id="displayLanguage" aria-label="Interface language">
+          <option value="vi">Tiếng Việt</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="zh">简体中文</option>
+          <option value="ko">한국어</option>
+        </select>
+      </label>
       <details class="settings" id="settingsPanel">
-        <summary>⚙ Kết nối</summary>
+        <summary data-i18n="connect">⚙ Kết nối</summary>
         <div class="settings-box">
-          <p><strong>Địa chỉ Cloudflare Worker</strong><br>Nhập địa chỉ Worker sau khi triển khai. Ứng dụng lưu địa chỉ trên thiết bị này.</p>
-          <div class="settings-row"><input id="workerUrl" type="url" placeholder="https://ten-worker.ten-tai-khoan.workers.dev" autocomplete="url"></div>
-          <div class="settings-row" style="margin-top:8px"><button id="saveWorker" class="btn btn-blue btn-small" type="button">Lưu địa chỉ</button><button id="testWorker" class="btn btn-muted btn-small" type="button">Kiểm tra</button></div>
-          <p id="workerHelp" style="margin:9px 0 0">Chưa cấu hình Worker. Xem README trong gói mã nguồn để triển khai.</p>
+          <p><strong data-i18n="workerTitle">Địa chỉ Cloudflare Worker</strong><br><span data-i18n="workerDescription">Địa chỉ đã được cấu hình sẵn cho tất cả thiết bị sử dụng website này.</span></p>
+          <div class="settings-row"><input id="workerUrl" type="url" readonly autocomplete="url" aria-label="Cloudflare Worker URL"></div>
+          <div class="settings-row" style="margin-top:8px"><button id="testWorker" class="btn btn-muted btn-small" type="button" data-i18n="testWorker">Kiểm tra kết nối</button></div>
+          <p id="workerHelp" data-i18n="workerAutoConfigured" style="margin:9px 0 0">Worker đã được cấu hình chung. Không cần cài đặt lại trên thiết bị khác.</p>
         </div>
       </details>
     </div>
@@ -65,9 +75,9 @@
   <div class="app-area">
     <main id="oneWayView" class="mode">
       <section class="panel toolbar">
-        <div class="auto-pill">✦ Ngôn ngữ nói: AI tự nhận diện</div>
+        <div class="auto-pill" data-i18n="sourceAuto">✦ Ngôn ngữ nói: AI tự nhận diện</div>
         <div class="field" style="max-width:280px">
-          <label for="oneWayTarget">Dịch sang</label>
+          <label for="oneWayTarget" data-i18n="translateTo">Dịch sang</label>
           <select id="oneWayTarget">
             <option value="vi">🇻🇳 Tiếng Việt</option>
             <option value="ja">🇯🇵 日本語</option>
@@ -80,64 +90,64 @@
 
       <section class="live-grid" aria-label="Phụ đề trực tiếp">
         <div class="panel live-box">
-          <div class="live-title source"><span>🎙 Lời nói gốc</span><span id="sourceLiveTag">ĐANG CHỜ</span></div>
-          <div id="oneWaySourceLive" class="live-text">Bắt đầu nghe để hiển thị nội dung...</div>
+          <div class="live-title source"><span data-i18n="sourceTitle">🎙 Lời nói gốc</span><span id="sourceLiveTag" data-i18n="tagWaiting">ĐANG CHỜ</span></div>
+          <div id="oneWaySourceLive" class="live-text" data-i18n="oneWaySourceIdle">Bắt đầu nghe để hiển thị nội dung...</div>
         </div>
         <div class="panel live-box">
-          <div class="live-title target"><span>🌐 Bản dịch AI</span><span id="targetLiveTag">ĐANG CHỜ</span></div>
-          <div id="oneWayTargetLive" class="live-text translated">Bản dịch sẽ xuất hiện tại đây...</div>
+          <div class="live-title target"><span data-i18n="targetTitle">🌐 Bản dịch AI</span><span id="targetLiveTag" data-i18n="tagWaiting">ĐANG CHỜ</span></div>
+          <div id="oneWayTargetLive" class="live-text translated" data-i18n="targetIdle">Bản dịch sẽ xuất hiện tại đây...</div>
         </div>
       </section>
 
       <section id="oneWayFeed" class="panel feed" aria-live="polite">
-        <div class="empty" id="oneWayEmpty"><div class="symbol">🎧</div><strong>Nghe và dịch liên tục bằng AI</strong><span>Giữ phiên nghe mở trong suốt cuộc họp để AI có thêm ngữ cảnh. Nội dung dài sẽ được chia thành từng đoạn và lưu trong lịch sử.</span></div>
+        <div class="empty" id="oneWayEmpty"><div class="symbol">🎧</div><strong data-i18n="oneWayEmptyTitle">Nghe và dịch liên tục bằng AI</strong><span data-i18n="oneWayEmptyDescription">Giữ phiên nghe mở trong suốt cuộc họp để AI có thêm ngữ cảnh. Nội dung dài sẽ được chia thành từng đoạn và lưu trong lịch sử.</span></div>
       </section>
 
       <div class="actions">
-        <button id="startOneWay" class="btn btn-green primary" type="button">▶ BẮT ĐẦU NGHE</button>
-        <button id="copyOneWay" class="btn btn-blue" type="button">▣ Sao chép nội dung</button>
-        <button id="clearOneWay" class="btn btn-muted" type="button">Xóa lịch sử</button>
+        <button id="startOneWay" class="btn btn-green primary" type="button" data-i18n="startListening">▶ BẮT ĐẦU NGHE</button>
+        <button id="copyOneWay" class="btn btn-blue" type="button" data-i18n="copyContent">▣ Sao chép nội dung</button>
+        <button id="clearOneWay" class="btn btn-muted" type="button" data-i18n="clearHistory">Xóa lịch sử</button>
       </div>
     </main>
 
     <main id="twoWayView" class="mode hidden">
       <section class="panel two-toolbar">
-        <div class="field"><label for="myLanguage">Ngôn ngữ của tôi</label><select id="myLanguage">
+        <div class="field"><label for="myLanguage" data-i18n="myLanguage">Ngôn ngữ của tôi</label><select id="myLanguage">
           <option value="vi">🇻🇳 Tiếng Việt</option><option value="ja">🇯🇵 日本語</option><option value="en">🇬🇧 English</option><option value="ko">🇰🇷 한국어</option><option value="zh">🇨🇳 简体中文</option>
         </select></div>
-        <div class="field"><label for="partnerLanguage">Ngôn ngữ đối phương</label><select id="partnerLanguage">
+        <div class="field"><label for="partnerLanguage" data-i18n="partnerLanguage">Ngôn ngữ đối phương</label><select id="partnerLanguage">
           <option value="ja">🇯🇵 日本語</option><option value="vi">🇻🇳 Tiếng Việt</option><option value="en">🇬🇧 English</option><option value="ko">🇰🇷 한국어</option><option value="zh">🇨🇳 简体中文</option>
         </select></div>
-        <button id="autoReadToggle" class="toggle" type="button">🔊 Đọc bản dịch: BẬT</button>
+        <button id="autoReadToggle" class="toggle" type="button" data-i18n="autoReadOn">🔊 Đọc bản dịch: BẬT</button>
       </section>
 
-      <div class="tip">Chọn đúng người đang nói. Ứng dụng giữ cùng một phiên AI và đổi ngôn ngữ đích khi chuyển người nói, giúp duy trì ngữ cảnh hội thoại.</div>
+      <div class="tip" data-i18n="twoWayTip">Chọn đúng người đang nói. Ứng dụng giữ cùng một phiên AI và đổi ngôn ngữ đích khi chuyển người nói, giúp duy trì ngữ cảnh hội thoại.</div>
 
       <section class="live-grid" aria-label="Phụ đề hội thoại trực tiếp">
         <div class="panel live-box">
-          <div class="live-title source"><span>🎙 Lời nói gốc</span><span id="twoWaySourceTag">ĐANG CHỜ</span></div>
-          <div id="twoWaySourceLive" class="live-text">Chọn micro để bắt đầu hội thoại...</div>
+          <div class="live-title source"><span data-i18n="sourceTitle">🎙 Lời nói gốc</span><span id="twoWaySourceTag" data-i18n="tagWaiting">ĐANG CHỜ</span></div>
+          <div id="twoWaySourceLive" class="live-text" data-i18n="twoWaySourceIdle">Chọn micro để bắt đầu hội thoại...</div>
         </div>
         <div class="panel live-box">
-          <div class="live-title target"><span>🌐 Bản dịch AI</span><span id="twoWayTargetTag">ĐANG CHỜ</span></div>
-          <div id="twoWayTargetLive" class="live-text translated">Bản dịch sẽ xuất hiện tại đây...</div>
+          <div class="live-title target"><span data-i18n="targetTitle">🌐 Bản dịch AI</span><span id="twoWayTargetTag" data-i18n="tagWaiting">ĐANG CHỜ</span></div>
+          <div id="twoWayTargetLive" class="live-text translated" data-i18n="targetIdle">Bản dịch sẽ xuất hiện tại đây...</div>
         </div>
       </section>
 
       <section id="twoWayFeed" class="panel feed" aria-live="polite">
-        <div class="empty" id="twoWayEmpty"><div class="symbol">💬</div><strong>Dịch hội thoại theo lượt nói</strong><span>Nhấn micro tương ứng với người đang nói. Nhấn lại để dừng nghe.</span></div>
+        <div class="empty" id="twoWayEmpty"><div class="symbol">💬</div><strong data-i18n="twoWayEmptyTitle">Dịch hội thoại theo lượt nói</strong><span data-i18n="twoWayEmptyDescription">Nhấn micro tương ứng với người đang nói. Nhấn lại để dừng nghe.</span></div>
       </section>
 
       <div class="mic-actions">
-        <button id="micMe" class="mic-btn" type="button">🎙 TÔI NÓI <span class="mic-sub" id="micMeTarget">→ Tiếng Nhật</span></button>
-        <button id="micPartner" class="mic-btn partner" type="button">🎙 ĐỐI PHƯƠNG NÓI <span class="mic-sub" id="micPartnerTarget">→ Tiếng Việt</span></button>
+        <button id="micMe" class="mic-btn" type="button"><span data-i18n="micMe">🎙 TÔI NÓI</span> <span class="mic-sub" id="micMeTarget">→ 日本語</span></button>
+        <button id="micPartner" class="mic-btn partner" type="button"><span data-i18n="micPartner">🎙 ĐỐI PHƯƠNG NÓI</span> <span class="mic-sub" id="micPartnerTarget">→ Tiếng Việt</span></button>
       </div>
     </main>
   </div>
 
   <div class="status">
-    <div class="status-left"><span id="statusDot" class="dot"></span><span id="statusText">Sẵn sàng</span></div>
-    <span id="sessionInfo">Realtime AI · Cần kết nối Internet</span>
+    <div class="status-left"><span id="statusDot" class="dot"></span><span id="statusText" data-i18n="statusReady">Sẵn sàng</span></div>
+    <span id="sessionInfo" data-i18n="sessionInfo">Realtime AI · Cần kết nối Internet</span>
   </div>
 
   <audio id="remoteAudio" autoplay playsinline></audio>
@@ -146,14 +156,83 @@
     (() => {
       'use strict';
 
-      const LANG_NAMES = { vi: 'Tiếng Việt', ja: '日本語', en: 'English', ko: '한국어', zh: '简体中文' };
-      const LANG_FLAGS = { vi: '🇻🇳', ja: '🇯🇵', en: '🇬🇧', ko: '🇰🇷', zh: '🇨🇳' };
-      const WORKER_STORAGE_KEY = 'liveTranslatorAI.workerUrl';
+      const LANGUAGE_NAMES_BY_UI = {
+        vi: { vi:'Tiếng Việt', ja:'Tiếng Nhật', en:'Tiếng Anh', ko:'Tiếng Hàn', zh:'Tiếng Trung' },
+        en: { vi:'Vietnamese', ja:'Japanese', en:'English', ko:'Korean', zh:'Chinese' },
+        ja: { vi:'ベトナム語', ja:'日本語', en:'英語', ko:'韓国語', zh:'中国語' },
+        zh: { vi:'越南语', ja:'日语', en:'英语', ko:'韩语', zh:'中文' },
+        ko: { vi:'베트남어', ja:'일본어', en:'영어', ko:'한국어', zh:'중국어' }
+      };
+      const DEFAULT_WORKER_URL = 'https://live-translator-ai-worker.ngothang90.workers.dev';
+      const UI_LANG_STORAGE_KEY = 'liveTranslatorAI.displayLanguage';
+      const UI_TEXT = {
+        vi: {
+          tagline:'Nghe trực tiếp · Dịch theo ngữ cảnh · Realtime',tabOneWay:'Nghe & dịch',tabTwoWay:'Hội thoại 2 chiều',connect:'⚙ Kết nối',workerTitle:'Địa chỉ Cloudflare Worker',workerDescription:'Địa chỉ đã được cấu hình sẵn cho tất cả thiết bị sử dụng website này.',testWorker:'Kiểm tra kết nối',workerAutoConfigured:'Worker đã được cấu hình chung. Không cần cài đặt lại trên thiết bị khác.',
+          sourceAuto:'✦ Ngôn ngữ nói: AI tự nhận diện',translateTo:'Dịch sang',sourceTitle:'🎙 Lời nói gốc',targetTitle:'🌐 Bản dịch AI',tagWaiting:'ĐANG CHỜ',tagReceiving:'ĐANG NHẬN',tagListening:'ĐANG NGHE',tagTranslating:'ĐANG DỊCH',tagProcessing:'ĐANG XỬ LÝ',oneWaySourceIdle:'Bắt đầu nghe để hiển thị nội dung...',oneWaySourceActive:'Đang nghe... chờ lời nói tiếp theo.',targetIdle:'Bản dịch sẽ xuất hiện tại đây...',targetActive:'Đang chờ bản dịch AI...',oneWayEmptyTitle:'Nghe và dịch liên tục bằng AI',oneWayEmptyDescription:'Giữ phiên nghe mở trong suốt cuộc họp để AI có thêm ngữ cảnh. Nội dung dài sẽ được chia thành từng đoạn và lưu trong lịch sử.',startListening:'▶ BẮT ĐẦU NGHE',stopListening:'■ ĐANG NGHE · NHẤN ĐỂ DỪNG',copyContent:'▣ Sao chép nội dung',clearHistory:'Xóa lịch sử',myLanguage:'Ngôn ngữ của tôi',partnerLanguage:'Ngôn ngữ đối phương',autoReadOn:'🔊 Đọc bản dịch: BẬT',autoReadOff:'🔇 Đọc bản dịch: TẮT',twoWayTip:'Chọn đúng người đang nói. Ứng dụng giữ cùng một phiên AI và đổi ngôn ngữ đích khi chuyển người nói, giúp duy trì ngữ cảnh hội thoại.',twoWaySourceIdle:'Chọn micro để bắt đầu hội thoại...',twoWaySourceActive:'Đang nghe người nói...',twoWayEmptyTitle:'Dịch hội thoại theo lượt nói',twoWayEmptyDescription:'Nhấn micro tương ứng với người đang nói. Nhấn lại để dừng nghe.',micMe:'🎙 TÔI NÓI',micPartner:'🎙 ĐỐI PHƯƠNG NÓI',
+          statusReady:'Sẵn sàng',sessionInfo:'Realtime AI · Cần kết nối Internet',statusConnecting:'Đang kết nối AI Realtime...',statusWaitConnect:'Đang kết nối AI, vui lòng đợi kết nối hoàn tất.',statusLive:'Đang nghe và dịch bằng AI',statusNoAudio:'Đã kết nối. Chạm nút đọc bản dịch để bật âm thanh.',statusUnstable:'Kết nối Realtime không ổn định. Kiểm tra Internet.',statusDataError:'Kênh dữ liệu Realtime bị lỗi.',statusStopped:'Đã dừng nghe',statusChanged:'Đã đổi ngôn ngữ dịch · AI tiếp tục giữ phiên nghe',statusChangeFailed:'Không thể đổi ngôn ngữ dịch. Hãy thử lại.',statusCopied:'Đã sao chép toàn bộ nội dung',statusClipboardError:'Trình duyệt không cho phép sao chép. Hãy cấp quyền Clipboard.',statusBackground:'Đang chạy · trình duyệt có thể giới hạn micro khi ở nền',statusWorkerTesting:'Đang kiểm tra kết nối...',statusWorkerOk:'Kết nối Worker thành công. Sẵn sàng tạo phiên AI.',statusWorkerError:'Worker chưa phản hồi đúng.',workerHttpsError:'Địa chỉ Worker phải bắt đầu bằng https://',workerHttpError:'Chỉ cho phép HTTPS ngoài localhost.',workerMissingError:'Chưa có địa chỉ Cloudflare Worker được cấu hình.',copyEmpty:'Chưa có nội dung để sao chép.',speakerMe:'Bạn nói',speakerPartner:'Người đối diện nói',speakerMeeting:'Nội dung cuộc họp',labelOriginal:'LỜI NÓI GỐC',labelTranslation:'BẢN DỊCH AI',transcriptOriginal:'Gốc',transcriptTranslation:'Dịch',permissionClipboard:'Trình duyệt không cho phép sao chép. Hãy cấp quyền Clipboard.',micDenied:'Chưa được cấp quyền microphone. Hãy cho phép trình duyệt sử dụng micro.',micMissing:'Không tìm thấy microphone trên thiết bị.',statusCouldNotConnect:'Không thể kết nối AI Realtime.'
+        },
+        en: {
+          tagline:'Live listening · Context-aware translation · Realtime',tabOneWay:'Listen & Translate',tabTwoWay:'Two-way Conversation',connect:'⚙ Connection',workerTitle:'Cloudflare Worker URL',workerDescription:'This Worker is preconfigured for everyone using this website.',testWorker:'Test connection',workerAutoConfigured:'Worker is configured for all devices. No setup is needed on other devices.',
+          sourceAuto:'✦ Spoken language: AI auto-detects',translateTo:'Translate into',sourceTitle:'🎙 Original speech',targetTitle:'🌐 AI translation',tagWaiting:'WAITING',tagReceiving:'RECEIVING',tagListening:'LISTENING',tagTranslating:'TRANSLATING',tagProcessing:'PROCESSING',oneWaySourceIdle:'Start listening to display speech...',oneWaySourceActive:'Listening... waiting for the next speech.',targetIdle:'The translation will appear here...',targetActive:'Waiting for AI translation...',oneWayEmptyTitle:'Continuous AI listening and translation',oneWayEmptyDescription:'Keep the listening session open during the meeting so AI can use more context. Long content is split into readable segments and saved in the history.',startListening:'▶ START LISTENING',stopListening:'■ LISTENING · TAP TO STOP',copyContent:'▣ Copy transcript',clearHistory:'Clear history',myLanguage:'My language',partnerLanguage:'Other person’s language',autoReadOn:'🔊 Read translation: ON',autoReadOff:'🔇 Read translation: OFF',twoWayTip:'Select who is speaking. The app keeps the same AI session and changes the target language when you switch speakers, preserving conversation context.',twoWaySourceIdle:'Select a microphone to start the conversation...',twoWaySourceActive:'Listening to the speaker...',twoWayEmptyTitle:'Translate a conversation turn by turn',twoWayEmptyDescription:'Tap the microphone for the person who is speaking. Tap again to stop listening.',micMe:'🎙 I AM SPEAKING',micPartner:'🎙 OTHER PERSON',
+          statusReady:'Ready',sessionInfo:'Realtime AI · Internet connection required',statusConnecting:'Connecting to Realtime AI...',statusWaitConnect:'Connecting to AI. Please wait for the connection to finish.',statusLive:'Listening and translating with AI',statusNoAudio:'Connected. Tap the read-translation button to enable audio.',statusUnstable:'Realtime connection is unstable. Check your Internet connection.',statusDataError:'Realtime data channel error.',statusStopped:'Listening stopped',statusChanged:'Translation language changed · AI listening session continues',statusChangeFailed:'Could not change the translation language. Please try again.',statusCopied:'Transcript copied',statusClipboardError:'The browser blocked clipboard access. Please allow clipboard permission.',statusBackground:'Running · your browser may limit microphone access in the background',statusWorkerTesting:'Checking connection...',statusWorkerOk:'Worker connected. Ready to create an AI session.',statusWorkerError:'The Worker did not respond correctly.',workerHttpsError:'The Worker URL must start with https://',workerHttpError:'HTTPS is required except on localhost.',workerMissingError:'No Cloudflare Worker URL is configured.',copyEmpty:'There is no transcript to copy yet.',speakerMe:'You',speakerPartner:'Other speaker',speakerMeeting:'Meeting transcript',labelOriginal:'ORIGINAL SPEECH',labelTranslation:'AI TRANSLATION',transcriptOriginal:'Original',transcriptTranslation:'Translation',permissionClipboard:'The browser blocked clipboard access. Please allow clipboard permission.',micDenied:'Microphone permission was denied. Allow microphone access in your browser.',micMissing:'No microphone was found on this device.',statusCouldNotConnect:'Could not connect to Realtime AI.'
+        },
+        ja: {
+          tagline:'音声をリアルタイムで認識 · 文脈に沿って翻訳',tabOneWay:'聞いて翻訳',tabTwoWay:'双方向会話',connect:'⚙ 接続',workerTitle:'Cloudflare Worker URL',workerDescription:'このウェブサイトを使うすべての端末に同じWorkerを設定済みです。',testWorker:'接続テスト',workerAutoConfigured:'Workerは全端末共通で設定済みです。他の端末での設定は不要です。',
+          sourceAuto:'✦ 話し言葉：AIが自動認識',translateTo:'翻訳先',sourceTitle:'🎙 音声原文',targetTitle:'🌐 AI翻訳',tagWaiting:'待機中',tagReceiving:'認識中',tagListening:'聞き取り中',tagTranslating:'翻訳中',tagProcessing:'処理中',oneWaySourceIdle:'聞き取りを開始すると、ここに音声が表示されます...',oneWaySourceActive:'聞き取り中... 次の発話を待っています。',targetIdle:'翻訳はここに表示されます...',targetActive:'AI翻訳を待っています...',oneWayEmptyTitle:'AIによる連続音声認識と翻訳',oneWayEmptyDescription:'会議中は聞き取りセッションを開いたままにすると、AIが会話の文脈を利用できます。長い内容は読みやすい区切りに分けて履歴に保存します。',startListening:'▶ 聞き取り開始',stopListening:'■ 聞き取り中 · タップして停止',copyContent:'▣ 内容をコピー',clearHistory:'履歴を消去',myLanguage:'自分の言語',partnerLanguage:'相手の言語',autoReadOn:'🔊 翻訳読み上げ：オン',autoReadOff:'🔇 翻訳読み上げ：オフ',twoWayTip:'話している人を選択してください。同じAIセッションを維持し、話者を切り替えると翻訳先言語を変更して会話の文脈を保ちます。',twoWaySourceIdle:'マイクを選択して会話を開始...',twoWaySourceActive:'話者の音声を聞き取り中...',twoWayEmptyTitle:'交互の発話を翻訳',twoWayEmptyDescription:'話している人に対応するマイクをタップしてください。もう一度タップすると停止します。',micMe:'🎙 自分が話す',micPartner:'🎙 相手が話す',
+          statusReady:'準備完了',sessionInfo:'Realtime AI · インターネット接続が必要です',statusConnecting:'Realtime AIに接続中...',statusWaitConnect:'AIに接続中です。完了するまでお待ちください。',statusLive:'AIで聞き取り・翻訳中',statusNoAudio:'接続しました。翻訳音声を再生するには読み上げボタンをタップしてください。',statusUnstable:'Realtime接続が不安定です。インターネットを確認してください。',statusDataError:'Realtimeデータチャネルエラーです。',statusStopped:'聞き取りを停止しました',statusChanged:'翻訳先言語を変更しました · AIセッションは継続しています',statusChangeFailed:'翻訳先言語を変更できません。もう一度お試しください。',statusCopied:'内容をコピーしました',statusClipboardError:'ブラウザがクリップボードへのアクセスを拒否しました。権限を許可してください。',statusBackground:'実行中 · バックグラウンドではブラウザがマイクを制限する場合があります',statusWorkerTesting:'接続を確認しています...',statusWorkerOk:'Workerに接続しました。AIセッションを開始できます。',statusWorkerError:'Workerから正しい応答がありません。',workerHttpsError:'Worker URLは https:// で始まる必要があります。',workerHttpError:'localhost以外ではHTTPSが必要です。',workerMissingError:'Cloudflare Worker URLが設定されていません。',copyEmpty:'コピーできる内容がまだありません。',speakerMe:'自分の発言',speakerPartner:'相手の発言',speakerMeeting:'会議の内容',labelOriginal:'音声原文',labelTranslation:'AI翻訳',transcriptOriginal:'原文',transcriptTranslation:'翻訳',permissionClipboard:'ブラウザがクリップボードへのアクセスを拒否しました。権限を許可してください。',micDenied:'マイクの使用が許可されていません。ブラウザでマイクへのアクセスを許可してください。',micMissing:'この端末にマイクが見つかりません。',statusCouldNotConnect:'Realtime AIに接続できません。'
+        },
+        zh: {
+          tagline:'实时聆听 · 根据上下文翻译 · 实时处理',tabOneWay:'聆听并翻译',tabTwoWay:'双向对话',connect:'⚙ 连接',workerTitle:'Cloudflare Worker 地址',workerDescription:'此网站已为所有设备配置相同的 Worker。',testWorker:'测试连接',workerAutoConfigured:'Worker 已为所有设备统一配置，其他设备无需重复设置。',
+          sourceAuto:'✦ 说话语言：AI 自动识别',translateTo:'翻译为',sourceTitle:'🎙 原始语音',targetTitle:'🌐 AI 翻译',tagWaiting:'等待中',tagReceiving:'识别中',tagListening:'聆听中',tagTranslating:'翻译中',tagProcessing:'处理中',oneWaySourceIdle:'开始聆听后，语音内容将在此显示...',oneWaySourceActive:'正在聆听... 等待下一段语音。',targetIdle:'译文将在此显示...',targetActive:'正在等待 AI 翻译...',oneWayEmptyTitle:'AI 连续语音识别与翻译',oneWayEmptyDescription:'会议期间请保持聆听会话开启，以便 AI 利用更多上下文。较长内容会分段显示并保存到历史记录。',startListening:'▶ 开始聆听',stopListening:'■ 正在聆听 · 点击停止',copyContent:'▣ 复制内容',clearHistory:'清除记录',myLanguage:'我的语言',partnerLanguage:'对方语言',autoReadOn:'🔊 朗读译文：开',autoReadOff:'🔇 朗读译文：关',twoWayTip:'请选择当前说话的人。应用会保持同一个 AI 会话，并在切换说话者时更改目标语言，以保留对话上下文。',twoWaySourceIdle:'选择麦克风以开始对话...',twoWaySourceActive:'正在聆听说话者...',twoWayEmptyTitle:'按发言顺序翻译对话',twoWayEmptyDescription:'点击当前说话者对应的麦克风。再次点击即可停止聆听。',micMe:'🎙 我在说话',micPartner:'🎙 对方在说话',
+          statusReady:'就绪',sessionInfo:'Realtime AI · 需要互联网连接',statusConnecting:'正在连接 Realtime AI...',statusWaitConnect:'正在连接 AI，请等待连接完成。',statusLive:'AI 正在聆听并翻译',statusNoAudio:'已连接。点击朗读译文按钮以启用声音。',statusUnstable:'Realtime 连接不稳定，请检查网络。',statusDataError:'Realtime 数据通道出错。',statusStopped:'已停止聆听',statusChanged:'已更改翻译语言 · AI 聆听会话继续',statusChangeFailed:'无法更改翻译语言，请重试。',statusCopied:'已复制全部内容',statusClipboardError:'浏览器阻止了剪贴板访问，请允许剪贴板权限。',statusBackground:'正在运行 · 浏览器可能会限制后台麦克风',statusWorkerTesting:'正在检查连接...',statusWorkerOk:'Worker 连接成功，可以创建 AI 会话。',statusWorkerError:'Worker 未正确响应。',workerHttpsError:'Worker 地址必须以 https:// 开头。',workerHttpError:'除 localhost 外必须使用 HTTPS。',workerMissingError:'尚未配置 Cloudflare Worker 地址。',copyEmpty:'暂无可复制的内容。',speakerMe:'你说',speakerPartner:'对方说',speakerMeeting:'会议内容',labelOriginal:'原始语音',labelTranslation:'AI 翻译',transcriptOriginal:'原文',transcriptTranslation:'译文',permissionClipboard:'浏览器阻止了剪贴板访问，请允许剪贴板权限。',micDenied:'麦克风权限被拒绝，请在浏览器中允许使用麦克风。',micMissing:'此设备未检测到麦克风。',statusCouldNotConnect:'无法连接 Realtime AI。'
+        },
+        ko: {
+          tagline:'실시간 음성 인식 · 문맥 기반 번역',tabOneWay:'듣고 번역',tabTwoWay:'양방향 대화',connect:'⚙ 연결',workerTitle:'Cloudflare Worker 주소',workerDescription:'이 웹사이트를 사용하는 모든 기기에 동일한 Worker가 설정되어 있습니다.',testWorker:'연결 테스트',workerAutoConfigured:'Worker가 모든 기기에 공통으로 설정되어 있습니다. 다른 기기에서 다시 설정할 필요가 없습니다.',
+          sourceAuto:'✦ 음성 언어: AI 자동 감지',translateTo:'번역 언어',sourceTitle:'🎙 원문 음성',targetTitle:'🌐 AI 번역',tagWaiting:'대기 중',tagReceiving:'인식 중',tagListening:'듣는 중',tagTranslating:'번역 중',tagProcessing:'처리 중',oneWaySourceIdle:'듣기를 시작하면 음성이 여기에 표시됩니다...',oneWaySourceActive:'듣는 중... 다음 발화를 기다립니다.',targetIdle:'번역문이 여기에 표시됩니다...',targetActive:'AI 번역을 기다리는 중...',oneWayEmptyTitle:'AI 연속 음성 인식 및 번역',oneWayEmptyDescription:'회의 중에는 듣기 세션을 계속 열어 두어 AI가 문맥을 더 많이 활용하도록 하세요. 긴 내용은 읽기 쉬운 단락으로 나누어 기록에 저장합니다.',startListening:'▶ 듣기 시작',stopListening:'■ 듣는 중 · 눌러서 중지',copyContent:'▣ 내용 복사',clearHistory:'기록 지우기',myLanguage:'내 언어',partnerLanguage:'상대방 언어',autoReadOn:'🔊 번역 읽기: 켬',autoReadOff:'🔇 번역 읽기: 끔',twoWayTip:'현재 말하는 사람을 선택하세요. 동일한 AI 세션을 유지하며 화자를 전환할 때 번역 언어를 변경하여 대화 문맥을 유지합니다.',twoWaySourceIdle:'마이크를 선택하여 대화를 시작하세요...',twoWaySourceActive:'화자의 음성을 듣는 중...',twoWayEmptyTitle:'발화 순서에 따라 대화 번역',twoWayEmptyDescription:'말하고 있는 사람에 해당하는 마이크를 누르세요. 다시 누르면 듣기가 중지됩니다.',micMe:'🎙 내가 말함',micPartner:'🎙 상대방이 말함',
+          statusReady:'준비됨',sessionInfo:'Realtime AI · 인터넷 연결 필요',statusConnecting:'Realtime AI에 연결 중...',statusWaitConnect:'AI에 연결 중입니다. 연결이 완료될 때까지 기다려 주세요.',statusLive:'AI로 듣고 번역하는 중',statusNoAudio:'연결되었습니다. 번역 음성을 들으려면 읽기 버튼을 누르세요.',statusUnstable:'Realtime 연결이 불안정합니다. 인터넷을 확인하세요.',statusDataError:'Realtime 데이터 채널 오류입니다.',statusStopped:'듣기가 중지되었습니다',statusChanged:'번역 언어 변경됨 · AI 듣기 세션은 계속됩니다',statusChangeFailed:'번역 언어를 변경할 수 없습니다. 다시 시도하세요.',statusCopied:'전체 내용이 복사되었습니다',statusClipboardError:'브라우저가 클립보드 접근을 차단했습니다. 권한을 허용하세요.',statusBackground:'실행 중 · 브라우저가 백그라운드 마이크를 제한할 수 있습니다',statusWorkerTesting:'연결을 확인하는 중...',statusWorkerOk:'Worker 연결 성공. AI 세션을 시작할 수 있습니다.',statusWorkerError:'Worker가 올바르게 응답하지 않았습니다.',workerHttpsError:'Worker 주소는 https://로 시작해야 합니다.',workerHttpError:'localhost 외에는 HTTPS가 필요합니다.',workerMissingError:'Cloudflare Worker 주소가 설정되지 않았습니다.',copyEmpty:'복사할 내용이 아직 없습니다.',speakerMe:'내 발화',speakerPartner:'상대방 발화',speakerMeeting:'회의 내용',labelOriginal:'원문 음성',labelTranslation:'AI 번역',transcriptOriginal:'원문',transcriptTranslation:'번역',permissionClipboard:'브라우저가 클립보드 접근을 차단했습니다. 권한을 허용하세요.',micDenied:'마이크 권한이 거부되었습니다. 브라우저에서 마이크 접근을 허용하세요.',micMissing:'이 기기에서 마이크를 찾을 수 없습니다.',statusCouldNotConnect:'Realtime AI에 연결할 수 없습니다.'
+        }
+      };
       const WORKER_ENDPOINT_SUFFIX = '/session';
       const TRANSLATION_CALL_URL = 'https://api.openai.com/v1/realtime/translations/calls';
       const FLUSH_DELAY_MS = 2300;
 
       const $ = (id) => document.getElementById(id);
+      function t(key) {
+        const lang = displayLanguage;
+        return (UI_TEXT[lang] && UI_TEXT[lang][key]) || UI_TEXT.en[key] || UI_TEXT.vi[key] || key;
+      }
+      function detectDisplayLanguage() {
+        const browser = (navigator.languages && navigator.languages[0]) || navigator.language || 'vi';
+        const prefix = browser.toLowerCase().split('-')[0];
+        return ['vi','en','ja','zh','ko'].includes(prefix) ? prefix : 'en';
+      }
+      let displayLanguage = 'vi';
+      const displayLanguageSelect = $('displayLanguage');
+      try {
+        const savedUiLanguage = localStorage.getItem(UI_LANG_STORAGE_KEY);
+        displayLanguage = UI_TEXT[savedUiLanguage] ? savedUiLanguage : detectDisplayLanguage();
+      } catch (_) {
+        displayLanguage = detectDisplayLanguage();
+      }
+      displayLanguageSelect.value = displayLanguage;
+      function applyDisplayLanguage() {
+        document.documentElement.lang = ({vi:'vi',en:'en',ja:'ja',zh:'zh-CN',ko:'ko'})[displayLanguage] || 'en';
+        document.querySelectorAll('[data-i18n]').forEach((element) => {
+          const key = element.getAttribute('data-i18n');
+          element.textContent = t(key);
+        });
+        updateTwoWayLabels();
+        updateLivePanels();
+        refreshHistoryLabels();
+        updateButtons();
+        updateAutoReadLabel();
+      }
+      displayLanguageSelect.addEventListener('change', () => {
+        displayLanguage = UI_TEXT[displayLanguageSelect.value] ? displayLanguageSelect.value : 'en';
+        try { localStorage.setItem(UI_LANG_STORAGE_KEY, displayLanguage); } catch (_) {}
+        applyDisplayLanguage();
+        setStatus(t(isActive ? 'statusLive' : 'statusReady'), isActive ? 'live' : 'ready');
+      });
       const tabOneWay = $('tabOneWay');
       const tabTwoWay = $('tabTwoWay');
       const oneWayView = $('oneWayView');
@@ -189,7 +268,7 @@
 
       async function setMode(nextMode) {
         if (mode === nextMode || isStopping) return;
-        if (isConnecting) { setStatus('Đang kết nối AI, vui lòng đợi kết nối hoàn tất.'); return; }
+        if (isConnecting) { setStatus(t('statusWaitConnect')); return; }
         await stopSession();
         mode = nextMode;
         const one = nextMode === 'oneWay';
@@ -197,56 +276,48 @@
         twoWayView.classList.toggle('hidden', one);
         tabOneWay.classList.toggle('active', one);
         tabTwoWay.classList.toggle('active', !one);
-        setStatus('Sẵn sàng');
+        setStatus(t('statusReady'));
       }
       tabOneWay.addEventListener('click', () => { void setMode('oneWay'); });
       tabTwoWay.addEventListener('click', () => { void setMode('twoWay'); });
 
       function normalizeWorkerUrl(value) {
-        const parsed = new URL(value.trim());
-        if (!['https:', 'http:'].includes(parsed.protocol)) throw new Error('Địa chỉ Worker phải bắt đầu bằng https://');
-        if (parsed.protocol === 'http:' && !['localhost', '127.0.0.1'].includes(parsed.hostname)) throw new Error('Chỉ cho phép HTTPS ngoài localhost.');
+        let parsed;
+        try { parsed = new URL(String(value || '').trim()); }
+        catch (_) { throw new Error(t('workerMissingError')); }
+        if (!['https:', 'http:'].includes(parsed.protocol)) throw new Error(t('workerHttpsError'));
+        if (parsed.protocol === 'http:' && !['localhost', '127.0.0.1'].includes(parsed.hostname)) throw new Error(t('workerHttpError'));
         return parsed.origin + parsed.pathname.replace(/\/$/, '');
       }
 
+      // This constant is published with GitHub Pages, so every device uses the same Worker.
       function getWorkerUrl() {
-        const value = localStorage.getItem(WORKER_STORAGE_KEY) || '';
-        if (!value) throw new Error('Chưa nhập địa chỉ Cloudflare Worker. Mở mục Kết nối để cấu hình.');
-        return normalizeWorkerUrl(value);
+        return normalizeWorkerUrl(DEFAULT_WORKER_URL);
       }
 
-      $('workerUrl').value = localStorage.getItem(WORKER_STORAGE_KEY) || '';
-      $('saveWorker').addEventListener('click', () => {
-        try {
-          const url = normalizeWorkerUrl($('workerUrl').value);
-          localStorage.setItem(WORKER_STORAGE_KEY, url);
-          $('workerUrl').value = url;
-          $('workerHelp').textContent = 'Đã lưu địa chỉ Worker trên thiết bị này.';
-          setStatus('Đã lưu cấu hình Worker');
-        } catch (error) {
-          $('workerHelp').textContent = error.message;
-          setStatus(error.message, 'error');
-        }
-      });
-
+      $('workerUrl').value = DEFAULT_WORKER_URL;
+      $('workerUrl').readOnly = true;
       $('testWorker').addEventListener('click', async () => {
         try {
           const url = getWorkerUrl();
-          $('workerHelp').textContent = 'Đang kiểm tra kết nối...';
+          $('workerHelp').textContent = t('statusWorkerTesting');
           const response = await fetch(url + '/health', { method: 'GET', cache: 'no-store' });
           const data = await response.json().catch(() => ({}));
-          if (!response.ok || data.ok !== true) throw new Error(data.error || 'Worker chưa phản hồi đúng.');
-          $('workerHelp').textContent = 'Kết nối Worker thành công. Sẵn sàng tạo phiên AI.';
-          setStatus('Worker hoạt động');
+          if (!response.ok || data.ok !== true) throw new Error(data.error || t('statusWorkerError'));
+          $('workerHelp').textContent = t('statusWorkerOk');
+          setStatus(t('statusWorkerOk'));
         } catch (error) {
           $('workerHelp').textContent = error.message;
           setStatus(error.message, 'error');
         }
       });
 
+      function languageName(code) {
+        return (LANGUAGE_NAMES_BY_UI[displayLanguage] || LANGUAGE_NAMES_BY_UI.en)[code] || code;
+      }
       function updateTwoWayLabels() {
-        $('micMeTarget').textContent = '→ ' + LANG_NAMES[partnerLanguage.value];
-        $('micPartnerTarget').textContent = '→ ' + LANG_NAMES[myLanguage.value];
+        $('micMeTarget').textContent = '→ ' + languageName(partnerLanguage.value);
+        $('micPartnerTarget').textContent = '→ ' + languageName(myLanguage.value);
       }
       myLanguage.addEventListener('change', updateTwoWayLabels);
       partnerLanguage.addEventListener('change', updateTwoWayLabels);
@@ -265,15 +336,15 @@
       function updateLivePanels() {
         const segment = currentSegment;
         if (mode === 'oneWay') {
-          $('oneWaySourceLive').textContent = segment?.source || (isActive ? 'Đang nghe... chờ lời nói tiếp theo.' : 'Bắt đầu nghe để hiển thị nội dung...');
-          $('oneWayTargetLive').textContent = segment?.target || (isActive ? 'Đang chờ bản dịch AI...' : 'Bản dịch sẽ xuất hiện tại đây...');
-          $('sourceLiveTag').textContent = segment?.source ? 'ĐANG NHẬN' : (isActive ? 'ĐANG NGHE' : 'ĐANG CHỜ');
-          $('targetLiveTag').textContent = segment?.target ? 'ĐANG DỊCH' : (isActive ? 'ĐANG XỬ LÝ' : 'ĐANG CHỜ');
+          $('oneWaySourceLive').textContent = segment?.source || (isActive ? t('oneWaySourceActive') : t('oneWaySourceIdle'));
+          $('oneWayTargetLive').textContent = segment?.target || (isActive ? t('targetActive') : t('targetIdle'));
+          $('sourceLiveTag').textContent = segment?.source ? t('tagReceiving') : (isActive ? t('tagListening') : t('tagWaiting'));
+          $('targetLiveTag').textContent = segment?.target ? t('tagTranslating') : (isActive ? t('tagProcessing') : t('tagWaiting'));
         } else {
-          $('twoWaySourceLive').textContent = segment?.source || (isActive ? 'Đang nghe người nói...' : 'Chọn micro để bắt đầu hội thoại...');
-          $('twoWayTargetLive').textContent = segment?.target || (isActive ? 'Đang chờ bản dịch AI...' : 'Bản dịch sẽ xuất hiện tại đây...');
-          $('twoWaySourceTag').textContent = segment?.source ? 'ĐANG NHẬN' : (isActive ? 'ĐANG NGHE' : 'ĐANG CHỜ');
-          $('twoWayTargetTag').textContent = segment?.target ? 'ĐANG DỊCH' : (isActive ? 'ĐANG XỬ LÝ' : 'ĐANG CHỜ');
+          $('twoWaySourceLive').textContent = segment?.source || (isActive ? t('twoWaySourceActive') : t('twoWaySourceIdle'));
+          $('twoWayTargetLive').textContent = segment?.target || (isActive ? t('targetActive') : t('targetIdle'));
+          $('twoWaySourceTag').textContent = segment?.source ? t('tagReceiving') : (isActive ? t('tagListening') : t('tagWaiting'));
+          $('twoWayTargetTag').textContent = segment?.target ? t('tagTranslating') : (isActive ? t('tagProcessing') : t('tagWaiting'));
         }
       }
 
@@ -322,23 +393,35 @@
         card.className = 'entry';
         const head = document.createElement('div');
         head.className = 'entry-head';
-        const speaker = twoWay ? (entry.speaker === 'me' ? 'Bạn nói' : 'Người đối diện nói') : 'Nội dung cuộc họp';
+        const speaker = twoWay ? (entry.speaker === 'me' ? t('speakerMe') : t('speakerPartner')) : t('speakerMeeting');
         const who = document.createElement('span'); who.textContent = speaker;
         const time = document.createElement('time'); time.textContent = entry.time;
         head.append(who, time);
         const grid = document.createElement('div'); grid.className = 'entry-grid';
         const sourceBox = document.createElement('div'); sourceBox.className = 'entry-part source';
-        const sourceLabel = document.createElement('div'); sourceLabel.className = 'entry-label'; sourceLabel.textContent = 'LỜI NÓI GỐC';
+        const sourceLabel = document.createElement('div'); sourceLabel.className = 'entry-label'; sourceLabel.textContent = t('labelOriginal');
         const sourceText = document.createElement('div'); sourceText.className = 'entry-text'; sourceText.textContent = entry.source || '—';
         sourceBox.append(sourceLabel, sourceText);
         const targetBox = document.createElement('div'); targetBox.className = 'entry-part target';
-        const targetLabel = document.createElement('div'); targetLabel.className = 'entry-label'; targetLabel.textContent = 'BẢN DỊCH AI';
+        const targetLabel = document.createElement('div'); targetLabel.className = 'entry-label'; targetLabel.textContent = t('labelTranslation');
         const targetText = document.createElement('div'); targetText.className = 'entry-text'; targetText.textContent = entry.target || '—';
         targetBox.append(targetLabel, targetText);
         grid.append(sourceBox, targetBox);
         card.append(head, grid);
         feed.appendChild(card);
         feed.scrollTop = feed.scrollHeight;
+      }
+
+      function refreshHistoryLabels() {
+        const feeds = [
+          { feed: $('oneWayFeed'), empty: $('oneWayEmpty'), items: historyOneWay, twoWay: false },
+          { feed: $('twoWayFeed'), empty: $('twoWayEmpty'), items: historyTwoWay, twoWay: true }
+        ];
+        feeds.forEach(({ feed, empty, items, twoWay }) => {
+          feed.querySelectorAll('.entry').forEach((node) => node.remove());
+          if (empty) empty.style.display = items.length ? 'none' : 'block';
+          items.forEach((item) => renderEntry(feed, empty, item, twoWay));
+        });
       }
 
       async function createRealtimeSession(targetLanguage) {
@@ -384,7 +467,7 @@
           finalizeSegment();
           if (closeWaitResolver) closeWaitResolver();
         } else if (event.type === 'error') {
-          const message = event.error?.message || event.message || 'Lỗi từ dịch vụ Realtime AI.';
+          const message = event.error?.message || event.message || 'Realtime AI service error.';
           setStatus(message, 'error');
         }
       }
@@ -392,7 +475,7 @@
       async function startSession(targetLanguage) {
         if (isConnecting || isActive) return;
         isConnecting = true;
-        setStatus('Đang kết nối AI Realtime...', 'ready');
+        setStatus(t('statusConnecting'), 'ready');
         updateButtons();
         try {
           const clientSecret = await createRealtimeSession(targetLanguage);
@@ -420,18 +503,18 @@
             try { handleRealtimeEvent(JSON.parse(data)); }
             catch (error) { console.warn('Không đọc được sự kiện Realtime:', error); }
           };
-          eventChannel.onerror = () => setStatus('Kênh dữ liệu Realtime bị lỗi.', 'error');
+          eventChannel.onerror = () => setStatus(t('statusDataError'), 'error');
           peerConnection.ontrack = ({ streams }) => {
             remoteAudio.srcObject = streams[0];
             remoteAudio.muted = !autoRead;
             remoteAudio.play().catch(() => {
-              setStatus('Đã kết nối. Chạm nút đọc bản dịch để bật âm thanh.', 'live');
+              setStatus(t('statusNoAudio'), 'live');
             });
           };
           peerConnection.onconnectionstatechange = () => {
             const state = peerConnection?.connectionState;
-            if (state === 'connected') setStatus('Đang nghe và dịch bằng AI', 'live');
-            else if (state === 'failed' || state === 'disconnected') setStatus('Kết nối Realtime không ổn định. Kiểm tra Internet.', 'error');
+            if (state === 'connected') setStatus(t('statusLive'), 'live');
+            else if (state === 'failed' || state === 'disconnected') setStatus(t('statusUnstable'), 'error');
           };
 
           const offer = await peerConnection.createOffer();
@@ -462,14 +545,15 @@
           }
           isActive = true;
           isStopping = false;
-          setStatus('Đang nghe và dịch bằng AI', 'live');
+          setStatus(t('statusLive'), 'live');
           updateButtons();
           updateLivePanels();
         } catch (error) {
           console.error(error);
           cleanupConnection();
-          setStatus(error.message || 'Không thể kết nối AI Realtime.', 'error');
-          alert(error.message || 'Không thể kết nối AI Realtime.');
+          const friendlyMessage = error.name === 'NotAllowedError' ? t('micDenied') : error.name === 'NotFoundError' ? t('micMissing') : (error.message || t('statusCouldNotConnect'));
+          setStatus(friendlyMessage, 'error');
+          alert(friendlyMessage);
         } finally {
           isConnecting = false;
           updateButtons();
@@ -489,9 +573,9 @@
           }));
           currentTargetLanguage = targetLanguage;
           pendingTargetLanguage = null;
-          setStatus('Đã đổi ngôn ngữ dịch · AI tiếp tục giữ phiên nghe', 'live');
+          setStatus(t('statusChanged'), 'live');
         } catch (error) {
-          setStatus('Không thể đổi ngôn ngữ dịch. Hãy thử lại.', 'error');
+          setStatus(t('statusChangeFailed'), 'error');
         }
       }
 
@@ -537,7 +621,7 @@
         activeSpeaker = null;
         $('micMe').classList.remove('selected');
         $('micPartner').classList.remove('selected');
-        setStatus('Đã dừng nghe');
+        setStatus(t('statusStopped'));
         isStopping = false;
         updateButtons();
       }
@@ -545,7 +629,7 @@
       function updateButtons() {
         const start = $('startOneWay');
         if (start) {
-          start.textContent = isActive || (isConnecting && mode === 'oneWay') ? '■ ĐANG NGHE · NHẤN ĐỂ DỪNG' : '▶ BẮT ĐẦU NGHE';
+          start.textContent = isActive || (isConnecting && mode === 'oneWay') ? t('stopListening') : t('startListening');
           start.className = 'btn primary ' + (isActive || isConnecting ? 'btn-red' : 'btn-green');
           start.disabled = isConnecting || isStopping;
         }
@@ -593,16 +677,18 @@
         if (mode === 'twoWay' && isActive && activeSpeaker === 'me') sendTargetLanguage(partnerLanguage.value);
       });
 
+      function updateAutoReadLabel() { $('autoReadToggle').textContent = autoRead ? t('autoReadOn') : t('autoReadOff'); }
+
       $('autoReadToggle').addEventListener('click', () => {
         autoRead = !autoRead;
         remoteAudio.muted = !autoRead;
-        $('autoReadToggle').textContent = autoRead ? '🔊 Đọc bản dịch: BẬT' : '🔇 Đọc bản dịch: TẮT';
+        updateAutoReadLabel();
       });
 
       function makeTranscriptText(items) {
         return items.map(item => {
-          const who = item.speaker === 'me' ? 'Bạn nói' : item.speaker === 'partner' ? 'Người đối diện nói' : 'Cuộc họp';
-          return `[${item.time}] ${who}\nGốc: ${item.source || '—'}\nDịch: ${item.target || '—'}`;
+          const who = item.speaker === 'me' ? t('speakerMe') : item.speaker === 'partner' ? t('speakerPartner') : t('speakerMeeting');
+          return `[${item.time}] ${who}\n${t('transcriptOriginal')}: ${item.source || '—'}\n${t('transcriptTranslation')}: ${item.target || '—'}`;
         }).join('\n\n');
       }
       async function copyTranscript(isTwoWay) {
@@ -610,12 +696,12 @@
         if (currentSegment && (currentSegment.source.trim() || currentSegment.target.trim())) {
           items.push({ ...currentSegment, time: currentSegment.createdAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
         }
-        if (!items.length) { alert('Chưa có nội dung để sao chép.'); return; }
+        if (!items.length) { alert(t('copyEmpty')); return; }
         try {
           await navigator.clipboard.writeText(makeTranscriptText(items));
-          setStatus('Đã sao chép toàn bộ nội dung');
+          setStatus(t('statusCopied'));
         } catch (_) {
-          setStatus('Trình duyệt không cho phép sao chép. Hãy cấp quyền Clipboard.', 'error');
+          setStatus(t('statusClipboardError'), 'error');
         }
       }
       $('copyOneWay').addEventListener('click', () => copyTranscript(false));
@@ -630,15 +716,16 @@
       // The two-way feed has its own copy/clear controls added without taking space from the mic buttons.
       const twoWayTools = document.createElement('div');
       twoWayTools.className = 'actions';
-      twoWayTools.innerHTML = '<button id="copyTwoWay" class="btn btn-blue" type="button">▣ Sao chép nội dung</button><button id="clearTwoWay" class="btn btn-muted" type="button">Xóa lịch sử</button>';
+      twoWayTools.innerHTML = '<button id="copyTwoWay" class="btn btn-blue" type="button" data-i18n="copyContent">▣ Copy transcript</button><button id="clearTwoWay" class="btn btn-muted" type="button" data-i18n="clearHistory">Clear history</button>';
       twoWayView.insertBefore(twoWayTools, $('micMe').parentElement);
       $('copyTwoWay').addEventListener('click', () => copyTranscript(true));
       $('clearTwoWay').addEventListener('click', () => clearFeed($('twoWayFeed'), $('twoWayEmpty'), true));
+      applyDisplayLanguage();
 
       document.addEventListener('visibilitychange', () => {
         if (document.hidden && isActive) {
           // Keep the microphone session alive; mobile browsers may still suspend audio in background.
-          setStatus('Đang chạy · trình duyệt có thể giới hạn micro khi ở nền', 'live');
+          setStatus(t('statusBackground'), 'live');
         }
       });
       window.addEventListener('beforeunload', () => {
