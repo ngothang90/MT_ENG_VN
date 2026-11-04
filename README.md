@@ -1,87 +1,27 @@
-# Live Translator AI — bộ mã nâng cấp
+# Live Translator Free
 
-Bộ này thay engine `SpeechRecognition` của trình duyệt và các API dịch văn bản cũ bằng **OpenAI Realtime Translation qua WebRTC**. Cloudflare Worker chỉ tạo client secret thời hạn ngắn; API key chính được giữ trong Worker Secret.
+Phiên bản miễn phí của Live Translator. Bản này không gọi OpenAI API, không dùng Cloudflare Worker và không yêu cầu API Key.
 
-## Thành phần
+## Cập nhật GitHub Pages
 
-- `index.html`: giao diện nghe & dịch một chiều và hội thoại hai chiều.
-- `manifest.json`: cấu hình cài ứng dụng PWA.
-- `sw.js`: service worker; bản dịch trực tiếp cần Internet.
-- `worker/worker.js`: API backend tạo client secret.
-- `worker/wrangler.toml`: cấu hình triển khai Cloudflare Worker và danh sách domain được phép.
+Thay thế 3 file ở thư mục gốc repository bằng các file trong gói này:
 
-## A. Chuẩn bị OpenAI API key
+- `index.html`
+- `manifest.json`
+- `sw.js`
 
-1. Tạo API key trong OpenAI API Platform. Việc sử dụng API có tính phí riêng theo mức dùng; gói ChatGPT không tự động bao gồm chi phí API.
-2. Không dán API key vào `index.html`, GitHub hoặc gửi key cho người khác.
+Sau đó Commit changes. Mở website trên máy tính bằng Ctrl+F5. Trên điện thoại, đóng PWA hoàn toàn rồi mở lại; nếu chưa cập nhật, xóa shortcut cũ và thêm lại website từ trình duyệt.
 
-## B. Triển khai Cloudflare Worker
+## Cách hoạt động và giới hạn
 
-Cài Node.js LTS, sau đó mở terminal tại thư mục `worker`:
+- Nhận diện giọng nói bằng Web Speech API của trình duyệt (`SpeechRecognition` / `webkitSpeechRecognition`). Không cần API key. Trên một số trình duyệt như Chrome, âm thanh có thể được gửi tới dịch vụ nhận diện trực tuyến của trình duyệt; tính năng không hoạt động offline và hỗ trợ không đồng đều giữa các trình duyệt.
+- Dịch văn bản qua endpoint Google Translate công khai không chính thức; MyMemory là phương án dự phòng. Các dịch vụ công khai có thể giới hạn tần suất, thay đổi hoặc tạm ngừng, không có SLA.
+- Không có AI hiểu ngữ cảnh hoặc hiệu chỉnh câu nghe sai như Realtime trả phí. Hãy nói gần micro, rõ ràng, giảm tiếng ồn; chọn đúng ngôn ngữ nguồn.
+- Giao diện hỗ trợ tiếng Việt, Anh, Nhật, Trung giản thể, Hàn. Chế độ song ngữ dùng hai micro theo lượt như bản cũ.
 
-```bash
-npx wrangler login
-npx wrangler secret put OPENAI_API_KEY
-npx wrangler deploy
-```
+## Không cần
 
-Khi chạy lệnh `secret put`, dán API key vào cửa sổ terminal. Giá trị này được lưu dưới dạng Secret trong Cloudflare, không nằm trong mã nguồn.
-
-Trước khi deploy, mở `worker/wrangler.toml` và thay:
-
-```toml
-ALLOWED_ORIGINS = "https://YOUR_GITHUB_USERNAME.github.io,http://localhost:8788"
-```
-
-bằng origin GitHub Pages thật của anh, ví dụ `https://ten-tai-khoan.github.io`. Origin chỉ gồm giao thức + domain, không thêm tên repository hoặc dấu `/` cuối. Giữ `http://localhost:8788` nếu muốn kiểm tra local.
-
-Sau deploy, Cloudflare hiển thị URL dạng:
-
-```text
-https://live-translator-ai-worker.<ten-tai-khoan>.workers.dev
-```
-
-Lưu lại URL này.
-
-## C. Cập nhật GitHub Pages
-
-1. Chép `index.html`, `manifest.json` và `sw.js` ở thư mục gốc của gói này vào repository GitHub Pages, ghi đè ba file cũ.
-2. Commit và push lên GitHub để Pages cập nhật.
-3. Mở trang web, chọn **Kết nối**, dán URL Worker vừa deploy vào ô địa chỉ rồi nhấn **Lưu địa chỉ**.
-4. Nhấn **Kiểm tra**. Nếu hiện “Kết nối Worker thành công” là cấu hình CORS và Worker đã đúng.
-5. Bấm **BẮT ĐẦU NGHE** và cấp quyền microphone.
-
-## D. Cách sử dụng
-
-### Nghe & dịch
-
-- AI tự nhận diện ngôn ngữ đầu vào.
-- Chọn ngôn ngữ đích.
-- Nhấn BẮT ĐẦU NGHE một lần và giữ phiên chạy trong suốt cuộc họp.
-- Lời nói gốc và bản dịch hiển thị trực tiếp; các đoạn đã nhận được lưu ở phần lịch sử.
-- Chọn ngôn ngữ đích khác khi đang chạy để cập nhật phiên hiện tại.
-
-### Hội thoại 2 chiều
-
-- Chọn ngôn ngữ của anh và ngôn ngữ đối phương.
-- Khi anh nói, nhấn **TÔI NÓI** để dịch sang ngôn ngữ đối phương.
-- Khi đối phương nói, nhấn **ĐỐI PHƯƠNG NÓI** để đổi ngôn ngữ dịch về ngôn ngữ của anh.
-- Nhấn lại nút đang sáng để dừng nghe.
-- Nút đọc bản dịch cho phép bật/tắt âm thanh dịch.
-
-## E. Ghi chú quan trọng
-
-- Realtime Translation xuất đồng thời transcript lời nói gốc và transcript bản dịch. AI có thể cải thiện nhận diện khi phát âm, tốc độ và ngữ cảnh không hoàn hảo, nhưng không thể khôi phục chắc chắn tiếng nói quá nhỏ, bị che lấp hoặc nhiễu mạnh.
-- Với mic phòng họp / thu âm xa, Worker yêu cầu giảm nhiễu `far_field` ở mức 0.85. Chất lượng cuối cùng vẫn phụ thuộc microphone, khoảng cách, tiếng vang, loa và kết nối Internet.
-- Chuyển người nói trong chế độ hai chiều đổi ngôn ngữ đích trong cùng một phiên để hạn chế mất ngữ cảnh. Người dùng vẫn cần bấm đúng người đang nói; ứng dụng không tự phân biệt danh tính người nói.
-- Ứng dụng cần HTTPS, microphone permission và Internet. Trên iPhone, chế độ nền có thể bị iOS hạn chế microphone/WebRTC; không nên coi PWA là giải pháp đảm bảo nghe liên tục khi khóa màn hình.
-- `ALLOWED_ORIGINS` là lớp kiểm soát nguồn truy cập trình duyệt, không phải xác thực người dùng. Với ứng dụng public, nên thêm Cloudflare Rate Limiting hoặc Cloudflare Access để hạn chế người lạ lạm dụng endpoint tạo phiên.
-- Worker không lưu âm thanh hoặc bản dịch. Nội dung âm thanh được gửi đến OpenAI để xử lý theo dịch vụ Realtime API.
-
-## F. Xử lý lỗi thường gặp
-
-- **403 Origin chưa được cho phép:** kiểm tra `ALLOWED_ORIGINS` đúng domain GitHub Pages, rồi deploy Worker lại.
-- **Worker chưa được cấu hình secret:** chạy `npx wrangler secret put OPENAI_API_KEY` trong thư mục `worker`.
-- **401/403 từ OpenAI:** kiểm tra API key, trạng thái billing và quyền truy cập model/API của project.
-- **Không truy cập được microphone:** dùng HTTPS, cấp quyền mic cho trình duyệt và đóng ứng dụng khác đang chiếm microphone.
-- **Âm thanh nói nhanh / xa vẫn sai:** thử microphone gần người nói hơn, giảm tiếng ồn phòng họp và dùng micro ngoài. Mô hình AI không thể phục hồi tín hiệu không thu được.
+- Không cần Node.js.
+- Không cần Cloudflare Worker.
+- Không cần OpenAI API Key.
+- Không cần thanh toán API.

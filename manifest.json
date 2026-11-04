@@ -1,6 +1,6 @@
 {
-  "name": "Live Translator AI",
-  "short_name": "Live Translate AI",
+  "name": "Live Translator Free",
+  "short_name": "Translator Free",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
