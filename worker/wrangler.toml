@@ -1,8 +1,0 @@
-name = "live-translator-ai-worker"
-main = "worker.js"
-compatibility_date = "2026-11-04"
-
-# IMPORTANT: replace YOUR_GITHUB_USERNAME with the GitHub Pages account name.
-# For a custom domain, add its origin too, e.g. https://translate.example.com
-[vars]
-ALLOWED_ORIGINS = "https://ngothang90.github.io"
