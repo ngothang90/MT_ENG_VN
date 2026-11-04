@@ -1,7 +1,8 @@
 {
-  "name": "Live Translator",
-  "short_name": "Live Translate",
+  "name": "Live Translator AI",
+  "short_name": "Live Translate AI",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0b1120",
   "theme_color": "#0b1120",
@@ -10,7 +11,8 @@
     {
       "src": "https://cdn-icons-png.flaticon.com/512/3898/3898150.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
